@@ -1,0 +1,19 @@
+﻿# Android
+*.iml
+*.apk
+*.ap_
+*.dex
+*.class
+.gradle/
+build/
+local.properties
+.idea/
+*.hprof
+captures/
+.externalNativeBuild/
+.cxx/
+google-services.json
+
+# OS
+.DS_Store
+Thumbs.db
