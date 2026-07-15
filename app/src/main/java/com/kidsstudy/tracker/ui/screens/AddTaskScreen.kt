@@ -22,7 +22,7 @@ import com.kidsstudy.tracker.data.IconType
 import com.kidsstudy.tracker.data.Task
 import com.kidsstudy.tracker.ui.theme.*
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AddTaskScreen(
     task: Task? = null,
@@ -46,7 +46,7 @@ fun AddTaskScreen(
     var points by remember { mutableStateOf(task?.points?.toString() ?: "10") }
     var frequency by remember { mutableStateOf(task?.frequency ?: Frequency.DAILY) }
     var selectedEmoji by remember { mutableStateOf(task?.iconEmoji ?: "📖") }
-    var selectedColor by remember { mutableStateOf(task?.iconColor ?: CardColors[0].toHexString()) }
+    var selectedColorIndex by remember { mutableStateOf(0) }
 
     // 预设emoji
     val emojis = listOf(
@@ -93,7 +93,7 @@ fun AddTaskScreen(
                         modifier = Modifier
                             .size(64.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color(android.graphics.Color.parseColor(selectedColor))),
+                            .background(CardColors[selectedColorIndex]),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(text = selectedEmoji, fontSize = 32.sp)
@@ -117,10 +117,12 @@ fun AddTaskScreen(
                                         if (emoji == selectedEmoji) VibrantOrange else Color(0xFFF5F5F5)
                                     )
                                     .clickable { selectedEmoji = emoji }
-                                    .border(
-                                        width = if (emoji == selectedEmoji) 2.dp else 0.dp,
-                                        color = VibrantOrange,
-                                        shape = RoundedCornerShape(8.dp)
+                                    .then(
+                                        if (emoji == selectedEmoji) Modifier.border(
+                                            2.dp,
+                                            VibrantOrange,
+                                            RoundedCornerShape(8.dp)
+                                        ) else Modifier
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -137,17 +139,19 @@ fun AddTaskScreen(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        CardColors.forEach { color ->
+                        CardColors.forEachIndexed { index, color ->
                             Box(
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clip(CircleShape)
                                     .background(color)
-                                    .clickable { selectedColor = color.toHexString() }
-                                    .border(
-                                        width = if (color.toHexString() == selectedColor) 3.dp else 0.dp,
-                                        color = VibrantOrange,
-                                        shape = CircleShape
+                                    .clickable { selectedColorIndex = index }
+                                    .then(
+                                        if (index == selectedColorIndex) Modifier.border(
+                                            3.dp,
+                                            VibrantOrange,
+                                            CircleShape
+                                        ) else Modifier
                                     )
                             )
                         }
@@ -252,7 +256,7 @@ fun AddTaskScreen(
                             iconType = IconType.EMOJI,
                             iconEmoji = selectedEmoji,
                             iconImageUri = null,
-                            iconColor = selectedColor
+                            iconColor = null
                         )
                         onBack()
                     }
@@ -275,26 +279,5 @@ fun AddTaskScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
         }
-    }
-}
-
-private fun Color.toHexString(): String {
-    return String.format("#%06X", (0xFFFFFF and this.value.packToInt()))
-}
-
-private fun androidx.compose.ui.graphics.Color.Companion.value.packToInt(): Int = 0
-
-private fun FlowRow(
-    modifier: Modifier = Modifier,
-    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-    verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-    content: @Composable () -> Unit
-) {
-    androidx.compose.foundation.layout.FlowRow(
-        modifier = modifier,
-        horizontalArrangement = horizontalArrangement,
-        verticalArrangement = verticalArrangement
-    ) {
-        content()
     }
 }
