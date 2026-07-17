@@ -118,7 +118,9 @@
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
         .calendar-day-header { text-align: center; font-size: 11px; color: #999; padding: 6px 0; }
         .calendar-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 6px; font-size: 13px; position: relative; }
-        .calendar-day.has-checkin { background: #E8F5E9; color: #06D6A0; font-weight: bold; }
+        .calendar-day.full-complete { background: #06D6A0; color: white; font-weight: bold; }
+        .calendar-day.partial-complete { background: #FFD23F; color: #333; font-weight: 600; }
+        .calendar-day.no-complete { background: #F5F5F5; color: #999; }
         .calendar-day.today { border: 2px solid #FF6B35; }
         .calendar-day.empty { background: transparent; }
         .calendar-legend { display: flex; justify-content: space-around; margin-top: 12px; padding-top: 12px; border-top: 1px solid #F0F0F0; }
@@ -215,9 +217,10 @@
                 </div>
                 <div class="calendar-grid" id="calendar-grid"></div>
                 <div class="calendar-legend">
-                    <div class="legend-item"><div class="legend-dot" style="background: #E8F5E9;"></div>已打卡</div>
-                    <div class="legend-item"><div class="legend-dot" style="background: white; border: 2px solid #FF6B35;"></div>今天</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #06D6A0;"></div>全部完成</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #FFD23F;"></div>部分完成</div>
                     <div class="legend-item"><div class="legend-dot" style="background: #F5F5F5;"></div>未打卡</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: white; border: 2px solid #FF6B35;"></div>今天</div>
                 </div>
             </div>
             <div class="section-header"><span class="section-title"> 本月统计</span></div>
@@ -417,7 +420,19 @@
         let userPoints = 120;
 
         const checkInData = {
-            '2026-07-13': 4, '2026-07-14': 3, '2026-07-15': 4, '2026-07-16': 2, '2026-07-17': 2
+            '2026-07-01': { completed: 4, total: 4 },
+            '2026-07-02': { completed: 3, total: 4 },
+            '2026-07-03': { completed: 4, total: 4 },
+            '2026-07-05': { completed: 2, total: 4 },
+            '2026-07-06': { completed: 4, total: 4 },
+            '2026-07-08': { completed: 1, total: 4 },
+            '2026-07-10': { completed: 3, total: 4 },
+            '2026-07-12': { completed: 4, total: 4 },
+            '2026-07-13': { completed: 4, total: 4 },
+            '2026-07-14': { completed: 3, total: 4 },
+            '2026-07-15': { completed: 4, total: 4 },
+            '2026-07-16': { completed: 2, total: 4 },
+            '2026-07-17': { completed: 2, total: 4 }
         };
 
         const weekDays = [
@@ -497,11 +512,24 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
                 const isToday = today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
-                const hasCheckIn = checkInData[dateStr];
+                const dayData = checkInData[dateStr];
                 let classes = 'calendar-day';
-                if (hasCheckIn) classes += ' has-checkin';
+                let content = day;
+                if (dayData) {
+                    const ratio = dayData.completed / dayData.total;
+                    if (ratio === 1) {
+                        classes += ' full-complete';
+                    } else if (ratio > 0) {
+                        classes += ' partial-complete';
+                    } else {
+                        classes += ' no-complete';
+                    }
+                    content += '<div style="font-size:9px;margin-top:2px;">' + dayData.completed + '/' + dayData.total + '</div>';
+                } else {
+                    classes += ' no-complete';
+                }
                 if (isToday) classes += ' today';
-                html += '<div class="' + classes + '">' + day + '</div>';
+                html += '<div class="' + classes + '">' + content + '</div>';
             }
             grid.innerHTML = html;
         }
