@@ -924,8 +924,8 @@
                 </div>
             </div>
 
-            <div class="task-card" style="background: #E8F5E9;">
-                <div style="font-size: 28px;">🎫</div>
+            <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()">
+                <div style="font-size: 28px;"></div>
                 <div style="flex: 1; margin-left: 12px;">
                     <div class="task-name">我的奖励</div>
                 </div>
@@ -1017,7 +1017,7 @@
             </div>
 
             <div class="settings-group">
-                <div class="settings-item">
+                <div class="settings-item" onclick="openManageRewards()">
                     <span class="settings-icon"></span>
                     <span class="settings-label">管理奖励卡片</span>
                     <span class="settings-arrow">></span>
@@ -1284,14 +1284,46 @@
             }, 1500);
         }
 
-        // 刮刮卡
+        // 刮刮卡 - 改进为滑动刮开效果
         function scratchCard(element) {
-            element.style.opacity = '0';
-            element.style.transition = 'opacity 0.5s';
+            // 添加触摸/鼠标滑动事件
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 500);
+            // 简单版本：点击多次刮开
+            let clickCount = element.dataset.clicks || 0;
+            clickCount = parseInt(clickCount) + 1;
+            element.dataset.clicks = clickCount;
+
+            if (clickCount >= 3) {
+                element.style.opacity = '0';
+                element.style.transition = 'opacity 0.8s';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 800);
+            } else {
+                element.style.opacity = (1 - clickCount * 0.3);
+            }
+        }
+
+        // 我的奖励
+        function openMyRewards() {
+            alert('🎫 我的奖励\n\n• 冰淇淋券 - 待使用\n• 看动画30分钟 - 待使用\n\n点击可使用奖励');
+        }
+
+        // 管理奖励卡片
+        function openManageRewards() {
+            alert('🎁 管理奖励卡片\n\n• 冰淇淋 - 50积分\n• 看动画30分 - 30积分\n• 游戏时间 - 60积分\n• 披萨大餐 - 200积分\n\n点击可编辑或删除');
+        }
+
+        // 编辑任务
+        function editTask(taskId) {
+            const taskNames = {1: '阅读', 2: '练琴', 3: '篮球'};
+            alert('️ 编辑任务：' + taskNames[taskId] + '\n\n点击确定进入编辑页面');
+            openAddTask();
         }
 
         // 点击弹窗外部关闭
