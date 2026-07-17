@@ -127,6 +127,14 @@
         .tab-buttons { display: flex; gap: 6px; margin-bottom: 12px; }
         .tab-btn { flex: 1; padding: 10px; border-radius: 10px; background: #F5F5F5; border: none; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .tab-btn.active { background: #FF6B35; color: white; }
+        .week-day-item { display: flex; align-items: center; padding: 12px; background: #F5F5F5; border-radius: 10px; margin-bottom: 8px; }
+        .week-day-item.today { background: #FFF3E0; border: 2px solid #FF6B35; }
+        .week-day-item.has-checkin { background: #E8F5E9; }
+        .week-day-number { width: 36px; height: 36px; border-radius: 50%; background: #FF6B35; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; margin-right: 12px; flex-shrink: 0; }
+        .week-day-info { flex: 1; }
+        .week-day-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+        .week-day-tasks { font-size: 12px; color: #666; }
+        .week-day-status { font-size: 20px; }
         .reward-list-item { display: flex; align-items: center; padding: 12px; background: #FFE4E4; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid #FF6B35; }
         .reward-list-item.used { background: #F5F5F5; border-left-color: #999; opacity: 0.7; }
         .reward-list-check { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #FF6B35; margin-right: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
@@ -156,9 +164,9 @@
             </div>
             <div class="section-header"><span class="section-title">今日任务</span><button class="add-btn" onclick="openAddTask()">+ 添加</button></div>
             <div class="task-list" id="task-list">
-                <div class="task-card" onclick="openCheckIn(1)"><div class="task-icon" style="background: #FFE4E8">📖</div><div class="task-info"><div class="task-name">阅读 30分钟</div><div class="task-desc">+10积分</div><div class="task-streak"> 连续5天</div></div><div class="task-status completed">✓</div></div>
+                <div class="task-card" onclick="openCheckIn(1)"><div class="task-icon" style="background: #FFE4E8">📖</div><div class="task-info"><div class="task-name">阅读 30分钟</div><div class="task-desc">+10积分</div><div class="task-streak">🔥 连续5天</div></div><div class="task-status completed">✓</div></div>
                 <div class="task-card" onclick="openCheckIn(2)"><div class="task-icon" style="background: #E3F2FD">🎹</div><div class="task-info"><div class="task-name">练琴 20分钟</div><div class="task-desc">+10积分</div><div class="task-streak">🔥 连续5天</div></div><div class="task-status pending">○</div></div>
-                <div class="task-card" onclick="openCheckIn(3)"><div class="task-icon" style="background: #E8F5E9">🏀</div><div class="task-info"><div class="task-name">篮球训练 40分钟</div><div class="task-desc">+12积分</div><div class="task-streak"> 连续8天</div></div><div class="task-status pending">○</div></div>
+                <div class="task-card" onclick="openCheckIn(3)"><div class="task-icon" style="background: #E8F5E9">🏀</div><div class="task-info"><div class="task-name">篮球训练 40分钟</div><div class="task-desc">+12积分</div><div class="task-streak">🔥 连续8天</div></div><div class="task-status pending">○</div></div>
                 <div class="task-card" onclick="openCheckIn(4)"><div class="task-icon" style="background: #F3E5F5">💻</div><div class="task-info"><div class="task-name">编程学习 45分钟</div><div class="task-desc">+15积分</div><div class="task-streak"> 连续3天</div></div><div class="task-status pending">○</div></div>
             </div>
         </div>
@@ -177,7 +185,7 @@
             </div>
             <div class="section-header"><span class="section-title">📖 学习日记</span></div>
             <div class="checkin-list">
-                <div style="font-size: 13px; color: #999; margin-bottom: 10px;">📅 今天</div>
+                <div style="font-size: 13px; color: #999; margin-bottom: 10px;"> 今天</div>
                 <div class="checkin-item">
                     <div class="checkin-item-header"><div class="task-icon" style="width: 44px; height: 44px; background: #FFE4E8; font-size: 22px;">📖</div><div><div style="font-weight: 600; font-size: 14px;">阅读 30分钟</div><div style="font-size: 12px; color: #999;">⭐⭐⭐⭐⭐</div></div></div>
                     <div class="checkin-note"> 今天看了《小王子》第三章，小王子来到了第二颗星球，那里住着一个爱虚荣的人。</div>
@@ -195,7 +203,11 @@
                 <button class="tab-btn active" onclick="switchCalendarTab('week')">本周</button>
                 <button class="tab-btn" onclick="switchCalendarTab('month')">本月</button>
             </div>
-            <div class="calendar-container">
+            <div class="calendar-container" id="week-view">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">📅 本周打卡 (7月13日 - 7月19日)</div>
+                <div id="week-days-list"></div>
+            </div>
+            <div class="calendar-container" id="month-view" style="display: none;">
                 <div class="calendar-header">
                     <div class="calendar-nav" onclick="changeMonth(-1)">◀</div>
                     <div style="font-size: 16px; font-weight: bold;" id="calendar-month-year">2026年7月</div>
@@ -219,17 +231,17 @@
         <div class="page" id="page-rewards">
             <div class="reward-header">
                 <div class="reward-points">
-                    <div><div style="font-size: 18px; font-weight: bold;">🎁 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
+                    <div><div style="font-size: 18px; font-weight: bold;"> 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
                     <div style="text-align: right;"><div style="font-size: 28px;">⭐</div><div class="reward-points-value" id="user-points">120</div></div>
                 </div>
             </div>
-            <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()"><div style="font-size: 24px;">🎫</div><div style="flex: 1; margin-left: 10px;"><div class="task-name">我的奖励</div></div><div style="color: #999; font-size: 13px;">查看 ></div></div>
-            <div class="section-header" style="margin-top: 14px;"><span class="section-title">🎰 刮刮卡</span><button class="add-btn" onclick="openAddReward()">+ 添加</button></div>
+            <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()"><div style="font-size: 24px;"></div><div style="flex: 1; margin-left: 10px;"><div class="task-name">我的奖励</div></div><div style="color: #999; font-size: 13px;">查看 ></div></div>
+            <div class="section-header" style="margin-top: 14px;"><span class="section-title"> 刮刮卡</span><button class="add-btn" onclick="openAddReward()">+ 添加</button></div>
             <div class="reward-grid">
                 <div class="reward-card" onclick="openScratchCard()"><div class="reward-emoji">🍦</div><div class="reward-name">冰淇淋</div><div class="reward-cost">⭐ 50</div><button class="reward-btn" onclick="redeemReward(1, 50)">兑换</button></div>
                 <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">看动画30分</div><div class="reward-cost">⭐ 30</div><button class="reward-btn" onclick="redeemReward(2, 30)">兑换</button></div>
-                <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn" onclick="redeemReward(3, 60)">兑换</button></div>
-                <div class="reward-card"><div class="reward-emoji">🍕</div><div class="reward-name">披萨大餐</div><div class="reward-cost">⭐ 200</div><button class="reward-btn disabled">积分不足</button></div>
+                <div class="reward-card"><div class="reward-emoji">🎮</div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn" onclick="redeemReward(3, 60)">兑换</button></div>
+                <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">披萨大餐</div><div class="reward-cost">⭐ 200</div><button class="reward-btn disabled">积分不足</button></div>
             </div>
         </div>
 
@@ -243,24 +255,24 @@
             <div class="settings-group">
                 <div class="settings-item" onclick="editTask(1, '阅读', 30, 10)"><div class="task-icon" style="width: 38px; height: 38px; background: #FFE4E8; font-size: 18px;">📖</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">阅读</div><div style="font-size: 12px; color: #999;">30分钟 · 10⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
                 <div class="settings-item" onclick="editTask(2, '练琴', 20, 10)"><div class="task-icon" style="width: 38px; height: 38px; background: #E3F2FD; font-size: 18px;">🎹</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">练琴</div><div style="font-size: 12px; color: #999;">20分钟 · 10⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
-                <div class="settings-item" onclick="editTask(3, '篮球', 40, 12)"><div class="task-icon" style="width: 38px; height: 38px; background: #E8F5E9; font-size: 18px;"></div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">篮球</div><div style="font-size: 12px; color: #999;">40分钟 · 12⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
+                <div class="settings-item" onclick="editTask(3, '篮球', 40, 12)"><div class="task-icon" style="width: 38px; height: 38px; background: #E8F5E9; font-size: 18px;">🏀</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">篮球</div><div style="font-size: 12px; color: #999;">40分钟 · 12⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
             </div>
-            <div class="section-header"><span class="section-title"> 奖励管理</span></div>
+            <div class="section-header"><span class="section-title">🎁 奖励管理</span></div>
             <div class="settings-group">
-                <div class="settings-item" onclick="openManageRewards()"><span class="settings-icon">🎁</span><span class="settings-label">管理奖励卡片</span><span class="settings-arrow">></span></div>
+                <div class="settings-item" onclick="openManageRewards()"><span class="settings-icon"></span><span class="settings-label">管理奖励卡片</span><span class="settings-arrow">></span></div>
             </div>
-            <div class="section-header"><span class="section-title">🔧 其他设置</span></div>
+            <div class="section-header"><span class="section-title"> 其他设置</span></div>
             <div class="settings-group">
-                <div class="settings-item"><span class="settings-icon">🔔</span><span class="settings-label">打卡提醒</span><span style="color: #999; margin-right: 8px; font-size: 13px;">17:00</span><span class="settings-arrow">></span></div>
-                <div class="settings-item"><span class="settings-icon"></span><span class="settings-label">家长锁</span><span style="color: #999; margin-right: 8px; font-size: 13px;">已开启</span><span class="settings-arrow">></span></div>
-                <div class="settings-item"><span class="settings-icon"></span><span class="settings-label">导出记录</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon"></span><span class="settings-label">打卡提醒</span><span style="color: #999; margin-right: 8px; font-size: 13px;">17:00</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon">🔒</span><span class="settings-label">家长锁</span><span style="color: #999; margin-right: 8px; font-size: 13px;">已开启</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon">📤</span><span class="settings-label">导出记录</span><span class="settings-arrow">></span></div>
                 <div class="settings-item"><span class="settings-icon">ℹ️</span><span class="settings-label">关于</span><span style="color: #999; margin-right: 8px; font-size: 13px;">v1.0</span><span class="settings-arrow">></span></div>
             </div>
         </div>
 
         <div class="bottom-nav">
             <div class="nav-item active" onclick="switchPage('home')"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
-            <div class="nav-item" onclick="switchPage('stats')"><div class="nav-icon">📊</div><div class="nav-label">统计</div></div>
+            <div class="nav-item" onclick="switchPage('stats')"><div class="nav-icon"></div><div class="nav-label">统计</div></div>
             <div class="nav-item" onclick="switchPage('calendar')"><div class="nav-icon"></div><div class="nav-label">日历</div></div>
             <div class="nav-item" onclick="switchPage('rewards')"><div class="nav-icon">🎁</div><div class="nav-label">奖励</div></div>
             <div class="nav-item" onclick="switchPage('settings')"><div class="nav-icon">⚙️</div><div class="nav-label">设置</div></div>
@@ -275,19 +287,19 @@
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div class="task-icon" style="background: #FFD23F; width: 56px; height: 56px; font-size: 28px;" id="selected-icon">📖</div></div>
                     <div class="emoji-grid">
                         <div class="emoji-item selected" onclick="selectEmoji('📖', this)">📖</div>
-                        <div class="emoji-item" onclick="selectEmoji('', this)">📚</div>
+                        <div class="emoji-item" onclick="selectEmoji('📚', this)"></div>
                         <div class="emoji-item" onclick="selectEmoji('🎹', this)">🎹</div>
                         <div class="emoji-item" onclick="selectEmoji('🏀', this)">🏀</div>
                         <div class="emoji-item" onclick="selectEmoji('💻', this)">💻</div>
-                        <div class="emoji-item" onclick="selectEmoji('✏️', this)">️</div>
-                        <div class="emoji-item" onclick="selectEmoji('', this)"></div>
-                        <div class="emoji-item" onclick="selectEmoji('🎸', this)">🎸</div>
+                        <div class="emoji-item" onclick="selectEmoji('✏️', this)">✏️</div>
+                        <div class="emoji-item" onclick="selectEmoji('', this)">🎨</div>
+                        <div class="emoji-item" onclick="selectEmoji('', this)">🎸</div>
                         <div class="emoji-item" onclick="selectEmoji('⚽', this)">⚽</div>
                         <div class="emoji-item" onclick="selectEmoji('', this)">🏃</div>
                         <div class="emoji-item" onclick="selectEmoji('🧮', this)">🧮</div>
                         <div class="emoji-item" onclick="selectEmoji('🔬', this)">🔬</div>
                         <div class="emoji-item" onclick="selectEmoji('🎯', this)"></div>
-                        <div class="emoji-item" onclick="selectEmoji('🎮', this)">🎮</div>
+                        <div class="emoji-item" onclick="selectEmoji('🎮', this)"></div>
                     </div>
                 </div>
                 <div class="input-group">
@@ -336,7 +348,7 @@
                         <div class="mood-item" onclick="selectMood(2, this)">😐</div>
                         <div class="mood-item" onclick="selectMood(3, this)">😊</div>
                         <div class="mood-item" onclick="selectMood(4, this)">😄</div>
-                        <div class="mood-item" onclick="selectMood(5, this)"></div>
+                        <div class="mood-item" onclick="selectMood(5, this)">🤩</div>
                     </div>
                 </div>
                 <button class="btn btn-primary" onclick="completeCheckIn()">✅ 完成打卡</button>
@@ -358,7 +370,7 @@
 
         <div class="modal" id="modal-my-rewards">
             <div class="modal-content">
-                <div class="modal-header"><div class="modal-title"> 我的奖励</div></div>
+                <div class="modal-header"><div class="modal-title">🎫 我的奖励</div></div>
                 <div class="reward-section-title">📋 待使用</div>
                 <div id="unused-rewards-list">
                     <div class="reward-list-item">
@@ -385,7 +397,7 @@
             <div class="modal-content">
                 <div class="modal-header"><div class="modal-title">🎁 管理奖励卡片</div></div>
                 <div class="edit-item" onclick="editReward(1, '冰淇淋', 50)"><div><span style="font-size: 22px;">🍦</span> <strong>冰淇淋</strong> - 50积分</div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
-                <div class="edit-item" onclick="editReward(2, '看动画30分', 30)"><div><span style="font-size: 22px;">📺</span> <strong>看动画30分</strong> - 30积分</div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
+                <div class="edit-item" onclick="editReward(2, '看动画30分', 30)"><div><span style="font-size: 22px;"></span> <strong>看动画30分</strong> - 30积分</div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
                 <div class="edit-item" onclick="editReward(3, '游戏时间', 60)"><div><span style="font-size: 22px;">🎮</span> <strong>游戏时间</strong> - 60积分</div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
                 <div class="edit-item" onclick="editReward(4, '披萨大餐', 200)"><div><span style="font-size: 22px;">🍕</span> <strong>披萨大餐</strong> - 200积分</div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
                 <button class="btn btn-secondary" onclick="closeModal('modal-manage-rewards')">关闭</button>
@@ -405,22 +417,64 @@
         let userPoints = 120;
 
         const checkInData = {
-            '2026-07-01': true, '2026-07-02': true, '2026-07-03': true, '2026-07-05': true,
-            '2026-07-06': true, '2026-07-08': true, '2026-07-10': true, '2026-07-12': true,
-            '2026-07-14': true, '2026-07-15': true, '2026-07-16': true, '2026-07-17': true
+            '2026-07-13': 4, '2026-07-14': 3, '2026-07-15': 4, '2026-07-16': 2, '2026-07-17': 2
         };
+
+        const weekDays = [
+            { date: '7月13日', day: '周一', tasks: 4, completed: 4 },
+            { date: '7月14日', day: '周二', tasks: 4, completed: 3 },
+            { date: '7月15日', day: '周三', tasks: 4, completed: 4 },
+            { date: '7月16日', day: '周四', tasks: 4, completed: 2 },
+            { date: '7月17日', day: '周五', tasks: 4, completed: 2 },
+            { date: '7月18日', day: '周六', tasks: 4, completed: 0 },
+            { date: '7月19日', day: '周日', tasks: 4, completed: 0 }
+        ];
 
         function switchPage(pageName) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('page-' + pageName).classList.add('active');
             event.currentTarget.classList.add('active');
-            if (pageName === 'calendar') renderCalendar();
+            if (pageName === 'calendar') { renderCalendar(); renderWeekView(); }
         }
 
         function switchCalendarTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.currentTarget.classList.add('active');
+            if (tab === 'week') {
+                document.getElementById('week-view').style.display = 'block';
+                document.getElementById('month-view').style.display = 'none';
+            } else {
+                document.getElementById('week-view').style.display = 'none';
+                document.getElementById('month-view').style.display = 'block';
+            }
+        }
+
+        function renderWeekView() {
+            const list = document.getElementById('week-days-list');
+            const today = new Date();
+            const todayStr = '7月' + today.getDate() + '日';
+            let html = '';
+            weekDays.forEach((day, index) => {
+                const isToday = day.date === todayStr;
+                const hasCheckIn = day.completed > 0;
+                let className = 'week-day-item';
+                if (isToday) className += ' today';
+                else if (hasCheckIn) className += ' has-checkin';
+                html += '<div class="' + className + '">';
+                html += '<div class="week-day-number">' + (index + 1) + '</div>';
+                html += '<div class="week-day-info">';
+                html += '<div class="week-day-name">' + day.day + ' · ' + day.date + '</div>';
+                html += '<div class="week-day-tasks">完成 ' + day.completed + '/' + day.tasks + ' 个任务</div>';
+                html += '</div>';
+                html += '<div class="week-day-status">';
+                if (day.completed === day.tasks) html += '✅';
+                else if (day.completed > 0) html += '';
+                else html += '○';
+                html += '</div>';
+                html += '</div>';
+            });
+            list.innerHTML = html;
         }
 
         function changeMonth(delta) {
@@ -616,6 +670,7 @@
         });
 
         renderCalendar();
+        renderWeekView();
     </script>
 </body>
 </html>
