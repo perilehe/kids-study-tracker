@@ -5,1109 +5,241 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>学习打卡</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #FFF9E6;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            min-height: 100vh;
-            background: #FFF9E6;
-            position: relative;
-        }
-
-        /* 页面切换 */
-        .page {
-            display: none;
-            padding: 16px;
-            padding-bottom: 80px;
-            animation: fadeIn 0.3s;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 欢迎卡片 */
-        .welcome-card {
-            background: linear-gradient(135deg, #FFE4E8, #FFF0F3);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF6B35, #FFD23F, #06D6A0, #4ECDC4, #A78BFA);
-            padding: 3px;
-        }
-
-        .avatar-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #FFD23F;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-        }
-
-        .welcome-info h2 {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 4px;
-        }
-
-        .welcome-info p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* 积分和连续打卡 */
-        .stats-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .stat-item {
-            background: white;
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .stat-icon {
-            font-size: 24px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #FF6B35;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* 进度条 */
-        .progress-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .progress-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .progress-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #FF6B35;
-        }
-
-        .progress-bar {
-            height: 12px;
-            background: #EEE;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FF6B35, #FFD23F, #06D6A0);
-            border-radius: 6px;
-            transition: width 0.5s;
-        }
-
-        /* 任务列表 */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .task-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .task-card:active {
-            transform: scale(0.98);
-        }
-
-        .task-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-        }
-
-        .task-info {
-            flex: 1;
-        }
-
-        .task-name {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-        }
-
-        .task-desc {
-            font-size: 13px;
-            color: #999;
-        }
-
-        .task-streak {
-            font-size: 12px;
-            color: #FF6B35;
-            margin-top: 4px;
-        }
-
-        .task-status {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .task-status.completed {
-            background: #06D6A0;
-            color: white;
-        }
-
-        .task-status.pending {
-            border: 2px solid #FF6B35;
-            color: #FF6B35;
-        }
-
-        /* 底部导航 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            padding: 8px 16px;
-        }
-
-        .nav-item.active .nav-icon {
-            color: #FF6B35;
-        }
-
-        .nav-item.active .nav-label {
-            color: #FF6B35;
-        }
-
-        .nav-icon {
-            font-size: 24px;
-            color: #999;
-        }
-
-        .nav-label {
-            font-size: 12px;
-            color: #999;
-        }
-
-        /* 浮动按钮 */
-        .fab {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: #FF6B35;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.4);
-            cursor: pointer;
-            z-index: 100;
-        }
-
-        .fab:active {
-            transform: scale(0.95);
-        }
-
-        /* 弹窗 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px 20px 0 0;
-            padding: 24px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 80vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .modal-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .modal-subtitle {
-            font-size: 14px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        /* 输入框 */
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: border-color 0.2s;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: #FF6B35;
-        }
-
-        /* Emoji选择 */
-        .emoji-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .emoji-item {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            background: #F5F5F5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .emoji-item.selected {
-            background: #FF6B35;
-            transform: scale(1.1);
-        }
-
-        /* 颜色选择 */
-        .color-grid {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .color-item {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .color-item.selected {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px #FF6B35;
-        }
-
-        /* 按钮 */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-
-        .btn-primary {
-            background: #FF6B35;
-            color: white;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: #F5F5F5;
-            color: #666;
-            margin-top: 8px;
-        }
-
-        /* 打卡笔记页面 */
-        .checkin-success {
-            background: #E8F5E9;
-            border-radius: 20px;
-            padding: 32px;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .checkin-emoji {
-            font-size: 64px;
-            margin-bottom: 16px;
-        }
-
-        .checkin-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #06D6A0;
-            margin-bottom: 8px;
-        }
-
-        .checkin-points {
-            font-size: 20px;
-            color: #FFD23F;
-        }
-
-        .mood-selector {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
-
-        .mood-item {
-            font-size: 36px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .mood-item.selected {
-            transform: scale(1.3);
-        }
-
-        /* 统计页面 */
-        .stats-card {
-            background: linear-gradient(135deg, #FFF3E0, #FFF9E6);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .stat-card-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .stat-card-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #FF6B35;
-        }
-
-        .stat-card-label {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .checkin-list {
-            margin-top: 16px;
-        }
-
-        .checkin-item {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .checkin-item-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
-        .checkin-note {
-            background: #FFF9E6;
-            border-radius: 8px;
-            padding: 12px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* 奖励页面 */
-        .reward-header {
-            background: linear-gradient(135deg, #FFF3E0, #FFF9E6);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .reward-points {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .reward-points-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #FFD23F;
-        }
-
-        .reward-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .reward-card {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .reward-card:active {
-            transform: scale(0.95);
-        }
-
-        .reward-emoji {
-            font-size: 40px;
-            margin-bottom: 8px;
-        }
-
-        .reward-name {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .reward-cost {
-            font-size: 14px;
-            color: #FFD23F;
-            font-weight: bold;
-        }
-
-        .reward-btn {
-            margin-top: 12px;
-            padding: 8px;
-            border-radius: 8px;
-            background: #FF6B35;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            border: none;
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .reward-btn.disabled {
-            background: #CCC;
-        }
-
-        /* 刮刮卡 */
-        .scratch-container {
-            position: relative;
-            width: 100%;
-            height: 200px;
-            border-radius: 20px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .scratch-reward {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #FFE4E8, #FFF3E0, #E8F5E9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-        }
-
-        .scratch-cover {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #E0E0E0, #C0C0C0, #A0A0A0);
-            cursor: pointer;
-        }
-
-        .scratch-hint {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            margin-top: 16px;
-        }
-
-        /* 设置页面 */
-        .settings-group {
-            background: white;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .settings-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #F0F0F0;
-            cursor: pointer;
-        }
-
-        .settings-item:last-child {
-            border-bottom: none;
-        }
-
-        .settings-icon {
-            font-size: 24px;
-            margin-right: 12px;
-        }
-
-        .settings-label {
-            flex: 1;
-            font-size: 16px;
-        }
-
-        .settings-arrow {
-            color: #999;
-        }
-
-        /* 成功动画 */
-        .success-animation {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,249,230,0.95);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-        }
-
-        .success-animation.active {
-            display: flex;
-        }
-
-        .success-emoji {
-            font-size: 80px;
-            animation: bounce 0.5s;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .success-text {
-            font-size: 28px;
-            font-weight: bold;
-            color: #FF6B35;
-            margin-top: 16px;
-        }
-
-        .success-points {
-            font-size: 24px;
-            color: #FFD23F;
-            margin-top: 8px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FFF9E6; min-height: 100vh; overflow-x: hidden; }
+        .container { max-width: 400px; margin: 0 auto; min-height: 100vh; background: #FFF9E6; position: relative; }
+        .page { display: none; padding: 16px; padding-bottom: 80px; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .welcome-card { background: linear-gradient(135deg, #FFE4E8, #FFF0F3); border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #FF6B35, #FFD23F, #06D6A0, #4ECDC4, #A78BFA); padding: 3px; }
+        .avatar-inner { width: 100%; height: 100%; border-radius: 50%; background: #FFD23F; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .welcome-info h2 { font-size: 20px; color: #333; margin-bottom: 4px; }
+        .welcome-info p { font-size: 14px; color: #666; }
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 16px; }
+        .stat-item { background: white; border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-icon { font-size: 24px; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #FF6B35; }
+        .stat-label { font-size: 12px; color: #999; }
+        .progress-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .progress-title { font-size: 16px; font-weight: 600; }
+        .progress-value { font-size: 16px; font-weight: bold; color: #FF6B35; }
+        .progress-bar { height: 12px; background: #EEE; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #FF6B35, #FFD23F, #06D6A0); border-radius: 6px; transition: width 0.5s; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-title { font-size: 18px; font-weight: bold; color: #333; }
+        .task-card { background: white; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; }
+        .task-card:active { transform: scale(0.98); }
+        .task-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .task-info { flex: 1; }
+        .task-name { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 4px; }
+        .task-desc { font-size: 13px; color: #999; }
+        .task-streak { font-size: 12px; color: #FF6B35; margin-top: 4px; }
+        .task-status { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .task-status.completed { background: #06D6A0; color: white; }
+        .task-status.pending { border: 2px solid #FF6B35; color: #FF6B35; }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 400px; background: white; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 8px 16px; }
+        .nav-item.active .nav-icon { color: #FF6B35; }
+        .nav-item.active .nav-label { color: #FF6B35; }
+        .nav-icon { font-size: 24px; color: #999; }
+        .nav-label { font-size: 12px; color: #999; }
+        .fab { position: fixed; bottom: 90px; right: 20px; width: 56px; height: 56px; background: #FF6B35; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; box-shadow: 0 4px 12px rgba(255,107,53,0.4); cursor: pointer; z-index: 100; }
+        .fab:active { transform: scale(0.95); }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: flex-end; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 20px 20px 0 0; padding: 24px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header { text-align: center; margin-bottom: 20px; }
+        .modal-title { font-size: 20px; font-weight: bold; }
+        .input-group { margin-bottom: 16px; }
+        .input-label { font-size: 14px; color: #666; margin-bottom: 8px; display: block; }
+        .input-field { width: 100%; padding: 14px; border: 2px solid #E0E0E0; border-radius: 12px; font-size: 16px; transition: border-color 0.2s; }
+        .input-field:focus { outline: none; border-color: #FF6B35; }
+        .emoji-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 16px; }
+        .emoji-item { width: 100%; aspect-ratio: 1; border-radius: 8px; background: #F5F5F5; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; }
+        .emoji-item.selected { background: #FF6B35; transform: scale(1.1); }
+        .color-grid { display: flex; gap: 12px; margin-bottom: 16px; }
+        .color-item { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; }
+        .color-item.selected { transform: scale(1.2); box-shadow: 0 0 0 3px #FF6B35; }
+        .btn { width: 100%; padding: 16px; border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-primary { background: #FF6B35; color: white; }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-secondary { background: #F5F5F5; color: #666; margin-top: 8px; }
+        .checkin-success { background: #E8F5E9; border-radius: 20px; padding: 32px; text-align: center; margin-bottom: 24px; }
+        .checkin-emoji { font-size: 64px; margin-bottom: 16px; }
+        .checkin-title { font-size: 24px; font-weight: bold; color: #06D6A0; margin-bottom: 8px; }
+        .checkin-points { font-size: 20px; color: #FFD23F; }
+        .mood-selector { display: flex; justify-content: space-around; margin: 20px 0; }
+        .mood-item { font-size: 36px; cursor: pointer; transition: transform 0.2s; }
+        .mood-item.selected { transform: scale(1.3); }
+        .stats-card { background: linear-gradient(135deg, #FFF3E0, #FFF9E6); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+        .stat-card { background: white; border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-card-icon { font-size: 32px; margin-bottom: 8px; }
+        .stat-card-value { font-size: 24px; font-weight: bold; color: #FF6B35; }
+        .stat-card-label { font-size: 12px; color: #999; }
+        .checkin-list { margin-top: 16px; }
+        .checkin-item { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .checkin-item-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+        .checkin-note { background: #FFF9E6; border-radius: 8px; padding: 12px; font-size: 14px; color: #666; }
+        .reward-header { background: linear-gradient(135deg, #FFF3E0, #FFF9E6); border-radius: 20px; padding: 20px; margin-bottom: 16px; }
+        .reward-points { display: flex; justify-content: space-between; align-items: center; }
+        .reward-points-value { font-size: 32px; font-weight: bold; color: #FFD23F; }
+        .reward-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .reward-card { background: white; border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s; }
+        .reward-card:active { transform: scale(0.95); }
+        .reward-emoji { font-size: 40px; margin-bottom: 8px; }
+        .reward-name { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .reward-cost { font-size: 14px; color: #FFD23F; font-weight: bold; }
+        .reward-btn { margin-top: 12px; padding: 8px; border-radius: 8px; background: #FF6B35; color: white; font-size: 12px; font-weight: 600; border: none; width: 100%; cursor: pointer; }
+        .reward-btn.disabled { background: #CCC; }
+        .scratch-container { position: relative; width: 100%; height: 200px; border-radius: 20px; overflow: hidden; margin: 20px 0; }
+        .scratch-reward { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #FFE4E8, #FFF3E0, #E8F5E9); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .scratch-cover { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #E0E0E0, #C0C0C0, #A0A0A0); cursor: pointer; }
+        .scratch-hint { text-align: center; color: #666; font-size: 14px; margin-top: 16px; }
+        .settings-group { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+        .settings-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-icon { font-size: 24px; margin-right: 12px; }
+        .settings-label { flex: 1; font-size: 16px; }
+        .settings-arrow { color: #999; }
+        .success-animation { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,249,230,0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; }
+        .success-animation.active { display: flex; }
+        .success-emoji { font-size: 80px; animation: bounce 0.5s; }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .success-text { font-size: 28px; font-weight: bold; color: #FF6B35; margin-top: 16px; }
+        .success-points { font-size: 24px; color: #FFD23F; margin-top: 8px; }
+        .edit-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #F5F5F5; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
+        .edit-item:active { background: #E0E0E0; }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 首页 -->
         <div class="page active" id="page-home">
             <div class="welcome-card">
-                <div class="avatar">
-                    <div class="avatar-inner"></div>
-                </div>
-                <div class="welcome-info">
-                    <h2>早上好！</h2>
-                    <p>小明 · Lv.5</p>
-                </div>
+                <div class="avatar"><div class="avatar-inner"></div></div>
+                <div class="welcome-info"><h2>早上好！</h2><p>小明 · Lv.5</p></div>
             </div>
-
             <div class="stats-row">
-                <div class="stat-item">
-                    <span class="stat-icon">⭐</span>
-                    <div>
-                        <div class="stat-value">120</div>
-                        <div class="stat-label">积分</div>
-                    </div>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-icon">🔥</span>
-                    <div>
-                        <div class="stat-value">5</div>
-                        <div class="stat-label">连续打卡</div>
-                    </div>
-                </div>
+                <div class="stat-item"><span class="stat-icon">⭐</span><div><div class="stat-value">120</div><div class="stat-label">积分</div></div></div>
+                <div class="stat-item"><span class="stat-icon">🔥</span><div><div class="stat-value">5</div><div class="stat-label">连续打卡</div></div></div>
             </div>
-
             <div class="progress-card">
-                <div class="progress-header">
-                    <span class="progress-title">今日进度</span>
-                    <span class="progress-value">2/4</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 50%"></div>
-                </div>
+                <div class="progress-header"><span class="progress-title">今日进度</span><span class="progress-value">2/4</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
             </div>
-
-            <div class="section-header">
-                <span class="section-title">今日任务</span>
-            </div>
-
+            <div class="section-header"><span class="section-title">今日任务</span></div>
             <div class="task-list" id="task-list">
-                <div class="task-card" onclick="openCheckIn(1)">
-                    <div class="task-icon" style="background: #FFE4E8">📖</div>
-                    <div class="task-info">
-                        <div class="task-name">阅读 30分钟</div>
-                        <div class="task-desc">+10积分</div>
-                        <div class="task-streak">🔥 连续5天</div>
-                    </div>
-                    <div class="task-status completed">✓</div>
-                </div>
-
-                <div class="task-card" onclick="openCheckIn(2)">
-                    <div class="task-icon" style="background: #E3F2FD">🎹</div>
-                    <div class="task-info">
-                        <div class="task-name">练琴 20分钟</div>
-                        <div class="task-desc">+10积分</div>
-                        <div class="task-streak">🔥 连续5天</div>
-                    </div>
-                    <div class="task-status pending">○</div>
-                </div>
-
-                <div class="task-card" onclick="openCheckIn(3)">
-                    <div class="task-icon" style="background: #E8F5E9">🏀</div>
-                    <div class="task-info">
-                        <div class="task-name">篮球训练 40分钟</div>
-                        <div class="task-desc">+12积分</div>
-                        <div class="task-streak">🔥 连续8天</div>
-                    </div>
-                    <div class="task-status pending">○</div>
-                </div>
-
-                <div class="task-card" onclick="openCheckIn(4)">
-                    <div class="task-icon" style="background: #F3E5F5">💻</div>
-                    <div class="task-info">
-                        <div class="task-name">编程学习 45分钟</div>
-                        <div class="task-desc">+15积分</div>
-                        <div class="task-streak">🔥 连续3天</div>
-                    </div>
-                    <div class="task-status pending">○</div>
-                </div>
+                <div class="task-card" onclick="openCheckIn(1)"><div class="task-icon" style="background: #FFE4E8">📖</div><div class="task-info"><div class="task-name">阅读 30分钟</div><div class="task-desc">+10积分</div><div class="task-streak"> 连续5天</div></div><div class="task-status completed">✓</div></div>
+                <div class="task-card" onclick="openCheckIn(2)"><div class="task-icon" style="background: #E3F2FD">🎹</div><div class="task-info"><div class="task-name">练琴 20分钟</div><div class="task-desc">+10积分</div><div class="task-streak"> 连续5天</div></div><div class="task-status pending">○</div></div>
+                <div class="task-card" onclick="openCheckIn(3)"><div class="task-icon" style="background: #E8F5E9">🏀</div><div class="task-info"><div class="task-name">篮球训练 40分钟</div><div class="task-desc">+12积分</div><div class="task-streak">🔥 连续8天</div></div><div class="task-status pending">○</div></div>
+                <div class="task-card" onclick="openCheckIn(4)"><div class="task-icon" style="background: #F3E5F5">💻</div><div class="task-info"><div class="task-name">编程学习 45分钟</div><div class="task-desc">+15积分</div><div class="task-streak"> 连续3天</div></div><div class="task-status pending">○</div></div>
             </div>
         </div>
 
-        <!-- 统计页面 -->
         <div class="page" id="page-stats">
             <div class="stats-card">
                 <div class="reward-points">
-                    <div>
-                        <div style="font-size: 20px; font-weight: bold;">🦁 小明的学习之旅</div>
-                        <div style="font-size: 14px; color: #666; margin-top: 4px;">Lv.5 学习达人</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 32px;">⭐</div>
-                        <div style="font-size: 20px; font-weight: bold; color: #FFD23F;">120</div>
-                    </div>
+                    <div><div style="font-size: 20px; font-weight: bold;">🦁 小明的学习之旅</div><div style="font-size: 14px; color: #666; margin-top: 4px;">Lv.5 学习达人</div></div>
+                    <div style="text-align: right;"><div style="font-size: 32px;">⭐</div><div style="font-size: 20px; font-weight: bold; color: #FFD23F;">120</div></div>
                 </div>
             </div>
-
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-card-icon">✅</div>
-                    <div class="stat-card-value">28</div>
-                    <div class="stat-card-label">总打卡</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">📅</div>
-                    <div class="stat-card-value">15</div>
-                    <div class="stat-card-label">总天数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">📋</div>
-                    <div class="stat-card-value">4</div>
-                    <div class="stat-card-label">任务数</div>
-                </div>
+                <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value">28</div><div class="stat-card-label">总打卡</div></div>
+                <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value">15</div><div class="stat-card-label">总天数</div></div>
+                <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value">4</div><div class="stat-card-label">任务数</div></div>
             </div>
-
-            <div class="section-header">
-                <span class="section-title">📖 学习日记</span>
-            </div>
-
+            <div class="section-header"><span class="section-title">📖 学习日记</span></div>
             <div class="checkin-list">
                 <div style="font-size: 14px; color: #999; margin-bottom: 12px;">📅 今天</div>
-
                 <div class="checkin-item">
-                    <div class="checkin-item-header">
-                        <div class="task-icon" style="width: 48px; height: 48px; background: #FFE4E8; font-size: 24px;">📖</div>
-                        <div>
-                            <div style="font-weight: 600;">阅读 30分钟</div>
-                            <div style="font-size: 13px; color: #999;">⭐⭐⭐⭐⭐</div>
-                        </div>
-                    </div>
-                    <div class="checkin-note">
-                        📝 今天看了《小王子》第三章，小王子来到了第二颗星球，那里住着一个爱虚荣的人。
-                    </div>
+                    <div class="checkin-item-header"><div class="task-icon" style="width: 48px; height: 48px; background: #FFE4E8; font-size: 24px;">📖</div><div><div style="font-weight: 600;">阅读 30分钟</div><div style="font-size: 13px; color: #999;">⭐⭐⭐⭐⭐</div></div></div>
+                    <div class="checkin-note">📝 今天看了《小王子》第三章，小王子来到了第二颗星球，那里住着一个爱虚荣的人。</div>
                 </div>
-
                 <div class="checkin-item">
-                    <div class="checkin-item-header">
-                        <div class="task-icon" style="width: 48px; height: 48px; background: #E3F2FD; font-size: 24px;">🎹</div>
-                        <div>
-                            <div style="font-weight: 600;">练琴 20分钟</div>
-                            <div style="font-size: 13px; color: #999;">⭐⭐⭐⭐</div>
-                        </div>
-                    </div>
-                    <div class="checkin-note">
-                        📝 学会了小星星右手部分，左手还不太熟练...
-                    </div>
+                    <div class="checkin-item-header"><div class="task-icon" style="width: 48px; height: 48px; background: #E3F2FD; font-size: 24px;">🎹</div><div><div style="font-weight: 600;">练琴 20分钟</div><div style="font-size: 13px; color: #999;">⭐⭐⭐⭐</div></div></div>
+                    <div class="checkin-note">📝 学会了小星星右手部分，左手还不太熟练...</div>
                 </div>
             </div>
         </div>
 
-        <!-- 奖励页面 -->
         <div class="page" id="page-rewards">
             <div class="reward-header">
                 <div class="reward-points">
-                    <div>
-                        <div style="font-size: 20px; font-weight: bold;">🎁 奖励商城</div>
-                        <div style="font-size: 14px; color: #666; margin-top: 4px;">完成任务赚积分，兑换心仪的奖励！</div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 32px;">⭐</div>
-                        <div class="reward-points-value">120</div>
-                    </div>
+                    <div><div style="font-size: 20px; font-weight: bold;">🎁 奖励商城</div><div style="font-size: 14px; color: #666; margin-top: 4px;">完成任务赚积分，兑换心仪的奖励！</div></div>
+                    <div style="text-align: right;"><div style="font-size: 32px;">⭐</div><div class="reward-points-value">120</div></div>
                 </div>
             </div>
-
-            <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()">
-                <div style="font-size: 28px;"></div>
-                <div style="flex: 1; margin-left: 12px;">
-                    <div class="task-name">我的奖励</div>
-                </div>
-                <div style="color: #999;">查看 ></div>
-            </div>
-
-            <div class="section-header" style="margin-top: 16px;">
-                <span class="section-title">🎰 刮刮卡</span>
-            </div>
-
+            <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()"><div style="font-size: 28px;"></div><div style="flex: 1; margin-left: 12px;"><div class="task-name">我的奖励</div></div><div style="color: #999;">查看 ></div></div>
+            <div class="section-header" style="margin-top: 16px;"><span class="section-title">🎰 刮刮卡</span></div>
             <div class="reward-grid">
-                <div class="reward-card" onclick="openScratchCard()">
-                    <div class="reward-emoji"></div>
-                    <div class="reward-name">冰淇淋</div>
-                    <div class="reward-cost">⭐ 50</div>
-                    <button class="reward-btn">兑换</button>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-emoji">📺</div>
-                    <div class="reward-name">看动画30分</div>
-                    <div class="reward-cost">⭐ 30</div>
-                    <button class="reward-btn">兑换</button>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-emoji">🎮</div>
-                    <div class="reward-name">游戏时间</div>
-                    <div class="reward-cost">⭐ 60</div>
-                    <button class="reward-btn">兑换</button>
-                </div>
-
-                <div class="reward-card">
-                    <div class="reward-emoji"></div>
-                    <div class="reward-name">披萨大餐</div>
-                    <div class="reward-cost">⭐ 200</div>
-                    <button class="reward-btn disabled">积分不足</button>
-                </div>
+                <div class="reward-card" onclick="openScratchCard()"><div class="reward-emoji"></div><div class="reward-name">冰淇淋</div><div class="reward-cost">⭐ 50</div><button class="reward-btn">兑换</button></div>
+                <div class="reward-card"><div class="reward-emoji">📺</div><div class="reward-name">看动画30分</div><div class="reward-cost">⭐ 30</div><button class="reward-btn">兑换</button></div>
+                <div class="reward-card"><div class="reward-emoji">🎮</div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn">兑换</button></div>
+                <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">披萨大餐</div><div class="reward-cost">⭐ 200</div><button class="reward-btn disabled">积分不足</button></div>
             </div>
         </div>
 
-        <!-- 设置页面 -->
         <div class="page" id="page-settings">
             <div class="welcome-card">
-                <div class="avatar">
-                    <div class="avatar-inner">🦁</div>
-                </div>
-                <div style="flex: 1;">
-                    <div style="font-size: 20px; font-weight: bold;">小明</div>
-                    <div style="font-size: 14px; color: #999; margin-top: 4px;">点击编辑头像和名字</div>
-                </div>
+                <div class="avatar"><div class="avatar-inner">🦁</div></div>
+                <div style="flex: 1;"><div style="font-size: 20px; font-weight: bold;">小明</div><div style="font-size: 14px; color: #999; margin-top: 4px;">点击编辑头像和名字</div></div>
                 <div style="color: #999; font-size: 20px;">></div>
             </div>
-
-            <div class="section-header" style="margin-top: 16px;">
-                <span class="section-title">📋 任务管理</span>
-                <button class="btn" style="width: auto; padding: 8px 16px; font-size: 14px;" onclick="openAddTask()">+ 添加</button>
-            </div>
-
+            <div class="section-header" style="margin-top: 16px;"><span class="section-title"> 任务管理</span><button class="btn" style="width: auto; padding: 8px 16px; font-size: 14px;" onclick="openAddTask()">+ 添加</button></div>
             <div class="settings-group">
-                <div class="settings-item">
-                    <div class="task-icon" style="width: 40px; height: 40px; background: #FFE4E8; font-size: 20px;">📖</div>
-                    <div style="flex: 1; margin-left: 12px;">
-                        <div style="font-weight: 600;">阅读</div>
-                        <div style="font-size: 13px; color: #999;">30分钟 · 10⭐</div>
-                    </div>
-                    <span style="color: #999;">编辑</span>
-                </div>
-                <div class="settings-item">
-                    <div class="task-icon" style="width: 40px; height: 40px; background: #E3F2FD; font-size: 20px;">🎹</div>
-                    <div style="flex: 1; margin-left: 12px;">
-                        <div style="font-weight: 600;">练琴</div>
-                        <div style="font-size: 13px; color: #999;">20分钟 · 10⭐</div>
-                    </div>
-                    <span style="color: #999;">编辑</span>
-                </div>
-                <div class="settings-item">
-                    <div class="task-icon" style="width: 40px; height: 40px; background: #E8F5E9; font-size: 20px;">🏀</div>
-                    <div style="flex: 1; margin-left: 12px;">
-                        <div style="font-weight: 600;">篮球</div>
-                        <div style="font-size: 13px; color: #999;">40分钟 · 12⭐</div>
-                    </div>
-                    <span style="color: #999;">编辑</span>
-                </div>
+                <div class="settings-item" onclick="editTask(1, '阅读', 30, 10)"><div class="task-icon" style="width: 40px; height: 40px; background: #FFE4E8; font-size: 20px;"></div><div style="flex: 1; margin-left: 12px;"><div style="font-weight: 600;">阅读</div><div style="font-size: 13px; color: #999;">30分钟 · 10⭐</div></div><span style="color: #4ECDC4;">编辑</span></div>
+                <div class="settings-item" onclick="editTask(2, '练琴', 20, 10)"><div class="task-icon" style="width: 40px; height: 40px; background: #E3F2FD; font-size: 20px;"></div><div style="flex: 1; margin-left: 12px;"><div style="font-weight: 600;">练琴</div><div style="font-size: 13px; color: #999;">20分钟 · 10⭐</div></div><span style="color: #4ECDC4;">编辑</span></div>
+                <div class="settings-item" onclick="editTask(3, '篮球', 40, 12)"><div class="task-icon" style="width: 40px; height: 40px; background: #E8F5E9; font-size: 20px;"></div><div style="flex: 1; margin-left: 12px;"><div style="font-weight: 600;">篮球</div><div style="font-size: 13px; color: #999;">40分钟 · 12⭐</div></div><span style="color: #4ECDC4;">编辑</span></div>
             </div>
-
-            <div class="section-header">
-                <span class="section-title">🎁 奖励管理</span>
-            </div>
-
+            <div class="section-header"><span class="section-title">🎁 奖励管理</span></div>
             <div class="settings-group">
-                <div class="settings-item" onclick="openManageRewards()">
-                    <span class="settings-icon"></span>
-                    <span class="settings-label">管理奖励卡片</span>
-                    <span class="settings-arrow">></span>
-                </div>
+                <div class="settings-item" onclick="openManageRewards()"><span class="settings-icon"></span><span class="settings-label">管理奖励卡片</span><span class="settings-arrow">></span></div>
             </div>
-
-            <div class="section-header">
-                <span class="section-title">🔧 其他设置</span>
-            </div>
-
+            <div class="section-header"><span class="section-title">🔧 其他设置</span></div>
             <div class="settings-group">
-                <div class="settings-item">
-                    <span class="settings-icon">🔔</span>
-                    <span class="settings-label">打卡提醒</span>
-                    <span style="color: #999; margin-right: 8px;">17:00</span>
-                    <span class="settings-arrow">></span>
-                </div>
-                <div class="settings-item">
-                    <span class="settings-icon">🔒</span>
-                    <span class="settings-label">家长锁</span>
-                    <span style="color: #999; margin-right: 8px;">已开启</span>
-                    <span class="settings-arrow">></span>
-                </div>
-                <div class="settings-item">
-                    <span class="settings-icon">📤</span>
-                    <span class="settings-label">导出记录</span>
-                    <span class="settings-arrow">></span>
-                </div>
-                <div class="settings-item">
-                    <span class="settings-icon">ℹ️</span>
-                    <span class="settings-label">关于</span>
-                    <span style="color: #999; margin-right: 8px;">v1.0</span>
-                    <span class="settings-arrow">></span>
-                </div>
+                <div class="settings-item"><span class="settings-icon">🔔</span><span class="settings-label">打卡提醒</span><span style="color: #999; margin-right: 8px;">17:00</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon">🔒</span><span class="settings-label">家长锁</span><span style="color: #999; margin-right: 8px;">已开启</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon">📤</span><span class="settings-label">导出记录</span><span class="settings-arrow">></span></div>
+                <div class="settings-item"><span class="settings-icon">ℹ️</span><span class="settings-label">关于</span><span style="color: #999; margin-right: 8px;">v1.0</span><span class="settings-arrow">></span></div>
             </div>
         </div>
 
-        <!-- 底部导航 -->
         <div class="bottom-nav">
-            <div class="nav-item active" onclick="switchPage('home')">
-                <div class="nav-icon">🏠</div>
-                <div class="nav-label">首页</div>
-            </div>
-            <div class="nav-item" onclick="switchPage('stats')">
-                <div class="nav-icon"></div>
-                <div class="nav-label">统计</div>
-            </div>
-            <div class="nav-item" onclick="switchPage('rewards')">
-                <div class="nav-icon">🎁</div>
-                <div class="nav-label">奖励</div>
-            </div>
-            <div class="nav-item" onclick="switchPage('settings')">
-                <div class="nav-icon">⚙️</div>
-                <div class="nav-label">设置</div>
-            </div>
+            <div class="nav-item active" onclick="switchPage('home')"><div class="nav-icon">🏠</div><div class="nav-label">首页</div></div>
+            <div class="nav-item" onclick="switchPage('stats')"><div class="nav-icon"></div><div class="nav-label">统计</div></div>
+            <div class="nav-item" onclick="switchPage('rewards')"><div class="nav-icon">🎁</div><div class="nav-label">奖励</div></div>
+            <div class="nav-item" onclick="switchPage('settings')"><div class="nav-icon">⚙️</div><div class="nav-label">设置</div></div>
         </div>
 
-        <!-- 浮动按钮 -->
         <div class="fab" onclick="openAddTask()">+</div>
 
-        <!-- 添加任务弹窗 -->
         <div class="modal" id="modal-add-task">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-title">新建任务</div>
-                </div>
-
+                <div class="modal-header"><div class="modal-title" id="add-task-title">新建任务</div></div>
+                <input type="hidden" id="edit-task-id" value="">
                 <div class="input-group">
                     <label class="input-label">选择图标</label>
-                    <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-                        <div class="task-icon" style="background: #FFD23F; width: 64px; height: 64px; font-size: 32px;" id="selected-icon">📖</div>
-                    </div>
+                    <div style="display: flex; gap: 12px; margin-bottom: 12px;"><div class="task-icon" style="background: #FFD23F; width: 64px; height: 64px; font-size: 32px;" id="selected-icon">📖</div></div>
                     <div class="emoji-grid">
                         <div class="emoji-item selected" onclick="selectEmoji('📖', this)">📖</div>
-                        <div class="emoji-item" onclick="selectEmoji('', this)">📚</div>
-                        <div class="emoji-item" onclick="selectEmoji('🎹', this)">🎹</div>
-                        <div class="emoji-item" onclick="selectEmoji('🏀', this)"></div>
-                        <div class="emoji-item" onclick="selectEmoji('💻', this)"></div>
+                        <div class="emoji-item" onclick="selectEmoji('📚', this)">📚</div>
+                        <div class="emoji-item" onclick="selectEmoji('', this)">🎹</div>
+                        <div class="emoji-item" onclick="selectEmoji('🏀', this)">🏀</div>
+                        <div class="emoji-item" onclick="selectEmoji('💻', this)">💻</div>
                         <div class="emoji-item" onclick="selectEmoji('✏️', this)">✏️</div>
-                        <div class="emoji-item" onclick="selectEmoji('🎨', this)">🎨</div>
-                        <div class="emoji-item" onclick="selectEmoji('', this)">🎸</div>
-                        <div class="emoji-item" onclick="selectEmoji('⚽', this)"></div>
+                        <div class="emoji-item" onclick="selectEmoji('🎨', this)"></div>
+                        <div class="emoji-item" onclick="selectEmoji('🎸', this)">🎸</div>
+                        <div class="emoji-item" onclick="selectEmoji('⚽', this)">⚽</div>
                         <div class="emoji-item" onclick="selectEmoji('', this)">🏃</div>
                         <div class="emoji-item" onclick="selectEmoji('🧮', this)">🧮</div>
                         <div class="emoji-item" onclick="selectEmoji('🔬', this)">🔬</div>
                         <div class="emoji-item" onclick="selectEmoji('🎯', this)"></div>
-                        <div class="emoji-item" onclick="selectEmoji('', this)">🎮</div>
+                        <div class="emoji-item" onclick="selectEmoji('🎮', this)">🎮</div>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">背景颜色</label>
                     <div class="color-grid">
@@ -1119,28 +251,23 @@
                         <div class="color-item" style="background: #F3E5F5;" onclick="selectColor(this)"></div>
                     </div>
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">任务名称</label>
                     <input type="text" class="input-field" placeholder="例如：阅读、练琴、运动..." id="task-name">
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">目标时长（分钟）</label>
                     <input type="number" class="input-field" placeholder="30" id="task-duration">
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">完成积分</label>
                     <input type="number" class="input-field" placeholder="10" id="task-points">
                 </div>
-
                 <button class="btn btn-primary" onclick="saveTask()">保存</button>
                 <button class="btn btn-secondary" onclick="closeModal('modal-add-task')">取消</button>
             </div>
         </div>
 
-        <!-- 打卡笔记弹窗 -->
         <div class="modal" id="modal-checkin">
             <div class="modal-content">
                 <div class="checkin-success">
@@ -1148,12 +275,10 @@
                     <div class="checkin-title">完成啦！</div>
                     <div class="checkin-points">+<span id="checkin-points">10</span>⭐</div>
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">📝 写一句今日心得吧～</label>
                     <textarea class="input-field" rows="3" placeholder="今天学了什么？有什么收获？" id="checkin-note"></textarea>
                 </div>
-
                 <div class="input-group">
                     <label class="input-label">😊 感觉怎么样？</label>
                     <div class="mood-selector">
@@ -1164,34 +289,34 @@
                         <div class="mood-item" onclick="selectMood(5, this)">🤩</div>
                     </div>
                 </div>
-
                 <button class="btn btn-primary" onclick="completeCheckIn()">✅ 完成打卡</button>
                 <button class="btn btn-secondary" onclick="skipCheckIn()">跳过</button>
             </div>
         </div>
 
-        <!-- 刮刮卡弹窗 -->
         <div class="modal" id="modal-scratch">
             <div class="modal-content" style="background: #1A1A1A; color: white;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 14px; color: #FFD23F;">⭐ 50积分</div>
-                </div>
-
+                <div style="text-align: center; margin-bottom: 20px;"><div style="font-size: 14px; color: #FFD23F;">⭐ 50积分</div></div>
                 <div class="scratch-container">
-                    <div class="scratch-reward">
-                        <div style="font-size: 64px;">🍦</div>
-                        <div style="font-size: 20px; font-weight: bold; margin-top: 8px;">冰淇淋券</div>
-                    </div>
-                    <div class="scratch-cover" onclick="scratchCard(this)"></div>
+                    <div class="scratch-reward"><div style="font-size: 64px;">🍦</div><div style="font-size: 20px; font-weight: bold; margin-top: 8px;">冰淇淋券</div></div>
+                    <div class="scratch-cover" id="scratch-cover"></div>
                 </div>
-
                 <div class="scratch-hint">用手指滑动刮开涂层～</div>
-
                 <button class="btn btn-secondary" onclick="closeModal('modal-scratch')" style="margin-top: 20px;">关闭</button>
             </div>
         </div>
 
-        <!-- 成功动画 -->
+        <div class="modal" id="modal-manage-rewards">
+            <div class="modal-content">
+                <div class="modal-header"><div class="modal-title"> 管理奖励卡片</div></div>
+                <div class="edit-item" onclick="editReward(1, '冰淇淋', 50)"><div><span>🍦</span> <strong>冰淇淋</strong> - 50积分</div><span style="color: #4ECDC4;">编辑</span></div>
+                <div class="edit-item" onclick="editReward(2, '看动画30分', 30)"><div><span>📺</span> <strong>看动画30分</strong> - 30积分</div><span style="color: #4ECDC4;">编辑</span></div>
+                <div class="edit-item" onclick="editReward(3, '游戏时间', 60)"><div><span>🎮</span> <strong>游戏时间</strong> - 60积分</div><span style="color: #4ECDC4;">编辑</span></div>
+                <div class="edit-item" onclick="editReward(4, '披萨大餐', 200)"><div><span></span> <strong>披萨大餐</strong> - 200积分</div><span style="color: #4ECDC4;">编辑</span></div>
+                <button class="btn btn-secondary" onclick="closeModal('modal-manage-rewards')">关闭</button>
+            </div>
+        </div>
+
         <div class="success-animation" id="success-animation">
             <div class="success-emoji">🎉</div>
             <div class="success-text">太棒了！</div>
@@ -1200,138 +325,145 @@
     </div>
 
     <script>
-        // 页面切换
         function switchPage(pageName) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
             document.getElementById('page-' + pageName).classList.add('active');
             event.currentTarget.classList.add('active');
         }
 
-        // 打开添加任务弹窗
         function openAddTask() {
+            document.getElementById('edit-task-id').value = '';
+            document.getElementById('add-task-title').textContent = '新建任务';
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-duration').value = '';
+            document.getElementById('task-points').value = '';
             document.getElementById('modal-add-task').classList.add('active');
         }
 
-        // 打开打卡弹窗
         function openCheckIn(taskId) {
             document.getElementById('modal-checkin').classList.add('active');
         }
 
-        // 打开刮刮卡
         function openScratchCard() {
             document.getElementById('modal-scratch').classList.add('active');
+            initScratchCard();
         }
 
-        // 关闭弹窗
+        function openMyRewards() {
+            alert('🎫 我的奖励\n\n• 冰淇淋券 - 待使用\n• 看动画30分钟 - 待使用\n\n点击可使用奖励');
+        }
+
+        function openManageRewards() {
+            document.getElementById('modal-manage-rewards').classList.add('active');
+        }
+
+        function editTask(id, name, duration, points) {
+            document.getElementById('edit-task-id').value = id;
+            document.getElementById('add-task-title').textContent = '编辑任务';
+            document.getElementById('task-name').value = name;
+            document.getElementById('task-duration').value = duration;
+            document.getElementById('task-points').value = points;
+            document.getElementById('modal-add-task').classList.add('active');
+        }
+
+        function editReward(id, name, cost) {
+            alert('️ 编辑奖励：' + name + '\n\n当前积分：' + cost + '\n\n点击确定进入编辑页面');
+        }
+
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
 
-        // 选择Emoji
         function selectEmoji(emoji, element) {
             document.querySelectorAll('.emoji-item').forEach(e => e.classList.remove('selected'));
             element.classList.add('selected');
             document.getElementById('selected-icon').textContent = emoji;
         }
 
-        // 选择颜色
         function selectColor(element) {
             document.querySelectorAll('.color-item').forEach(c => c.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        // 选择心情
         function selectMood(mood, element) {
             document.querySelectorAll('.mood-item').forEach(m => m.classList.remove('selected'));
             element.classList.add('selected');
         }
 
-        // 保存任务
         function saveTask() {
             const name = document.getElementById('task-name').value;
-            const duration = document.getElementById('task-duration').value || 30;
-            const points = document.getElementById('task-points').value || 10;
-
             if (name) {
-                alert('任务添加成功！');
+                const taskId = document.getElementById('edit-task-id').value;
+                alert(taskId ? '✅ 任务更新成功！' : '✅ 任务添加成功！');
                 closeModal('modal-add-task');
             } else {
                 alert('请输入任务名称');
             }
         }
 
-        // 完成打卡
         function completeCheckIn() {
             closeModal('modal-checkin');
             showSuccessAnimation();
         }
 
-        // 跳过打卡
         function skipCheckIn() {
             closeModal('modal-checkin');
             showSuccessAnimation();
         }
 
-        // 显示成功动画
         function showSuccessAnimation() {
             const anim = document.getElementById('success-animation');
             anim.classList.add('active');
-
-            setTimeout(() => {
-                anim.classList.remove('active');
-            }, 1500);
+            setTimeout(() => { anim.classList.remove('active'); }, 1500);
         }
 
-        // 刮刮卡 - 改进为滑动刮开效果
-        function scratchCard(element) {
-            // 添加触摸/鼠标滑动事件
+        // 刮刮卡 - 手指滑动刮开效果
+        function initScratchCard() {
+            const cover = document.getElementById('scratch-cover');
+            if (!cover) return;
+
+            cover.style.opacity = '1';
+            cover.style.display = 'block';
+
             let isDrawing = false;
             let lastX = 0;
             let lastY = 0;
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+            let scratchedPixels = 0;
+            const totalPixels = 200 * 300;
 
-            // 简单版本：点击多次刮开
-            let clickCount = element.dataset.clicks || 0;
-            clickCount = parseInt(clickCount) + 1;
-            element.dataset.clicks = clickCount;
+            function scratch(x, y) {
+                const dx = x - lastX;
+                const dy = y - lastY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (clickCount >= 3) {
-                element.style.opacity = '0';
-                element.style.transition = 'opacity 0.8s';
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 800);
-            } else {
-                element.style.opacity = (1 - clickCount * 0.3);
+                if (distance > 0) {
+                    scratchedPixels += distance * 30;
+                    const progress = scratchedPixels / totalPixels;
+                    cover.style.opacity = Math.max(0, 1 - progress * 1.5);
+
+                    if (progress >= 0.6) {
+                        cover.style.display = 'none';
+                    }
+                }
+
+                lastX = x;
+                lastY = y;
             }
+
+            cover.onmousedown = (e) => { isDrawing = true; lastX = e.offsetX; lastY = e.offsetY; };
+            cover.onmousemove = (e) => { if (isDrawing) scratch(e.offsetX, e.offsetY); };
+            cover.onmouseup = () => { isDrawing = false; };
+            cover.onmouseleave = () => { isDrawing = false; };
+
+            cover.ontouchstart = (e) => { isDrawing = true; const rect = cover.getBoundingClientRect(); lastX = e.touches[0].clientX - rect.left; lastY = e.touches[0].clientY - rect.top; e.preventDefault(); };
+            cover.ontouchmove = (e) => { if (isDrawing) { const rect = cover.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); } e.preventDefault(); };
+            cover.ontouchend = () => { isDrawing = false; };
         }
 
-        // 我的奖励
-        function openMyRewards() {
-            alert('🎫 我的奖励\n\n• 冰淇淋券 - 待使用\n• 看动画30分钟 - 待使用\n\n点击可使用奖励');
-        }
-
-        // 管理奖励卡片
-        function openManageRewards() {
-            alert('🎁 管理奖励卡片\n\n• 冰淇淋 - 50积分\n• 看动画30分 - 30积分\n• 游戏时间 - 60积分\n• 披萨大餐 - 200积分\n\n点击可编辑或删除');
-        }
-
-        // 编辑任务
-        function editTask(taskId) {
-            const taskNames = {1: '阅读', 2: '练琴', 3: '篮球'};
-            alert('️ 编辑任务：' + taskNames[taskId] + '\n\n点击确定进入编辑页面');
-            openAddTask();
-        }
-
-        // 点击弹窗外部关闭
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('active');
-                }
+                if (e.target === this) { this.classList.remove('active'); }
             });
         });
     </script>
