@@ -214,7 +214,7 @@
                         <span class="times-count" id="times-count-1">2</span>
                         <span class="times-btn" onclick="changeTimes(1, 1)">+</span>
                     </div>
-                    <div class="task-status" id="task-status-1">○</div>
+                    <div class="task-status" id="task-status-1">2</div>
                 </div>
                 <div class="task-card" id="task-card-2" onclick="openCheckIn(2)">
                     <div class="task-icon" style="background: #E3F2FD"></div>
@@ -227,7 +227,7 @@
                         <span class="times-count" id="times-count-2">1</span>
                         <span class="times-btn" onclick="changeTimes(2, 1)">+</span>
                     </div>
-                    <div class="task-status" id="task-status-2">○</div>
+                    <div class="task-status" id="task-status-2">1</div>
                 </div>
                 <div class="task-card" id="task-card-3" onclick="openCheckIn(3)">
                     <div class="task-icon" style="background: #E8F5E9">🏀</div>
@@ -240,7 +240,7 @@
                         <span class="times-count" id="times-count-3">2</span>
                         <span class="times-btn" onclick="changeTimes(3, 1)">+</span>
                     </div>
-                    <div class="task-status" id="task-status-3">○</div>
+                    <div class="task-status" id="task-status-3">2</div>
                 </div>
                 <div class="task-card" id="task-card-4" onclick="openCheckIn(4)">
                     <div class="task-icon" style="background: #F3E5F5">💻</div>
@@ -253,7 +253,7 @@
                         <span class="times-count" id="times-count-4">1</span>
                         <span class="times-btn" onclick="changeTimes(4, 1)">+</span>
                     </div>
-                    <div class="task-status" id="task-status-4">○</div>
+                    <div class="task-status" id="task-status-4">1</div>
                 </div>
             </div>
             <div class="completed-section-title" id="completed-title" style="display: none;">✅ 今日已完成</div>
@@ -264,21 +264,18 @@
             <div class="stats-card">
                 <div class="reward-points">
                     <div><div style="font-size: 18px; font-weight: bold;">🦁 小明的学习之旅</div><div style="font-size: 12px; color: #666; margin-top: 3px;">Lv.5 学习达人</div></div>
-                    <div style="text-align: right;"><div style="font-size: 28px;">⭐</div><div style="font-size: 18px; font-weight: bold; color: #FFD23F;">120</div></div>
+                    <div style="text-align: right;"><div style="font-size: 28px;">⭐</div><div style="font-size: 18px; font-weight: bold; color: #FFD23F;" id="stats-points">120</div></div>
                 </div>
             </div>
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value">28</div><div class="stat-card-label">总打卡</div></div>
-                <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value">15</div><div class="stat-card-label">总天数</div></div>
-                <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value">4</div><div class="stat-card-label">任务数</div></div>
+                <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value" id="stats-today-count">0</div><div class="stat-card-label">今日打卡</div></div>
+                <div class="stat-card"><div class="stat-card-icon">📅</div><div class="stat-card-value" id="stats-total-days">15</div><div class="stat-card-label">总天数</div></div>
+                <div class="stat-card"><div class="stat-card-icon">📋</div><div class="stat-card-value">4</div><div class="stat-card-label">任务数</div></div>
             </div>
-            <div class="section-header"><span class="section-title">📖 学习日记</span></div>
-            <div class="checkin-list">
-                <div style="font-size: 13px; color: #999; margin-bottom: 10px;"> 今天</div>
-                <div class="checkin-item">
-                    <div class="checkin-item-header"><div class="task-icon" style="width: 44px; height: 44px; background: #FFE4E8; font-size: 22px;">📖</div><div><div style="font-weight: 600; font-size: 14px;">阅读 30分钟</div><div style="font-size: 12px; color: #999;">⭐⭐⭐⭐⭐</div></div></div>
-                    <div class="checkin-note"> 今天看了《小王子》第三章，小王子来到了第二颗星球，那里住着一个爱虚荣的人。</div>
-                </div>
+            <div class="section-header"><span class="section-title">📖 今日打卡记录</span></div>
+            <div class="checkin-list" id="today-checkin-list">
+                <div class="empty-state" id="stats-empty"><div class="empty-state-icon">📝</div><div>今天还没有打卡记录</div></div>
+            </div>
                 <div class="checkin-item">
                     <div class="checkin-item-header"><div class="task-icon" style="width: 44px; height: 44px; background: #E3F2FD; font-size: 22px;">🎹</div><div><div style="font-weight: 600; font-size: 14px;">练琴 20分钟</div><div style="font-size: 12px; color: #999;">⭐⭐⭐⭐</div></div></div>
                     <div class="checkin-note">📝 学会了小星星右手部分，左手还不太熟练...</div>
@@ -296,9 +293,9 @@
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">📅 本周打卡 (7月13日 - 7月19日)</div>
                 <div id="week-days-list"></div>
                 <div class="stats-grid" style="margin-top: 16px; margin-bottom: 0;">
-                    <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-card-value" id="week-points">72</div><div class="stat-card-label">本周积分</div></div>
-                    <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value" id="week-days">5</div><div class="stat-card-label">打卡天数</div></div>
-                    <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value" id="week-streak">3</div><div class="stat-card-label">最长连续</div></div>
+                    <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-card-value" id="week-points">0</div><div class="stat-card-label">本周积分</div></div>
+                    <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value" id="week-days">0</div><div class="stat-card-label">打卡天数</div></div>
+                    <div class="stat-card"><div class="stat-card-icon">🔥</div><div class="stat-card-value" id="week-streak">0</div><div class="stat-card-label">最长连续</div></div>
                 </div>
             </div>
             <div class="calendar-container" id="month-view" style="display: none;">
@@ -699,16 +696,15 @@
                         const statusEl = document.getElementById('task-status-' + taskId);
                         const descEl = document.getElementById('task-desc-' + taskId);
                         const badgeEl = document.getElementById('times-badge-' + taskId);
+                        const remaining = times - count;
                         if (badgeEl) badgeEl.textContent = '×' + times;
-                        if (count >= times) {
+                        if (remaining <= 0) {
                             if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
                             tasksToMove.push({taskId: taskId, card: card});
-                        } else if (count > 0) {
-                            if (descEl) descEl.textContent = '第' + (count + 1) + '/' + times + '次 · +' + base + '积分';
-                            if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
                         } else {
-                            if (descEl) descEl.textContent = '+' + base + '积分 · ' + duration + '分钟';
-                            if (statusEl) { statusEl.textContent = '○'; statusEl.className = 'task-status pending'; }
+                            if (statusEl) { statusEl.textContent = remaining; statusEl.className = 'task-status pending'; }
+                            if (count > 0 && descEl) descEl.textContent = '第' + (count + 1) + '/' + times + '次 · +' + base + '积分';
+                            else if (descEl) descEl.textContent = '+' + base + '积分 · ' + duration + '分钟';
                         }
                     }
                 });
@@ -730,11 +726,113 @@
                 if (completedTitle && tasksToMove.length > 0) {
                     completedTitle.style.display = 'block';
                 }
+
+                // 同步统计页面
+                const statsPoints = document.getElementById('stats-points');
+                if (statsPoints) statsPoints.textContent = userPoints;
+                const statsTodayCount = document.getElementById('stats-today-count');
+                if (statsTodayCount) statsTodayCount.textContent = getCompletedCount();
+
+                // 同步今日打卡记录
+                updateTodayCheckinList();
+
+                // 同步本周视图
+                updateWeekView();
             } catch(e) {
                 console.log('updateHomePage error:', e);
             }
         }
-function openAddTask() {
+
+        // 更新今日打卡记录列表
+        function updateTodayCheckinList() {
+            const list = document.getElementById('today-checkin-list');
+            if (!list) return;
+
+            let hasCheckIn = false;
+            let html = '';
+
+            for (let taskId in dailyCheckInCount) {
+                const count = dailyCheckInCount[taskId];
+                if (count > 0) {
+                    hasCheckIn = true;
+                    const name = taskNames[taskId] || '任务' + taskId;
+                    const points = taskBasePoints[taskId] || 10;
+                    const duration = taskDuration[taskId] || 0;
+                    html += '<div class="checkin-item"><div class="checkin-item-header"><div class="task-icon" style="width: 44px; height: 44px; background: ' + getTaskColor(taskId) + '; font-size: 22px;">' + getTaskEmoji(taskId) + '</div><div><div style="font-weight: 600; font-size: 14px;">' + name + ' ' + duration + '分钟</div><div style="font-size: 12px; color: #999;">已完成 ' + count + ' 次 · +' + (points * count) + '积分</div></div></div></div>';
+                }
+            }
+
+            if (hasCheckIn) {
+                list.innerHTML = html;
+            } else {
+                list.innerHTML = '<div class="empty-state"><div class="empty-state-icon"></div><div>今天还没有打卡记录</div></div>';
+            }
+        }
+
+        function getTaskColor(taskId) {
+            const colors = {1: '#FFE4E8', 2: '#E3F2FD', 3: '#E8F5E9', 4: '#F3E5F5'};
+            return colors[taskId] || '#F5F5F5';
+        }
+
+        function getTaskEmoji(taskId) {
+            const emojis = {1: '', 2: '🎹', 3: '', 4: '💻'};
+            return emojis[taskId] || '📋';
+        }
+
+        // 更新本周视图
+        function updateWeekView() {
+            const list = document.getElementById('week-days-list');
+            if (!list) return;
+
+            const today = new Date();
+            const dayNames = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+            const dayOfWeek = today.getDay();
+            const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - mondayOffset);
+
+            let html = '';
+            let weekDays = 0;
+            const totalPlanned = getTotalPlannedCount();
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(monday);
+                date.setDate(monday.getDate() + i);
+                const dateStr = (date.getMonth() + 1) + '月' + date.getDate() + '日';
+                const isToday = date.toDateString() === today.toDateString();
+
+                const dayCompleted = isToday ? getCompletedCount() : 0;
+
+                if (dayCompleted > 0) weekDays++;
+
+                let className = 'week-day-item';
+                if (isToday) className += ' today';
+                else if (dayCompleted > 0) className += ' has-checkin';
+
+                html += '<div class="' + className + '">';
+                html += '<div class="week-day-number">' + (i + 1) + '</div>';
+                html += '<div class="week-day-info">';
+                html += '<div class="week-day-name">' + dayNames[date.getDay()] + ' · ' + dateStr + '</div>';
+                html += '<div class="week-day-tasks">完成 ' + dayCompleted + '/' + totalPlanned + ' 个任务</div>';
+                html += '</div>';
+                html += '<div class="week-day-status">';
+                if (dayCompleted >= totalPlanned && totalPlanned > 0) html += '✅';
+                else if (dayCompleted > 0) html += '';
+                else html += '○';
+                html += '</div>';
+                html += '</div>';
+            }
+
+            list.innerHTML = html;
+
+            const weekPointsEl = document.getElementById('week-points');
+            if (weekPointsEl) weekPointsEl.textContent = userPoints;
+            const weekDaysEl = document.getElementById('week-days');
+            if (weekDaysEl) weekDaysEl.textContent = weekDays;
+        }
+
+        function openAddTask() {
             document.getElementById('edit-task-id').value = '';
             document.getElementById('add-task-title').textContent = '新建任务';
             document.getElementById('task-name').value = '';
