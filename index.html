@@ -644,9 +644,7 @@ function openAddTask() {
             event.currentTarget.classList.add('active');
         }
 
-        // 日历功能
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
+        // 日历功能（使用上面已定义的 currentMonth 和 currentYear）
 
         const checkInData = {
             '2026-07-01': { completed: 4, total: 4 },
