@@ -693,6 +693,9 @@ function openAddTask() {
         function editReward(id, name, cost) {
             document.getElementById('edit-task-id').value = 'reward-' + id;
             document.getElementById('add-task-title').textContent = '编辑奖励';
+            document.getElementById('label-name').textContent = '奖励名称';
+            document.getElementById('label-duration').textContent = '所需时长（分钟）';
+            document.getElementById('label-points').textContent = '所需积分';
             document.getElementById('task-name').value = name;
             document.getElementById('task-duration').value = '';
             document.getElementById('task-points').value = cost;
@@ -702,6 +705,9 @@ function openAddTask() {
         function openAddRewardFromSettings() {
             document.getElementById('edit-task-id').value = '';
             document.getElementById('add-task-title').textContent = '新建奖励';
+            document.getElementById('label-name').textContent = '奖励名称';
+            document.getElementById('label-duration').textContent = '所需时长（分钟）';
+            document.getElementById('label-points').textContent = '所需积分';
             document.getElementById('task-name').value = '';
             document.getElementById('task-duration').value = '';
             document.getElementById('task-points').value = '';
