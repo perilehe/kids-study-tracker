@@ -154,6 +154,10 @@
         .reward-section-title { font-size: 13px; color: #999; margin: 16px 0 10px; font-weight: 600; }
         .empty-state { text-align: center; padding: 32px 16px; color: #999; }
         .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+        .completed-section-title { font-size: 14px; color: #999; font-weight: 600; margin: 12px 0 8px; }
+        .task-card.completed-task { opacity: 0.5; background: #F5F5F5; }
+        .task-card.completed-task .task-name { color: #999; }
+        .task-card.completed-task .task-icon { background: #E0E0E0 !important; }
     </style>
 </head>
 <body>
@@ -178,6 +182,8 @@
                 <div class="task-card" onclick="openCheckIn(3)"><div class="task-icon" style="background: #E8F5E9">🏀</div><div class="task-info"><div class="task-name">篮球训练 40分钟</div><div class="task-desc">+12积分</div><div class="task-streak">🔥 连续8天</div></div><div class="task-status pending">○</div></div>
                 <div class="task-card" onclick="openCheckIn(4)"><div class="task-icon" style="background: #F3E5F5">💻</div><div class="task-info"><div class="task-name">编程学习 45分钟</div><div class="task-desc">+15积分</div><div class="task-streak"> 连续3天</div></div><div class="task-status pending">○</div></div>
             </div>
+            <div class="completed-section-title" id="completed-title" style="display: none;">✅ 今日已完成</div>
+            <div class="task-list" id="completed-list"></div>
         </div>
 
         <div class="page" id="page-stats">
