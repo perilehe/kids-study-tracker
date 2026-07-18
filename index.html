@@ -154,6 +154,16 @@
         .reward-section-title { font-size: 13px; color: #999; margin: 16px 0 10px; font-weight: 600; }
         .empty-state { text-align: center; padding: 32px 16px; color: #999; }
         .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+        .times-badge { background: #FF6B35; color: white; font-size: 11px; padding: 2px 6px; border-radius: 8px; margin-left: 6px; }
+        .times-controls { display: none; align-items: center; gap: 8px; margin-right: 8px; }
+        .times-btn { width: 28px; height: 28px; border-radius: 50%; background: #FF6B35; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; cursor: pointer; user-select: none; }
+        .times-btn:active { transform: scale(0.9); }
+        .times-count { font-size: 18px; font-weight: bold; color: #FF6B35; min-width: 24px; text-align: center; }
+        .task-card.editing { border: 2px dashed #FF6B35; }
+        .task-card.editing .task-status { display: none; }
+        .task-card:not(.editing) .times-controls { display: none !important; }
+        .task-card:not(.editing) .times-badge { display: inline; }
+        .task-card.editing .times-badge { display: none; }
         .completed-section-title { font-size: 14px; color: #999; font-weight: 600; margin: 12px 0 8px; }
         .task-card.completed-task { opacity: 0.5; background: #F5F5F5; }
         .task-card.completed-task .task-name { color: #999; }
@@ -182,12 +192,68 @@
                 </div>
                 <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
             </div>
-            <div class="section-header"><span class="section-title">今日任务</span><button class="add-btn" onclick="openAddTask()">+ 添加</button></div>
+            <div class="section-header">
+                <span class="section-title">今日任务</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <label style="font-size: 13px; color: #666; display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="toggleEditMode()">
+                        <span id="edit-toggle-icon">✏️</span> 编辑
+                    </label>
+                    <button class="add-btn" onclick="openAddTask()">+ 添加</button>
+                </div>
+            </div>
             <div class="task-list" id="task-list">
-                <div class="task-card" onclick="openCheckIn(1)"><div class="task-icon" style="background: #FFE4E8">📖</div><div class="task-info"><div class="task-name">阅读 30分钟</div><div class="task-desc">+10积分</div><div class="task-streak">🔥 连续5天</div></div><div class="task-status completed">✓</div></div>
-                <div class="task-card" onclick="openCheckIn(2)"><div class="task-icon" style="background: #E3F2FD">🎹</div><div class="task-info"><div class="task-name">练琴 20分钟</div><div class="task-desc">+10积分</div><div class="task-streak">🔥 连续5天</div></div><div class="task-status pending">○</div></div>
-                <div class="task-card" onclick="openCheckIn(3)"><div class="task-icon" style="background: #E8F5E9">🏀</div><div class="task-info"><div class="task-name">篮球训练 40分钟</div><div class="task-desc">+12积分</div><div class="task-streak">🔥 连续8天</div></div><div class="task-status pending">○</div></div>
-                <div class="task-card" onclick="openCheckIn(4)"><div class="task-icon" style="background: #F3E5F5">💻</div><div class="task-info"><div class="task-name">编程学习 45分钟</div><div class="task-desc">+15积分</div><div class="task-streak"> 连续3天</div></div><div class="task-status pending">○</div></div>
+                <div class="task-card" id="task-card-1" onclick="openCheckIn(1)">
+                    <div class="task-icon" style="background: #FFE4E8"></div>
+                    <div class="task-info">
+                        <div class="task-name">阅读 <span class="times-badge" id="times-badge-1">×2</span></div>
+                        <div class="task-desc" id="task-desc-1">+10积分 · 30分钟</div>
+                    </div>
+                    <div class="times-controls" id="times-controls-1" style="display: none;">
+                        <span class="times-btn" onclick="changeTimes(1, -1)">−</span>
+                        <span class="times-count" id="times-count-1">2</span>
+                        <span class="times-btn" onclick="changeTimes(1, 1)">+</span>
+                    </div>
+                    <div class="task-status" id="task-status-1">○</div>
+                </div>
+                <div class="task-card" id="task-card-2" onclick="openCheckIn(2)">
+                    <div class="task-icon" style="background: #E3F2FD">🎹</div>
+                    <div class="task-info">
+                        <div class="task-name">练琴 <span class="times-badge" id="times-badge-2">×1</span></div>
+                        <div class="task-desc" id="task-desc-2">+10积分 · 20分钟</div>
+                    </div>
+                    <div class="times-controls" id="times-controls-2" style="display: none;">
+                        <span class="times-btn" onclick="changeTimes(2, -1)">−</span>
+                        <span class="times-count" id="times-count-2">1</span>
+                        <span class="times-btn" onclick="changeTimes(2, 1)">+</span>
+                    </div>
+                    <div class="task-status" id="task-status-2">○</div>
+                </div>
+                <div class="task-card" id="task-card-3" onclick="openCheckIn(3)">
+                    <div class="task-icon" style="background: #E8F5E9">🏀</div>
+                    <div class="task-info">
+                        <div class="task-name">篮球训练 <span class="times-badge" id="times-badge-3">×2</span></div>
+                        <div class="task-desc" id="task-desc-3">+12积分 · 40分钟</div>
+                    </div>
+                    <div class="times-controls" id="times-controls-3" style="display: none;">
+                        <span class="times-btn" onclick="changeTimes(3, -1)">−</span>
+                        <span class="times-count" id="times-count-3">2</span>
+                        <span class="times-btn" onclick="changeTimes(3, 1)">+</span>
+                    </div>
+                    <div class="task-status" id="task-status-3">○</div>
+                </div>
+                <div class="task-card" id="task-card-4" onclick="openCheckIn(4)">
+                    <div class="task-icon" style="background: #F3E5F5">💻</div>
+                    <div class="task-info">
+                        <div class="task-name">编程学习 <span class="times-badge" id="times-badge-4">×1</span></div>
+                        <div class="task-desc" id="task-desc-4">+15积分 · 45分钟</div>
+                    </div>
+                    <div class="times-controls" id="times-controls-4" style="display: none;">
+                        <span class="times-btn" onclick="changeTimes(4, -1)">−</span>
+                        <span class="times-count" id="times-count-4">1</span>
+                        <span class="times-btn" onclick="changeTimes(4, 1)">+</span>
+                    </div>
+                    <div class="task-status" id="task-status-4">○</div>
+                </div>
             </div>
             <div class="completed-section-title" id="completed-title" style="display: none;">✅ 今日已完成</div>
             <div class="task-list" id="completed-list"></div>
@@ -572,6 +638,30 @@
             return total;
         }
 
+        let editMode = false;
+
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.getElementById('edit-toggle-icon').textContent = editMode ? '✅' : '✏️';
+            const cards = document.querySelectorAll('#task-list .task-card');
+            cards.forEach(card => {
+                if (editMode) {
+                    card.classList.add('editing');
+                } else {
+                    card.classList.remove('editing');
+                }
+            });
+        }
+
+        function changeTimes(taskId, delta) {
+            const current = taskDailyTimes[taskId] || 1;
+            const newVal = Math.max(1, Math.min(10, current + delta));
+            taskDailyTimes[taskId] = newVal;
+            document.getElementById('times-count-' + taskId).textContent = newVal;
+            document.getElementById('times-badge-' + taskId).textContent = '×' + newVal;
+            updateHomePage();
+        }
+
         // 更新首页进度和任务显示
         function updateHomePage() {
             try {
@@ -605,13 +695,15 @@
                         const times = getDailyTimes(taskId);
                         const base = taskBasePoints[taskId] || 10;
                         const duration = taskDuration[taskId] || 0;
-                        const descEl = card.querySelector('.task-desc');
-                        const statusEl = card.querySelector('.task-status');
+                        const statusEl = document.getElementById('task-status-' + taskId);
+                        const descEl = document.getElementById('task-desc-' + taskId);
+                        const badgeEl = document.getElementById('times-badge-' + taskId);
+                        if (badgeEl) badgeEl.textContent = '×' + times;
                         if (count >= times) {
                             if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
                             tasksToMove.push({taskId: taskId, card: card});
                         } else if (count > 0) {
-                            if (descEl) descEl.textContent = '第' + (count + 1) + '/' + times + '次';
+                            if (descEl) descEl.textContent = '第' + (count + 1) + '/' + times + '次 · +' + base + '积分';
                             if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
                         } else {
                             if (descEl) descEl.textContent = '+' + base + '积分 · ' + duration + '分钟';
@@ -908,8 +1000,9 @@ function openAddTask() {
             const taskId = currentCheckInTaskId;
             const count = getTodayCount(taskId);
             const base = taskBasePoints[taskId] || 10;
-            const points = base * (count + 1);
-            const confirmMsg = '第' + (count + 1) + '次打卡！获得 ' + points + ' 积分（×' + (count + 1) + '）' + (note ? '\n\n心得：' + note.substring(0, 30) + (note.length > 30 ? '...' : '') : '');
+            const points = base;
+            const times = getDailyTimes(taskId);
+            const confirmMsg = '第' + (count + 1) + '/' + times + '次打卡！获得 ' + points + ' 积分' + (note ? '\n\n心得：' + note.substring(0, 30) + (note.length > 30 ? '...' : '') : '');
             if (confirm(confirmMsg)) {
                 userPoints += points;
                 dailyCheckInCount[taskId] = count + 1;
