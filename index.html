@@ -71,6 +71,9 @@
         .checkin-title { font-size: 20px; font-weight: bold; color: #06D6A0; margin-bottom: 6px; }
         .checkin-points { font-size: 18px; color: #FFD23F; }
         .mood-selector { display: flex; justify-content: space-around; margin: 16px 0; }
+        .effort-selector { display: flex; justify-content: space-around; margin: 16px 0; }
+        .effort-item { font-size: 32px; cursor: pointer; transition: transform 0.2s; }
+        .effort-item.selected { transform: scale(1.3); }
         .mood-item { font-size: 32px; cursor: pointer; transition: transform 0.2s; }
         .mood-item.selected { transform: scale(1.3); }
         .stats-card { background: linear-gradient(135deg, #FFF3E0, #FFF9E6); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
@@ -208,6 +211,11 @@
             <div class="calendar-container" id="week-view">
                 <div style="font-size: 14px; font-weight: bold; margin-bottom: 12px;">📅 本周打卡 (7月13日 - 7月19日)</div>
                 <div id="week-days-list"></div>
+                <div class="stats-grid" style="margin-top: 16px; margin-bottom: 0;">
+                    <div class="stat-card"><div class="stat-card-icon">⭐</div><div class="stat-card-value" id="week-points">72</div><div class="stat-card-label">本周积分</div></div>
+                    <div class="stat-card"><div class="stat-card-icon">✅</div><div class="stat-card-value" id="week-days">5</div><div class="stat-card-label">打卡天数</div></div>
+                    <div class="stat-card"><div class="stat-card-icon"></div><div class="stat-card-value" id="week-streak">3</div><div class="stat-card-label">最长连续</div></div>
+                </div>
             </div>
             <div class="calendar-container" id="month-view" style="display: none;">
                 <div class="calendar-header">
@@ -352,6 +360,16 @@
                         <div class="mood-item" onclick="selectMood(3, this)">😊</div>
                         <div class="mood-item" onclick="selectMood(4, this)">😄</div>
                         <div class="mood-item" onclick="selectMood(5, this)">🤩</div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">💪 努力程度如何？</label>
+                    <div class="effort-selector">
+                        <div class="effort-item selected" onclick="selectEffort(1, this)">😴</div>
+                        <div class="effort-item" onclick="selectEffort(2, this)"></div>
+                        <div class="effort-item" onclick="selectEffort(3, this)">💪</div>
+                        <div class="effort-item" onclick="selectEffort(4, this)">🔥</div>
+                        <div class="effort-item" onclick="selectEffort(5, this)">⚡</div>
                     </div>
                 </div>
                 <button class="btn btn-primary" onclick="completeCheckIn()">✅ 完成打卡</button>
@@ -599,7 +617,14 @@
         }
 
         function selectMood(mood, element) {
-            document.querySelectorAll('.mood-item').forEach(m => m.classList.remove('selected'));
+            const parent = element.parentElement;
+            parent.querySelectorAll('.mood-item').forEach(m => m.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function selectEffort(effort, element) {
+            const parent = element.parentElement;
+            parent.querySelectorAll('.effort-item').forEach(m => m.classList.remove('selected'));
             element.classList.add('selected');
         }
 
