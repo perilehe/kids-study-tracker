@@ -284,7 +284,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-calendar">
+        <div class="page" id="page-calendar" style="padding-top: 0;">
             <div class="section-header"><span class="section-title">📅 打卡日历</span></div>
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchCalendarTab('week')">本周</button>
@@ -321,7 +321,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-rewards">
+        <div class="page" id="page-rewards" style="padding-top: 0;">
             <div class="reward-header" style="margin-bottom: 8px;">
                 <div class="reward-points">
                     <div><div style="font-size: 18px; font-weight: bold;"> 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
@@ -343,10 +343,10 @@
                 </div>
             </div>
         </div>
-        <div class="page" id="page-settings">
-            <div class="welcome-card">
-                <div class="avatar"><div class="avatar-inner">🦁</div></div>
-                <div style="flex: 1;"><div style="font-size: 18px; font-weight: bold;">小明</div><div style="font-size: 12px; color: #999; margin-top: 3px;">点击编辑头像和名字</div></div>
+        <div class="page" id="page-settings" style="padding-top: 0;">
+            <div class="welcome-card" onclick="openEditProfile()" style="cursor: pointer;">
+                <div class="avatar"><div class="avatar-inner" id="settings-avatar-emoji"></div></div>
+                <div style="flex: 1;"><div style="font-size: 18px; font-weight: bold;" id="settings-user-name">小明</div><div style="font-size: 12px; color: #999; margin-top: 3px;">点击编辑头像和名字</div></div>
                 <div style="color: #999; font-size: 18px;">></div>
             </div>
             <div class="section-header" style="margin-top: 14px;"><span class="section-title"> 任务管理</span><button class="add-btn" onclick="openAddTask()">+ 添加</button></div>
