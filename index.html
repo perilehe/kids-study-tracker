@@ -579,6 +579,10 @@
             document.getElementById('user-points').textContent = userPoints;
             const homePoints = document.getElementById('home-points');
             if (homePoints) homePoints.textContent = userPoints;
+
+            // 收集需要移动到已完成的任务
+            const tasksToMove = [];
+
             const cards = document.querySelectorAll('#task-list .task-card');
             cards.forEach(card => {
                 const onclick = card.getAttribute('onclick');
@@ -594,7 +598,7 @@
                     if (count >= times) {
                         statusEl.textContent = '✓';
                         statusEl.className = 'task-status completed';
-                        moveTaskToCompleted(taskId);
+                        tasksToMove.push(taskId);
                     } else if (count > 0) {
                         descEl.textContent = '第' + (count + 1) + '/' + times + '次';
                         statusEl.textContent = '✓';
@@ -606,6 +610,10 @@
                     }
                 }
             });
+
+            // 循环结束后再移动任务到已完成
+            tasksToMove.forEach(taskId => moveTaskToCompleted(taskId));
+
             const statPagePoints = document.querySelectorAll('#page-stats .stat-card-value');
             if (statPagePoints[0]) statPagePoints[0].textContent = userPoints;
         }
