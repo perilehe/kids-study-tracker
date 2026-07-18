@@ -158,7 +158,7 @@
                 <div class="welcome-info"><h2>早上好！</h2><p>小明 · Lv.5</p></div>
             </div>
             <div class="stats-row">
-                <div class="stat-item"><span class="stat-icon">⭐</span><div><div class="stat-value">120</div><div class="stat-label">积分</div></div></div>
+                <div class="stat-item"><span class="stat-icon">⭐</span><div><div class="stat-value" id="home-points">120</div><div class="stat-label">积分</div></div></div>
                 <div class="stat-item"><span class="stat-icon">🔥</span><div><div class="stat-value">5</div><div class="stat-label">连续</div></div></div>
             </div>
             <div class="progress-card">
@@ -442,6 +442,52 @@
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
         let userPoints = 120;
+        // 每日每个任务的打卡次数 { taskId: count }
+        let dailyCheckInCount = {};
+        // 任务基础积分
+        const taskBasePoints = { 1: 10, 2: 10, 3: 12, 4: 15 };
+
+        // 获取某任务今日打卡次数
+        function getTodayCount(taskId) {
+            return dailyCheckInCount[taskId] || 0;
+        }
+
+        // 获取某任务下次打卡可获得的积分（次数×基础积分）
+        function getNextPoints(taskId) {
+            const count = getTodayCount(taskId);
+            const base = taskBasePoints[taskId] || 10;
+            return base * (count + 1);
+        }
+
+        // 更新任务卡片显示
+        function updateTaskCard(taskId) {
+            const cards = document.querySelectorAll('#task-list .task-card');
+            cards.forEach(card => {
+                const onclick = card.getAttribute('onclick');
+                const match = onclick && onclick.match(/openCheckIn\((\d+)\)/);
+                if (match && parseInt(match[1]) === taskId) {
+                    const descEl = card.querySelector('.task-desc');
+                    const statusEl = card.querySelector('.task-status');
+                    const count = getTodayCount(taskId);
+                    const base = taskBasePoints[taskId] || 10;
+                    const nextPoints = base * (count + 1);
+                    if (count > 0) {
+                        descEl.textContent = '第' + (count + 1) + '次 · +' + nextPoints + '积分（×' + (count + 1) + '）';
+                        statusEl.textContent = '✓';
+                        statusEl.className = 'task-status completed';
+                    } else {
+                        descEl.textContent = '+' + base + '积分';
+                    }
+                }
+            });
+            // 更新积分显示
+            document.getElementById('user-points').textContent = userPoints;
+            const homePoints = document.getElementById('home-points');
+            if (homePoints) homePoints.textContent = userPoints;
+            // 更新统计页面的积分
+            const statPagePoints = document.querySelectorAll('#page-stats .stat-card-value');
+            if (statPagePoints[0]) statPagePoints[0].textContent = userPoints;
+        }
 
         const checkInData = {
             '2026-07-01': { completed: 4, total: 4 },
@@ -571,7 +617,14 @@
             alert('🎁 添加新奖励\n\n功能开发中...');
         }
 
+        let currentCheckInTaskId = null;
+
         function openCheckIn(taskId) {
+            currentCheckInTaskId = taskId;
+            const count = getTodayCount(taskId);
+            const base = taskBasePoints[taskId] || 10;
+            const points = base * (count + 1);
+            document.getElementById('checkin-points').textContent = points;
             document.getElementById('modal-checkin').classList.add('active');
         }
 
@@ -647,22 +700,31 @@
 
         function completeCheckIn() {
             const note = document.getElementById('checkin-note').value;
-            const confirmMsg = note ? '确定提交打卡吗？\n\n心得：' + note.substring(0, 30) + (note.length > 30 ? '...' : '') : '确定提交打卡吗？';
+            const taskId = currentCheckInTaskId;
+            const count = getTodayCount(taskId);
+            const base = taskBasePoints[taskId] || 10;
+            const points = base * (count + 1);
+            const confirmMsg = '第' + (count + 1) + '次打卡！获得 ' + points + ' 积分（×' + (count + 1) + '）' + (note ? '\n\n心得：' + note.substring(0, 30) + (note.length > 30 ? '...' : '') : '');
             if (confirm(confirmMsg)) {
+                userPoints += points;
+                dailyCheckInCount[taskId] = count + 1;
+                updateTaskCard(taskId);
                 closeModal('modal-checkin');
-                showSuccessAnimation();
+                document.getElementById('checkin-note').value = '';
+                showSuccessAnimation(points);
             }
         }
 
         function skipCheckIn() {
             if (confirm('确定跳过打卡吗？')) {
                 closeModal('modal-checkin');
-                showSuccessAnimation();
             }
         }
 
-        function showSuccessAnimation() {
+        function showSuccessAnimation(points) {
             const anim = document.getElementById('success-animation');
+            const pointsEl = document.querySelector('.success-points');
+            if (pointsEl) pointsEl.textContent = '+' + points + ' 积分';
             anim.classList.add('active');
             setTimeout(() => { anim.classList.remove('active'); }, 1500);
         }
