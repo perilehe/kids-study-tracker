@@ -161,6 +161,7 @@
         .times-count { font-size: 18px; font-weight: bold; color: #FF6B35; min-width: 24px; text-align: center; }
         .task-card.editing { border: 2px dashed #FF6B35; }
         .task-card.editing .task-status { display: none; }
+        .task-card.editing .times-controls { display: flex !important; }
         .task-card:not(.editing) .times-controls { display: none !important; }
         .task-card:not(.editing) .times-badge { display: inline; }
         .task-card.editing .times-badge { display: none; }
@@ -208,7 +209,7 @@
                         <div class="task-name">阅读 <span class="times-badge" id="times-badge-1">×2</span></div>
                         <div class="task-desc" id="task-desc-1">+10积分 · 30分钟</div>
                     </div>
-                    <div class="times-controls" id="times-controls-1" style="display: none;">
+                    <div class="times-controls" id="times-controls-1">
                         <span class="times-btn" onclick="changeTimes(1, -1)">−</span>
                         <span class="times-count" id="times-count-1">2</span>
                         <span class="times-btn" onclick="changeTimes(1, 1)">+</span>
@@ -216,12 +217,12 @@
                     <div class="task-status" id="task-status-1">○</div>
                 </div>
                 <div class="task-card" id="task-card-2" onclick="openCheckIn(2)">
-                    <div class="task-icon" style="background: #E3F2FD">🎹</div>
+                    <div class="task-icon" style="background: #E3F2FD"></div>
                     <div class="task-info">
                         <div class="task-name">练琴 <span class="times-badge" id="times-badge-2">×1</span></div>
                         <div class="task-desc" id="task-desc-2">+10积分 · 20分钟</div>
                     </div>
-                    <div class="times-controls" id="times-controls-2" style="display: none;">
+                    <div class="times-controls" id="times-controls-2">
                         <span class="times-btn" onclick="changeTimes(2, -1)">−</span>
                         <span class="times-count" id="times-count-2">1</span>
                         <span class="times-btn" onclick="changeTimes(2, 1)">+</span>
@@ -234,7 +235,7 @@
                         <div class="task-name">篮球训练 <span class="times-badge" id="times-badge-3">×2</span></div>
                         <div class="task-desc" id="task-desc-3">+12积分 · 40分钟</div>
                     </div>
-                    <div class="times-controls" id="times-controls-3" style="display: none;">
+                    <div class="times-controls" id="times-controls-3">
                         <span class="times-btn" onclick="changeTimes(3, -1)">−</span>
                         <span class="times-count" id="times-count-3">2</span>
                         <span class="times-btn" onclick="changeTimes(3, 1)">+</span>
@@ -247,7 +248,7 @@
                         <div class="task-name">编程学习 <span class="times-badge" id="times-badge-4">×1</span></div>
                         <div class="task-desc" id="task-desc-4">+15积分 · 45分钟</div>
                     </div>
-                    <div class="times-controls" id="times-controls-4" style="display: none;">
+                    <div class="times-controls" id="times-controls-4">
                         <span class="times-btn" onclick="changeTimes(4, -1)">−</span>
                         <span class="times-count" id="times-count-4">1</span>
                         <span class="times-btn" onclick="changeTimes(4, 1)">+</span>
