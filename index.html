@@ -283,8 +283,8 @@
             </div>
         </div>
 
-        <div class="page" id="page-calendar">
-            <div class="section-header"><span class="section-title">📅 打卡日历</span></div>
+        <div class="page" id="page-calendar" style="padding-top: 8px;">
+            <div class="section-header" style="margin-bottom: 8px;"><span class="section-title">📅 打卡日历</span></div>
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchCalendarTab('week')">本周</button>
                 <button class="tab-btn" onclick="switchCalendarTab('month')">本月</button>
@@ -320,8 +320,8 @@
             </div>
         </div>
 
-        <div class="page" id="page-rewards">
-            <div class="reward-header">
+        <div class="page" id="page-rewards" style="padding-top: 8px;">
+            <div class="reward-header" style="margin-bottom: 8px;">
                 <div class="reward-points">
                     <div><div style="font-size: 18px; font-weight: bold;"> 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
                     <div style="text-align: right;"><div style="font-size: 28px;">⭐</div><div class="reward-points-value" id="user-points">120</div></div>
@@ -523,7 +523,7 @@
                 <div style="position: relative; width: 100%; height: 400px; border-radius: 20px 20px 0 0; overflow: hidden;" id="scratch-bg">
                     <!-- 底层奖励画面 -->
                     <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1;" id="scratch-reward-bg">
-                        <div style="font-size: 80px;" id="scratch-emoji"></div>
+                        <div style="font-size: 80px; display: none;" id="scratch-emoji"></div>
                         <div style="font-size: 22px; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: 8px;" id="scratch-reward-name">冰淇淋券</div>
                         <div style="font-size: 14px; color: rgba(255,255,255,0.9); margin-top: 4px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" id="scratch-reward-desc">凭此券可兑换冰淇淋一份！</div>
                     </div>
@@ -1229,6 +1229,9 @@
                     ctx.globalCompositeOperation = 'destination-out';
                     ctx.fillStyle = 'rgba(0,0,0,1)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    // 显示图标
+                    const emojiEl = document.getElementById('scratch-emoji');
+                    if (emojiEl) emojiEl.style.display = 'block';
                 }
 
                 lastX = x;
@@ -1252,6 +1255,58 @@
 
         renderCalendar();
         renderWeekView();
-    </script>
+    
+        // Lucky Draw
+        let luckyDrawItems = ["冰淇淋", "看动画30分钟", "游戏时间20分钟", "免写作业一次", "去游乐场"];
+
+        function openLuckyDrawSettings() {
+            document.getElementById('lucky-items').value = luckyDrawItems.join('\n');
+            document.getElementById('modal-lucky-settings').classList.add('active');
+        }
+
+        function saveLuckyDrawItems() {
+            const text = document.getElementById('lucky-items').value.trim();
+            if (text) {
+                luckyDrawItems = text.split('\n').map(s => s.trim()).filter(s => s);
+            }
+            closeModal('modal-lucky-settings');
+            alert(' 已保存 ' + luckyDrawItems.length + ' 个抽奖项！');
+        }
+
+        function startLuckyDraw() {
+            if (luckyDrawItems.length === 0) {
+                alert('请先设置抽奖项！');
+                return;
+            }
+            // 随机抽取
+            const randomIndex = Math.floor(Math.random() * luckyDrawItems.length);
+            const result = luckyDrawItems[randomIndex];
+            document.getElementById('lucky-result-text').textContent = result;
+            document.getElementById('modal-lucky-result').classList.add('active');
+        }
+</script>
+
+        <!-- Lucky Draw Settings Modal -->
+        <div class="modal" id="modal-lucky-settings">
+            <div class="modal-content">
+                <div class="modal-header"><div class="modal-title"> Lucky Draw 设置</div></div>
+                <div class="input-group">
+                    <label class="input-label">添加抽奖项（每行一个）</label>
+                    <textarea class="input-field" rows="5" placeholder="例如：&#10;冰淇淋&#10;看动画30分钟&#10;游戏时间20分钟&#10;免写作业一次&#10;去游乐场" id="lucky-items"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="saveLuckyDrawItems()">保存</button>
+                <button class="btn btn-secondary" onclick="closeModal('modal-lucky-settings')">取消</button>
+            </div>
+        </div>
+
+        <!-- Lucky Draw Result Modal -->
+        <div class="modal" id="modal-lucky-result">
+            <div class="modal-content" style="text-align: center; padding: 40px 24px;">
+                <div style="font-size: 64px; margin-bottom: 16px;">🎯</div>
+                <div style="font-size: 14px; color: #999; margin-bottom: 8px;">恭喜抽中！</div>
+                <div style="font-size: 28px; font-weight: bold; color: #FF6B35; margin-bottom: 24px;" id="lucky-result-text">冰淇淋</div>
+                <button class="btn btn-primary" onclick="closeModal('modal-lucky-result')">太棒了！</button>
+            </div>
+        </div>
 </body>
 </html>
