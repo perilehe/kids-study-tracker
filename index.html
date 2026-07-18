@@ -172,8 +172,15 @@
                 <div class="stat-item"><span class="stat-icon">🔥</span><div><div class="stat-value">5</div><div class="stat-label">连续</div></div></div>
             </div>
             <div class="progress-card">
-                <div class="progress-header"><span class="progress-title">今日进度</span><span class="progress-value">2/4</span></div>
-                <div class="progress-bar"><div class="progress-fill" style="width: 50%"></div></div>
+                <div class="progress-header">
+                    <span class="progress-title">今日进度</span>
+                    <span class="progress-value" id="progress-count">0/6</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #999; margin-bottom: 6px;">
+                    <span id="progress-time">0/135分钟</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
             </div>
             <div class="section-header"><span class="section-title">今日任务</span><button class="add-btn" onclick="openAddTask()">+ 添加</button></div>
             <div class="task-list" id="task-list">
@@ -567,68 +574,71 @@
 
         // 更新首页进度和任务显示
         function updateHomePage() {
-            const completedCount = getCompletedCount();
-            const totalCount = getTotalPlannedCount();
-            const completedTime = getCompletedTime();
-            const totalTime = getTotalPlannedTime();
-            const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-            document.getElementById('progress-count').textContent = completedCount + '/' + totalCount;
-            document.getElementById('progress-time').textContent = completedTime + '/' + totalTime + '分钟';
-            document.getElementById('progress-percent').textContent = percent + '%';
-            document.getElementById('progress-fill').style.width = percent + '%';
-            document.getElementById('user-points').textContent = userPoints;
-            const homePoints = document.getElementById('home-points');
-            if (homePoints) homePoints.textContent = userPoints;
+            try {
+                const completedCount = getCompletedCount();
+                const totalCount = getTotalPlannedCount();
+                const completedTime = getCompletedTime();
+                const totalTime = getTotalPlannedTime();
+                const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-            // 收集需要移动到已完成的任务
-            const tasksToMove = [];
+                const el1 = document.getElementById('progress-count');
+                if (el1) el1.textContent = completedCount + '/' + totalCount;
+                const el2 = document.getElementById('progress-time');
+                if (el2) el2.textContent = completedTime + '/' + totalTime + '分钟';
+                const el3 = document.getElementById('progress-percent');
+                if (el3) el3.textContent = percent + '%';
+                const el4 = document.getElementById('progress-fill');
+                if (el4) el4.style.width = percent + '%';
 
-            const cards = document.querySelectorAll('#task-list .task-card');
-            cards.forEach(card => {
-                const onclick = card.getAttribute('onclick');
-                const match = onclick && onclick.match(/openCheckIn\((\d+)\)/);
-                if (match) {
-                    const taskId = parseInt(match[1]);
-                    const count = getTodayCount(taskId);
-                    const times = getDailyTimes(taskId);
-                    const base = taskBasePoints[taskId] || 10;
-                    const duration = taskDuration[taskId] || 0;
-                    const descEl = card.querySelector('.task-desc');
-                    const statusEl = card.querySelector('.task-status');
-                    if (count >= times) {
-                        statusEl.textContent = '✓';
-                        statusEl.className = 'task-status completed';
-                        tasksToMove.push(taskId);
-                    } else if (count > 0) {
-                        descEl.textContent = '第' + (count + 1) + '/' + times + '次';
-                        statusEl.textContent = '✓';
-                        statusEl.className = 'task-status completed';
-                    } else {
-                        descEl.textContent = '+' + base + '积分 · ' + duration + '分钟';
-                        statusEl.textContent = '○';
-                        statusEl.className = 'task-status pending';
+                document.getElementById('user-points').textContent = userPoints;
+                const homePoints = document.getElementById('home-points');
+                if (homePoints) homePoints.textContent = userPoints;
+
+                const tasksToMove = [];
+                const cards = document.querySelectorAll('#task-list .task-card');
+                cards.forEach(card => {
+                    const onclick = card.getAttribute('onclick');
+                    const match = onclick && onclick.match(/openCheckIn\((\d+)\)/);
+                    if (match) {
+                        const taskId = parseInt(match[1]);
+                        const count = getTodayCount(taskId);
+                        const times = getDailyTimes(taskId);
+                        const base = taskBasePoints[taskId] || 10;
+                        const duration = taskDuration[taskId] || 0;
+                        const descEl = card.querySelector('.task-desc');
+                        const statusEl = card.querySelector('.task-status');
+                        if (count >= times) {
+                            if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
+                            tasksToMove.push({taskId: taskId, card: card});
+                        } else if (count > 0) {
+                            if (descEl) descEl.textContent = '第' + (count + 1) + '/' + times + '次';
+                            if (statusEl) { statusEl.textContent = '✓'; statusEl.className = 'task-status completed'; }
+                        } else {
+                            if (descEl) descEl.textContent = '+' + base + '积分 · ' + duration + '分钟';
+                            if (statusEl) { statusEl.textContent = '○'; statusEl.className = 'task-status pending'; }
+                        }
                     }
-                }
-            });
+                });
 
-            // 循环结束后再移动任务到已完成
-            tasksToMove.forEach(taskId => moveTaskToCompleted(taskId));
-
-            const statPagePoints = document.querySelectorAll('#page-stats .stat-card-value');
-            if (statPagePoints[0]) statPagePoints[0].textContent = userPoints;
-        }
-        function moveTaskToCompleted(taskId) {
-            const card = document.querySelector('#task-list .task-card[onclick*="openCheckIn(' + taskId + ')"]');
-            if (card && !card.classList.contains('completed-task')) {
-                card.classList.add('completed-task');
-                card.onclick = null;
-                card.style.cursor = 'default';
+                // 移动已完成任务
                 const completedList = document.getElementById('completed-list');
                 const completedTitle = document.getElementById('completed-title');
-                if (completedList && !completedList.contains(card)) {
-                    completedList.appendChild(card);
+                tasksToMove.forEach(item => {
+                    const card = item.card;
+                    if (card && !card.classList.contains('completed-task')) {
+                        card.classList.add('completed-task');
+                        card.onclick = null;
+                        card.style.cursor = 'default';
+                        if (completedList && !completedList.contains(card)) {
+                            completedList.appendChild(card);
+                        }
+                    }
+                });
+                if (completedTitle && tasksToMove.length > 0) {
                     completedTitle.style.display = 'block';
                 }
+            } catch(e) {
+                console.log('updateHomePage error:', e);
             }
         }
 function openAddTask() {
