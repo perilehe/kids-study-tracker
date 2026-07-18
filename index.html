@@ -334,6 +334,12 @@
                 <div class="reward-card" onclick="openScratchCard('动画时间', '', '可以看30分钟动画片！')"><div class="reward-emoji"></div><div class="reward-name">看动画30分</div><div class="reward-cost">⭐ 30</div><button class="reward-btn" onclick="redeemReward(2, 30)">兑换</button></div>
                 <div class="reward-card" onclick="openScratchCard('游戏时间', '', '可以玩20分钟游戏！')"><div class="reward-emoji"></div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn" onclick="redeemReward(3, 60)">兑换</button></div>
                 <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">披萨大餐</div><div class="reward-cost">⭐ 200</div><button class="reward-btn disabled">积分不足</button></div>
+                <div class="reward-card" style="background: linear-gradient(135deg, #A78BFA, #F472B6);" onclick="redeemReward(5, 100)">
+                    <div class="reward-emoji">🎯</div>
+                    <div class="reward-name" style="color: white;">Lucky Draw</div>
+                    <div class="reward-cost" style="color: white;">⭐ 100</div>
+                    <button class="reward-btn" style="background: white; color: #A78BFA;" onclick="event.stopPropagation(); redeemReward(5, 100)">兑换</button>
+                </div>
             </div>
         </div>
         <div class="page" id="page-settings">
