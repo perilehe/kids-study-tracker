@@ -903,10 +903,12 @@ function openAddTask() {
             if (confirm(confirmMsg)) {
                 userPoints += points;
                 dailyCheckInCount[taskId] = count + 1;
-                updateHomePage();
-                closeModal('modal-checkin');
                 document.getElementById('checkin-note').value = '';
-                showSuccessAnimation(points);
+                closeModal('modal-checkin');
+                setTimeout(() => {
+                    updateHomePage();
+                    showSuccessAnimation(points);
+                }, 300);
             }
         }
 
