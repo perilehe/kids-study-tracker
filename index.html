@@ -561,33 +561,6 @@
 
         // 更新首页进度和任务显示
         function updateHomePage() {
-        function getDailyTimes(taskId) { return taskDailyTimes[taskId] || 1; }
-        function getNextPoints(taskId) {
-            const count = getTodayCount(taskId);
-            const base = taskBasePoints[taskId] || 10;
-            return base * (count + 1);
-        }
-        function getTotalPlannedCount() {
-            let total = 0;
-            for (let id in taskDailyTimes) { total += taskDailyTimes[id]; }
-            return total;
-        }
-        function getTotalPlannedTime() {
-            let total = 0;
-            for (let id in taskDailyTimes) { total += taskDailyTimes[id] * (taskDuration[id] || 0); }
-            return total;
-        }
-        function getCompletedCount() {
-            let total = 0;
-            for (let id in dailyCheckInCount) { total += dailyCheckInCount[id]; }
-            return total;
-        }
-        function getCompletedTime() {
-            let total = 0;
-            for (let id in dailyCheckInCount) { total += dailyCheckInCount[id] * (taskDuration[id] || 0); }
-            return total;
-        }
-        function updateHomePage() {
             const completedCount = getCompletedCount();
             const totalCount = getTotalPlannedCount();
             const completedTime = getCompletedTime();
