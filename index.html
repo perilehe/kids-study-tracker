@@ -98,9 +98,6 @@
         .reward-btn { margin-top: 10px; padding: 7px; border-radius: 6px; background: #FF6B35; color: white; font-size: 11px; font-weight: 600; border: none; width: 100%; cursor: pointer; }
         .reward-btn.disabled { background: #CCC; }
         .scratch-container { position: relative; width: 100%; height: 180px; border-radius: 16px; overflow: hidden; margin: 16px 0; }
-        .scratch-reward { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #FFE4E8, #FFF3E0, #E8F5E9); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .scratch-cover { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, #E0E0E0, #C0C0C0, #A0A0A0); cursor: pointer; }
-        .scratch-hint { text-align: center; color: #666; font-size: 13px; margin-top: 12px; }
         .settings-group { background: white; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
         .settings-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #F0F0F0; cursor: pointer; }
         .settings-item:last-child { border-bottom: none; }
@@ -249,9 +246,9 @@
             <div class="task-card" style="background: #E8F5E9;" onclick="openMyRewards()"><div style="font-size: 24px;"></div><div style="flex: 1; margin-left: 10px;"><div class="task-name">我的奖励</div></div><div style="color: #999; font-size: 13px;">查看 ></div></div>
             <div class="section-header" style="margin-top: 14px;"><span class="section-title"> 刮刮卡</span><button class="add-btn" onclick="openAddReward()">+ 添加</button></div>
             <div class="reward-grid">
-                <div class="reward-card" onclick="openScratchCard()"><div class="reward-emoji">🍦</div><div class="reward-name">冰淇淋</div><div class="reward-cost">⭐ 50</div><button class="reward-btn" onclick="redeemReward(1, 50)">兑换</button></div>
-                <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">看动画30分</div><div class="reward-cost">⭐ 30</div><button class="reward-btn" onclick="redeemReward(2, 30)">兑换</button></div>
-                <div class="reward-card"><div class="reward-emoji">🎮</div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn" onclick="redeemReward(3, 60)">兑换</button></div>
+                <div class="reward-card" onclick="openScratchCard('冰淇淋券', '🍦', '凭此券可兑换冰淇淋一份！')"><div class="reward-emoji">🍦</div><div class="reward-name">冰淇淋</div><div class="reward-cost">⭐ 50</div><button class="reward-btn" onclick="redeemReward(1, 50)">兑换</button></div>
+                <div class="reward-card" onclick="openScratchCard('动画时间', '', '可以看30分钟动画片！')"><div class="reward-emoji"></div><div class="reward-name">看动画30分</div><div class="reward-cost">⭐ 30</div><button class="reward-btn" onclick="redeemReward(2, 30)">兑换</button></div>
+                <div class="reward-card" onclick="openScratchCard('游戏时间', '', '可以玩20分钟游戏！')"><div class="reward-emoji"></div><div class="reward-name">游戏时间</div><div class="reward-cost">⭐ 60</div><button class="reward-btn" onclick="redeemReward(3, 60)">兑换</button></div>
                 <div class="reward-card"><div class="reward-emoji"></div><div class="reward-name">披萨大餐</div><div class="reward-cost">⭐ 200</div><button class="reward-btn disabled">积分不足</button></div>
             </div>
         </div>
@@ -378,14 +375,22 @@
         </div>
 
         <div class="modal" id="modal-scratch">
-            <div class="modal-content" style="background: #1A1A1A; color: white; padding: 16px;">
-                <div style="text-align: center; margin-bottom: 12px;"><div style="font-size: 12px; color: #FFD23F;">⭐ 50积分</div></div>
-                <div class="scratch-container">
-                    <div class="scratch-reward"><div style="font-size: 48px;">🍦</div><div style="font-size: 16px; font-weight: bold; margin-top: 6px;">冰淇淋券</div></div>
-                    <canvas id="scratch-canvas" class="scratch-cover"></canvas>
+            <div class="modal-content" style="padding: 0; overflow: hidden; max-height: 90vh;">
+                <div style="position: relative; width: 100%; height: 400px; border-radius: 20px 20px 0 0; overflow: hidden;" id="scratch-bg">
+                    <!-- 底层奖励画面 -->
+                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1;" id="scratch-reward-bg">
+                        <div style="font-size: 80px;" id="scratch-emoji"></div>
+                        <div style="font-size: 22px; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: 8px;" id="scratch-reward-name">冰淇淋券</div>
+                        <div style="font-size: 14px; color: rgba(255,255,255,0.9); margin-top: 4px; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);" id="scratch-reward-desc">凭此券可兑换冰淇淋一份！</div>
+                    </div>
+                    <!-- 刮刮涂层 -->
+                    <canvas id="scratch-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; cursor: pointer;"></canvas>
                 </div>
-                <div class="scratch-hint">用手指滑动刮开涂层～</div>
-                <button class="btn btn-secondary" onclick="closeModal('modal-scratch')" style="margin-top: 16px;">关闭</button>
+                <div style="padding: 16px; text-align: center;">
+                    <div style="font-size: 12px; color: #FFD23F; margin-bottom: 8px;">⭐ 50积分</div>
+                    <div style="font-size: 13px; color: #666; margin-bottom: 12px;">用手指滑动刮开涂层～</div>
+                    <button class="btn btn-secondary" onclick="closeModal('modal-scratch')">关闭</button>
+                </div>
             </div>
         </div>
 
@@ -569,9 +574,9 @@
             document.getElementById('modal-checkin').classList.add('active');
         }
 
-        function openScratchCard() {
+        function openScratchCard(name, emoji, desc) {
             document.getElementById('modal-scratch').classList.add('active');
-            setTimeout(initScratchCard, 100);
+            setTimeout(() => initScratchCard(name, emoji, desc), 100);
         }
 
         function openMyRewards() {
@@ -680,39 +685,94 @@
             alert('✅ 奖励已使用！');
         }
 
-        function initScratchCard() {
+        const scratchBackgrounds = [
+            'linear-gradient(135deg, #FF6B6B, #FFE66D, #4ECDC4)',
+            'linear-gradient(135deg, #A78BFA, #F472B6, #FB923C)',
+            'linear-gradient(135deg, #34D399, #60A5FA, #A78BFA)',
+            'linear-gradient(135deg, #FBBF24, #F87171, #EC4899)',
+            'linear-gradient(135deg, #06B6D4, #8B5CF6, #EC4899)'
+        ];
+
+        function initScratchCard(rewardName, rewardEmoji, rewardDesc) {
             const canvas = document.getElementById('scratch-canvas');
-            if (!canvas) return;
-            const container = canvas.parentElement;
-            canvas.width = container.offsetWidth;
-            canvas.height = container.offsetHeight;
+            const bg = document.getElementById('scratch-bg');
+            if (!canvas || !bg) return;
+
+            // 设置随机灿烂背景
+            const randomBg = scratchBackgrounds[Math.floor(Math.random() * scratchBackgrounds.length)];
+            bg.style.background = randomBg;
+
+            // 设置奖励内容
+            if (rewardName) document.getElementById('scratch-reward-name').textContent = rewardName;
+            if (rewardEmoji) document.getElementById('scratch-emoji').textContent = rewardEmoji;
+            if (rewardDesc) document.getElementById('scratch-reward-desc').textContent = rewardDesc;
+
+            // 设置canvas尺寸
+            const rect = bg.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#C0C0C0';
+
+            // 绘制银色刮刮涂层
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = '#B0B0B0';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 添加条纹效果
             ctx.fillStyle = '#A0A0A0';
-            for (let i = 0; i < canvas.width; i += 20) {
-                ctx.fillRect(i, 0, 10, canvas.height);
+            for (let i = 0; i < canvas.width; i += 8) {
+                ctx.fillRect(i, 0, 4, canvas.height);
             }
+
+            // 添加闪光效果
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, 'rgba(255,255,255,0.3)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0.2)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 设置刮擦模式
             ctx.globalCompositeOperation = 'destination-out';
+
             let isDrawing = false;
             let lastX = 0;
             let lastY = 0;
+            let scratchedPixels = 0;
+
             function scratch(x, y) {
                 ctx.beginPath();
                 ctx.moveTo(lastX, lastY);
                 ctx.lineTo(x, y);
-                ctx.lineWidth = 30;
+                ctx.lineWidth = 40;
                 ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.stroke();
+
+                scratchedPixels += 40 * Math.sqrt(Math.pow(x - lastX, 2) + Math.pow(y - lastY, 2));
+                const totalPixels = canvas.width * canvas.height;
+                const progress = scratchedPixels / totalPixels;
+
+                if (progress >= 0.5) {
+                    // 自动全部刮开
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.fillStyle = 'rgba(0,0,0,1)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
                 lastX = x;
                 lastY = y;
             }
-            canvas.onmousedown = (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); lastX = e.clientX - rect.left; lastY = e.clientY - rect.top; };
-            canvas.onmousemove = (e) => { if (isDrawing) { const rect = canvas.getBoundingClientRect(); scratch(e.clientX - rect.left, e.clientY - rect.top); } };
+
+            canvas.onmousedown = (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); lastX = (e.clientX - rect.left) * (canvas.width / rect.width); lastY = (e.clientY - rect.top) * (canvas.height / rect.height); };
+            canvas.onmousemove = (e) => { if (isDrawing) { const rect = canvas.getBoundingClientRect(); scratch((e.clientX - rect.left) * (canvas.width / rect.width), (e.clientY - rect.top) * (canvas.height / rect.height)); } };
             canvas.onmouseup = () => { isDrawing = false; };
             canvas.onmouseleave = () => { isDrawing = false; };
-            canvas.ontouchstart = (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); lastX = e.touches[0].clientX - rect.left; lastY = e.touches[0].clientY - rect.top; e.preventDefault(); };
-            canvas.ontouchmove = (e) => { if (isDrawing) { const rect = canvas.getBoundingClientRect(); scratch(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top); } e.preventDefault(); };
+            canvas.ontouchstart = (e) => { isDrawing = true; const rect = canvas.getBoundingClientRect(); lastX = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width); lastY = (e.touches[0].clientY - rect.top) * (canvas.height / rect.height); e.preventDefault(); };
+            canvas.ontouchmove = (e) => { if (isDrawing) { const rect = canvas.getBoundingClientRect(); scratch((e.touches[0].clientX - rect.left) * (canvas.width / rect.width), (e.touches[0].clientY - rect.top) * (canvas.height / rect.height)); } e.preventDefault(); };
             canvas.ontouchend = () => { isDrawing = false; };
         }
 
