@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FFF9E6; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 400px; margin: 0 auto; min-height: 100vh; background: #FFF9E6; position: relative; }
-        .page { display: none; padding: 16px; padding-bottom: 80px; animation: fadeIn 0.3s; }
+        .page { display: none; padding: 0 16px 80px 16px; animation: fadeIn 0.3s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .welcome-card { background: linear-gradient(135deg, #FFE4E8, #FFF0F3); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
@@ -284,7 +284,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-calendar" style="padding: 0 16px 80px 16px !important;">
+        <div class="page" id="page-calendar" >
             <div class="section-header"><span class="section-title">📅 打卡日历</span></div>
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchCalendarTab('week')">本周</button>
@@ -321,7 +321,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-rewards" style="padding: 0 16px 80px 16px !important;">
+        <div class="page" id="page-rewards" >
             <div class="reward-header" style="margin-bottom: 8px;">
                 <div class="reward-points">
                     <div><div style="font-size: 18px; font-weight: bold;"> 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
@@ -343,7 +343,7 @@
                 </div>
             </div>
         </div>
-        <div class="page" id="page-settings" style="padding: 0 16px 80px 16px !important;">
+        <div class="page" id="page-settings" >
             <div class="welcome-card" onclick="openEditProfile()" style="cursor: pointer;">
                 <div class="avatar"><div class="avatar-inner" id="settings-avatar-emoji"></div></div>
                 <div style="flex: 1;"><div style="font-size: 18px; font-weight: bold;" id="settings-user-name">小明</div><div style="font-size: 12px; color: #999; margin-top: 3px;">点击编辑头像和名字</div></div>
