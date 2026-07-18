@@ -284,7 +284,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-calendar" style="padding-top: 0;">
+        <div class="page" id="page-calendar" style="padding: 0 16px 80px 16px !important;">
             <div class="section-header"><span class="section-title">📅 打卡日历</span></div>
             <div class="tab-buttons">
                 <button class="tab-btn active" onclick="switchCalendarTab('week')">本周</button>
@@ -321,7 +321,7 @@
             </div>
         </div>
 
-        <div class="page" id="page-rewards" style="padding-top: 0;">
+        <div class="page" id="page-rewards" style="padding: 0 16px 80px 16px !important;">
             <div class="reward-header" style="margin-bottom: 8px;">
                 <div class="reward-points">
                     <div><div style="font-size: 18px; font-weight: bold;"> 奖励商城</div><div style="font-size: 12px; color: #666; margin-top: 3px;">完成任务赚积分，兑换心仪的奖励！</div></div>
@@ -343,7 +343,7 @@
                 </div>
             </div>
         </div>
-        <div class="page" id="page-settings" style="padding-top: 0;">
+        <div class="page" id="page-settings" style="padding: 0 16px 80px 16px !important;">
             <div class="welcome-card" onclick="openEditProfile()" style="cursor: pointer;">
                 <div class="avatar"><div class="avatar-inner" id="settings-avatar-emoji"></div></div>
                 <div style="flex: 1;"><div style="font-size: 18px; font-weight: bold;" id="settings-user-name">小明</div><div style="font-size: 12px; color: #999; margin-top: 3px;">点击编辑头像和名字</div></div>
@@ -1396,7 +1396,30 @@
                 closeModal('modal-edit-profile');
             }
         }
-</script>
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('avatar-preview');
+                    if (preview) {
+                        preview.src = e.target.result;
+                    }
+                    // Also update settings avatar
+                    const settingsAvatar = document.getElementById('settings-avatar-emoji');
+                    if (settingsAvatar) {
+                        settingsAvatar.innerHTML = '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">';
+                    }
+                    // Update home page avatar
+                    const homeAvatar = document.querySelector('#page-home .avatar-inner');
+                    if (homeAvatar) {
+                        homeAvatar.innerHTML = '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }</script>
 
         <!-- Lucky Draw Settings Modal -->
         <div class="modal" id="modal-lucky-settings">
@@ -1427,22 +1450,14 @@
                 <div class="modal-header"><div class="modal-title">编辑个人资料</div></div>
                 <div class="input-group">
                     <label class="input-label">选择头像</label>
-                    <div class="emoji-grid">
-                        <div class="emoji-item selected" onclick="selectProfileAvatar(this, '🦁')"></div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '')">🐯</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🦊')">🦊</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐼')"></div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '')">🐨</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐸')">🐸</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐰')"></div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '')">🐱</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐶')">🐶</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐷')"></div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '')">🐮</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐔')">🐔</div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🐧')"></div>
-                        <div class="emoji-item" onclick="selectProfileAvatar(this, '🦉')"></div>
+                <div class="input-group">
+                    <label class="input-label">上传头像</label>
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <img id="avatar-preview" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; background: #F5F5F5;" src="">
                     </div>
+                    <input type="file" id="avatar-upload" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                    <button class="btn btn-secondary" onclick="document.getElementById('avatar-upload').click()" style="width: 100%;">选择图片</button>
+                </div>
                 </div>
                 <div class="input-group">
                     <label class="input-label">名字</label>
