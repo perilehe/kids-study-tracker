@@ -630,6 +630,113 @@ function openAddTask() {
             alert('🎁 添加新奖励\n\n功能开发中...');
         }
 
+        // 页面切换
+        function switchPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('page-' + pageName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // 日历功能
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        const checkInData = {
+            '2026-07-01': { completed: 4, total: 4 },
+            '2026-07-02': { completed: 3, total: 4 },
+            '2026-07-03': { completed: 4, total: 4 }
+        };
+
+        const weekDays = [
+            { date: '7月13日', day: '周一', tasks: 4, completed: 4 },
+            { date: '7月14日', day: '周二', tasks: 4, completed: 3 },
+            { date: '7月15日', day: '周三', tasks: 4, completed: 4 },
+            { date: '7月16日', day: '周四', tasks: 4, completed: 2 },
+            { date: '7月17日', day: '周五', tasks: 4, completed: 2 },
+            { date: '7月18日', day: '周六', tasks: 4, completed: 0 },
+            { date: '7月19日', day: '周日', tasks: 4, completed: 0 }
+        ];
+
+        function switchCalendarTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            if (tab === 'week') {
+                document.getElementById('week-view').style.display = 'block';
+                document.getElementById('month-view').style.display = 'none';
+            } else {
+                document.getElementById('week-view').style.display = 'none';
+                document.getElementById('month-view').style.display = 'block';
+            }
+        }
+
+        function renderWeekView() {
+            const list = document.getElementById('week-days-list');
+            if (!list) return;
+            const today = new Date();
+            const todayStr = '7月' + today.getDate() + '日';
+            let html = '';
+            weekDays.forEach((day, index) => {
+                const isToday = day.date === todayStr;
+                const hasCheckIn = day.completed > 0;
+                let className = 'week-day-item';
+                if (isToday) className += ' today';
+                else if (hasCheckIn) className += ' has-checkin';
+                html += '<div class="' + className + '">';
+                html += '<div class="week-day-number">' + (index + 1) + '</div>';
+                html += '<div class="week-day-info">';
+                html += '<div class="week-day-name">' + day.day + ' · ' + day.date + '</div>';
+                html += '<div class="week-day-tasks">完成 ' + day.completed + '/' + day.tasks + ' 个任务</div>';
+                html += '</div>';
+                html += '<div class="week-day-status">';
+                if (day.completed === day.tasks) html += '✅';
+                else if (day.completed > 0) html += '';
+                else html += '○';
+                html += '</div>';
+                html += '</div>';
+            });
+            list.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            if (!grid) return;
+            const monthYear = document.getElementById('calendar-month-year');
+            if (monthYear) monthYear.textContent = currentYear + '年' + (currentMonth + 1) + '月';
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const today = new Date();
+            let html = '';
+            ['日', '一', '二', '三', '四', '五', '六'].forEach(d => { html += '<div class="calendar-day-header">' + d + '</div>'; });
+            for (let i = 0; i < firstDay; i++) { html += '<div class="calendar-day empty"></div>'; }
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                const isToday = today.getDate() === day && today.getMonth() === currentMonth && today.getFullYear() === currentYear;
+                const dayData = checkInData[dateStr];
+                let classes = 'calendar-day';
+                let content = day;
+                if (dayData) {
+                    const ratio = dayData.completed / dayData.total;
+                    if (ratio === 1) classes += ' full-complete';
+                    else if (ratio > 0) classes += ' partial-complete';
+                    else classes += ' no-complete';
+                    content += '<div style="font-size:9px;margin-top:2px;">' + dayData.completed + '/' + dayData.total + '</div>';
+                } else {
+                    classes += ' no-complete';
+                }
+                if (isToday) classes += ' today';
+                html += '<div class="' + classes + '">' + content + '</div>';
+            }
+            grid.innerHTML = html;
+        }
+
         let currentCheckInTaskId = null;
 
         function openCheckIn(taskId) {
