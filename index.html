@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -113,6 +113,12 @@
         .success-points { font-size: 20px; color: #FFD23F; margin-top: 6px; }
         .edit-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #F5F5F5; border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
         .edit-item:active { background: #E0E0E0; }
+        .edit-btn { color: #4ECDC4; font-size: 13px; cursor: pointer; padding: 4px 8px; }
+        .delete-btn { color: #FF6B6B; font-size: 13px; cursor: pointer; padding: 4px 8px; }
+        .action-btns { display: flex; gap: 4px; }
+        .image-upload-area { width: 100%; height: 80px; border: 2px dashed #E0E0E0; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #999; font-size: 14px; margin-bottom: 12px; overflow: hidden; position: relative; }
+        .image-upload-area img { width: 100%; height: 100%; object-fit: cover; }
+        .image-upload-area:hover { border-color: #FF6B35; }
         .calendar-container { background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .calendar-nav { font-size: 20px; cursor: pointer; padding: 6px; }
@@ -261,14 +267,66 @@
                 <div style="color: #999; font-size: 18px;">></div>
             </div>
             <div class="section-header" style="margin-top: 14px;"><span class="section-title"> 任务管理</span><button class="add-btn" onclick="openAddTask()">+ 添加</button></div>
-            <div class="settings-group">
-                <div class="settings-item" onclick="editTask(1, '阅读', 30, 10)"><div class="task-icon" style="width: 38px; height: 38px; background: #FFE4E8; font-size: 18px;">📖</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">阅读</div><div style="font-size: 12px; color: #999;">30分钟 · 10⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
-                <div class="settings-item" onclick="editTask(2, '练琴', 20, 10)"><div class="task-icon" style="width: 38px; height: 38px; background: #E3F2FD; font-size: 18px;">🎹</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">练琴</div><div style="font-size: 12px; color: #999;">20分钟 · 10⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
-                <div class="settings-item" onclick="editTask(3, '篮球', 40, 12)"><div class="task-icon" style="width: 38px; height: 38px; background: #E8F5E9; font-size: 18px;">🏀</div><div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">篮球</div><div style="font-size: 12px; color: #999;">40分钟 · 12⭐</div></div><span style="color: #4ECDC4; font-size: 13px;">编辑</span></div>
+            <div class="settings-group" id="settings-task-list">
+                <div class="settings-item">
+                    <div class="task-icon" style="width: 38px; height: 38px; background: #FFE4E8; font-size: 18px;"></div>
+                    <div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">阅读</div><div style="font-size: 12px; color: #999;">30分钟 · 10⭐</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editTask(1, '阅读', 30, 10)">编辑</span>
+                        <span class="delete-btn" onclick="deleteTask(1)">删除</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <div class="task-icon" style="width: 38px; height: 38px; background: #E3F2FD; font-size: 18px;"></div>
+                    <div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">练琴</div><div style="font-size: 12px; color: #999;">20分钟 · 10⭐</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editTask(2, '练琴', 20, 10)">编辑</span>
+                        <span class="delete-btn" onclick="deleteTask(2)">删除</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <div class="task-icon" style="width: 38px; height: 38px; background: #E8F5E9; font-size: 18px;"></div>
+                    <div style="flex: 1; margin-left: 10px;"><div style="font-weight: 600; font-size: 14px;">篮球</div><div style="font-size: 12px; color: #999;">40分钟 · 12⭐</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editTask(3, '篮球', 40, 12)">编辑</span>
+                        <span class="delete-btn" onclick="deleteTask(3)">删除</span>
+                    </div>
+                </div>
             </div>
-            <div class="section-header"><span class="section-title">🎁 奖励管理</span></div>
-            <div class="settings-group">
-                <div class="settings-item" onclick="openManageRewards()"><span class="settings-icon"></span><span class="settings-label">管理奖励卡片</span><span class="settings-arrow">></span></div>
+            <div class="section-header"><span class="section-title"> 奖励管理</span><button class="add-btn" onclick="openAddRewardFromSettings()">+ 添加</button></div>
+            <div class="settings-group" id="settings-reward-list">
+                <div class="settings-item">
+                    <span style="font-size: 22px; margin-right: 8px;"></span>
+                    <div style="flex: 1;"><div style="font-weight: 600; font-size: 14px;">冰淇淋</div><div style="font-size: 12px; color: #999;">50积分</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editReward(1, '冰淇淋', 50)">编辑</span>
+                        <span class="delete-btn" onclick="deleteReward(1)">删除</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <span style="font-size: 22px; margin-right: 8px;"></span>
+                    <div style="flex: 1;"><div style="font-weight: 600; font-size: 14px;">看动画30分</div><div style="font-size: 12px; color: #999;">30积分</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editReward(2, '看动画30分', 30)">编辑</span>
+                        <span class="delete-btn" onclick="deleteReward(2)">删除</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <span style="font-size: 22px; margin-right: 8px;"></span>
+                    <div style="flex: 1;"><div style="font-weight: 600; font-size: 14px;">游戏时间</div><div style="font-size: 12px; color: #999;">60积分</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editReward(3, '游戏时间', 60)">编辑</span>
+                        <span class="delete-btn" onclick="deleteReward(3)">删除</span>
+                    </div>
+                </div>
+                <div class="settings-item">
+                    <span style="font-size: 22px; margin-right: 8px;"></span>
+                    <div style="flex: 1;"><div style="font-weight: 600; font-size: 14px;">披萨大餐</div><div style="font-size: 12px; color: #999;">200积分</div></div>
+                    <div class="action-btns">
+                        <span class="edit-btn" onclick="editReward(4, '披萨大餐', 200)">编辑</span>
+                        <span class="delete-btn" onclick="deleteReward(4)">删除</span>
+                    </div>
+                </div>
             </div>
             <div class="section-header"><span class="section-title"> 其他设置</span></div>
             <div class="settings-group">
@@ -310,6 +368,14 @@
                         <div class="emoji-item" onclick="selectEmoji('🎯', this)"></div>
                         <div class="emoji-item" onclick="selectEmoji('🎮', this)"></div>
                     </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">📷 或上传自定义图片</label>
+                    <div class="image-upload-area" onclick="document.getElementById('task-image-input').click()">
+                        <img id="task-image-preview" style="display: none;">
+                        <span id="upload-placeholder">📸 点击上传照片/图片</span>
+                    </div>
+                    <input type="file" id="task-image-input" accept="image/*" style="display: none;" onchange="handleTaskImage(event)">
                 </div>
                 <div class="input-group">
                     <label class="input-label">背景颜色</label>
@@ -651,13 +717,53 @@
         }
 
         function editReward(id, name, cost) {
-            document.getElementById('modal-manage-rewards').classList.remove('active');
             document.getElementById('edit-task-id').value = 'reward-' + id;
             document.getElementById('add-task-title').textContent = '编辑奖励';
             document.getElementById('task-name').value = name;
             document.getElementById('task-duration').value = '';
             document.getElementById('task-points').value = cost;
             document.getElementById('modal-add-task').classList.add('active');
+        }
+
+        function openAddRewardFromSettings() {
+            document.getElementById('edit-task-id').value = '';
+            document.getElementById('add-task-title').textContent = '新建奖励';
+            document.getElementById('task-name').value = '';
+            document.getElementById('task-duration').value = '';
+            document.getElementById('task-points').value = '';
+            document.getElementById('modal-add-task').classList.add('active');
+        }
+
+        function deleteTask(id) {
+            if (confirm('确定删除这个任务吗？')) {
+                const cards = document.querySelectorAll('#settings-task-list .settings-item');
+                cards.forEach(card => {
+                    const editBtn = card.querySelector('.edit-btn');
+                    if (editBtn && editBtn.getAttribute('onclick').includes('(' + id + ',')) {
+                        card.style.display = 'none';
+                    }
+                });
+                // Also hide from home page
+                const homeCards = document.querySelectorAll('#task-list .task-card');
+                homeCards.forEach(card => {
+                    const onclick = card.getAttribute('onclick');
+                    if (onclick && onclick.includes('openCheckIn(' + id + ')')) {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        function deleteReward(id) {
+            if (confirm('确定删除这个奖励吗？')) {
+                const items = document.querySelectorAll('#settings-reward-list .settings-item');
+                items.forEach(item => {
+                    const editBtn = item.querySelector('.edit-btn');
+                    if (editBtn && editBtn.getAttribute('onclick').includes('editReward(' + id + ',')) {
+                        item.style.display = 'none';
+                    }
+                });
+            }
         }
 
         function closeModal(modalId) {
@@ -673,6 +779,23 @@
         function selectColor(element) {
             document.querySelectorAll('.color-item').forEach(c => c.classList.remove('selected'));
             element.classList.add('selected');
+        }
+
+        function handleTaskImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('task-image-preview');
+                    const placeholder = document.getElementById('upload-placeholder');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    // Also update the selected icon preview
+                    document.getElementById('selected-icon').innerHTML = '<img src="' + e.target.result + '" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">';
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function selectMood(mood, element) {
