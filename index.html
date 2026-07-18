@@ -169,9 +169,8 @@
         .task-card.completed-task { opacity: 0.5; background: #F5F5F5; }
         .task-card.completed-task .task-name { color: #999; }
         .task-card.completed-task .task-icon { background: #E0E0E0 !important; }
-    
         .page > *:first-child { margin-top: 0; }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -1092,12 +1091,26 @@
 
         function saveTask() {
             const name = document.getElementById('task-name').value;
+            const points = document.getElementById('task-points').value || 10;
             if (name) {
                 const taskId = document.getElementById('edit-task-id').value;
+
+                // 检查是否是奖励（taskId 以'reward-'开头）
+                if (taskId && taskId.startsWith('reward-')) {
+                    // 添加到奖励网格
+                    const rewardGrid = document.querySelector('#page-rewards .reward-grid');
+                    if (rewardGrid) {
+                        const card = document.createElement('div');
+                        card.className = 'reward-card';
+                        card.innerHTML = '<div class="reward-emoji"></div><div class="reward-name">' + name + '</div><div class="reward-cost">⭐ ' + points + '</div><button class="reward-btn" onclick="redeemReward(\'new-\' + Date.now(), ' + points + ')">兑换</button>';
+                        rewardGrid.appendChild(card);
+                    }
+                }
+
                 alert(taskId ? '✅ 更新成功！' : '✅ 添加成功！');
                 closeModal('modal-add-task');
             } else {
-                alert('请输入任务名称');
+                alert('请输入名称');
             }
         }
 
@@ -1142,22 +1155,82 @@
             }
             userPoints -= cost;
             document.getElementById('user-points').textContent = userPoints;
+
+            // 添加到我的奖励列表
+            const rewardNames = {1: '冰淇淋券', 2: '动画时间', 3: '游戏时间', 4: '披萨大餐', 5: 'Lucky Draw'};
+            const rewardEmojis = {1: '🍦', 2: '📺', 3: '🎮', 4: '🍕', 5: ''};
+            const name = rewardNames[id] || '奖励';
+            const emoji = rewardEmojis[id] || '🎁';
+            const today = new Date();
+            const dateStr = (today.getMonth()+1) + '月' + today.getDate() + '日';
+
+            const unusedList = document.getElementById('unused-rewards-list');
+            if (unusedList) {
+                // 移除空状态提示
+                const emptyState = unusedList.querySelector('.empty-state');
+                if (emptyState) emptyState.remove();
+
+                const item = document.createElement('div');
+                item.className = 'reward-list-item';
+                item.innerHTML = '<div class="reward-list-check" onclick="useReward(this)">✓</div><div class="reward-list-info"><div class="reward-list-name">' + emoji + ' ' + name + '</div><div class="reward-list-date">兑换于 ' + dateStr + ' · ' + cost + '积分</div></div>';
+                unusedList.insertBefore(item, unusedList.firstChild);
+            }
+
             alert('✅ 兑换成功！\n\n剩余积分：' + userPoints + '\n\n请在"我的奖励"中查看');
         }
 
         function useReward(element) {
             const item = element.parentElement;
-            item.classList.add('used');
-            element.classList.add('checked');
-            setTimeout(() => {
-                const usedList = document.getElementById('used-rewards-list');
-                const unusedList = document.getElementById('unused-rewards-list');
-                usedList.insertBefore(item, usedList.firstChild);
-                if (unusedList.children.length === 0) {
-                    unusedList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎉</div><div>全部使用完啦！</div></div>';
+            const rewardName = item.querySelector('.reward-list-name').textContent;
+
+            // 检查是否是 Lucky Draw
+            if (rewardName.includes('Lucky Draw')) {
+                item.classList.add('used');
+                element.classList.add('checked');
+                setTimeout(() => {
+                    const usedList = document.getElementById('used-rewards-list');
+                    const unusedList = document.getElementById('unused-rewards-list');
+                    usedList.insertBefore(item, usedList.firstChild);
+                }, 300);
+                // 显示旋转动画
+                showLuckyDrawSpin();
+            } else {
+                item.classList.add('used');
+                element.classList.add('checked');
+                setTimeout(() => {
+                    const usedList = document.getElementById('used-rewards-list');
+                    const unusedList = document.getElementById('unused-rewards-list');
+                    usedList.insertBefore(item, usedList.firstChild);
+                    if (unusedList.children.length === 0) {
+                        unusedList.innerHTML = '<div class="empty-state"><div class="empty-state-icon"></div><div>全部使用完啦！</div></div>';
+                    }
+                }, 300);
+                alert('✅ 奖励已使用！');
+            }
+        }
+
+        function showLuckyDrawSpin() {
+            const modal = document.getElementById('modal-lucky-spin');
+            const display = document.getElementById('lucky-spin-display');
+            modal.classList.add('active');
+
+            let spinCount = 0;
+            const totalSpins = 20;
+            const spinInterval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * luckyDrawItems.length);
+                display.textContent = luckyDrawItems[randomIndex];
+                spinCount++;
+
+                if (spinCount >= totalSpins) {
+                    clearInterval(spinInterval);
+                    const finalIndex = Math.floor(Math.random() * luckyDrawItems.length);
+                    display.textContent = luckyDrawItems[finalIndex];
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        alert('🎉 恭喜抽中：' + luckyDrawItems[finalIndex] + '！');
+                    }, 1500);
                 }
-            }, 300);
-            alert('✅ 奖励已使用！');
+            }, 100);
         }
 
         const scratchBackgrounds = [
