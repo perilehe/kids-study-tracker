@@ -14,17 +14,26 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 input[type=number]{-moz-appearance:textfield}
 input,textarea,select,button{font-family:inherit}
 
-.topnav{background:var(--card);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.topnav{background:var(--card);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .deck-btn{font-size:10px;font-weight:800;padding:7px 16px;border-radius:8px;border:2px solid var(--border);background:var(--bg);color:var(--text2);cursor:pointer;transition:all .2s;letter-spacing:.04em}
 .deck-btn.active{background:var(--text);color:#FFF;border-color:var(--text)}
 .topnav-spacer{flex:1}
 .xp-box{display:flex;gap:6px;align-items:center}
-.xp-stat{text-align:right;background:var(--bg);border:1px solid var(--border);padding:4px 10px;border-radius:8px;min-width:70px}
+.xp-stat{text-align:left;background:var(--bg);border:1px solid var(--border);padding:4px 10px;border-radius:8px;min-width:60px}
 .xp-sl{font-size:7px;color:var(--text3);font-weight:700;letter-spacing:.06em}
 .xp-sv{font-size:13px;font-weight:800}
 .sync-dot{width:8px;height:8px;border-radius:50%;margin-left:6px;display:inline-block}
 .sync-ok{background:var(--c6)}.sync-err{background:var(--c5)}.sync-ing{background:var(--accent2);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.stbl{width:100%;border-collapse:collapse;font-size:11px;font-weight:700}
+.stbl th{font-size:8px;color:var(--text3);font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:8px 6px;border-bottom:2px solid var(--border);text-align:right;white-space:nowrap}
+.stbl th:first-child{text-align:left}
+.stbl td{padding:7px 6px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
+.stbl td:first-child{text-align:left}
+.stbl tr:last-child td{border-bottom:none}
+.stbl tr.row-today td{background:rgba(59,130,246,0.05);font-weight:800}
+.stbl tr.row-future td{color:var(--text3);opacity:.4}
+.stbl .val-pos{color:var(--c1)}.stbl .val-neg{color:var(--spent)}
 
 .main{flex:1;display:flex;overflow:hidden;position:relative}
 .page-group{display:none;width:100%;height:100%;background:var(--card);flex-direction:column}.page-group.active{display:flex}
@@ -50,7 +59,7 @@ input,textarea,select,button{font-family:inherit}
 .tab-content.active{display:block}
 
 .botnav{display:none;background:var(--card);border-top:1px solid var(--border);padding:8px 0;flex-shrink:0}
-@media(max-width:767px){.botnav{display:flex}}
+@media(max-width:767px){.botnav{display:flex}.deck-buttons{display:none}.xp-box{margin-left:0}.xp-stat{min-width:55px;padding:4px 8px}.xp-sv{font-size:11px}}
 .bni{flex:1;text-align:center;padding:8px;cursor:pointer}.bnl{font-size:11px;font-weight:700;color:var(--text3);transition:color .2s}
 .bni.active .bnl{color:var(--accent);font-weight:800}
 
@@ -156,17 +165,18 @@ textarea.if{resize:vertical;min-height:70px}
 <div style="display:flex;flex-direction:column;height:100vh">
 
 <div class="topnav">
-  <div style="display:flex;gap:4px">
+  <div class="xp-box">
+    <div class="xp-stat"><div class="xp-sl">EARNED</div><div class="xp-sv" id="xp-earned" style="color:var(--c1)">0 XP</div></div>
+    <div class="xp-stat"><div class="xp-sl">SPENT</div><div class="xp-sv" id="xp-spent" style="color:var(--spent)">0 XP</div></div>
+    <div class="xp-stat"><div class="xp-sl">BALANCE</div><div class="xp-sv" id="xp-balance" style="color:var(--c6)">0 XP</div></div>
+    <span class="sync-dot sync-ing" id="sync-dot"></span>
+  </div>
+  <div class="topnav-spacer"></div>
+  <div class="deck-buttons">
     <button class="deck-btn active" onclick="goPage('planner',this)">PLANNER</button>
     <button class="deck-btn" onclick="goPage('rewards',this)">REWARDS</button>
     <button class="deck-btn" onclick="goPage('stats',this)">STATS</button>
     <button class="deck-btn" onclick="goPage('settings',this)">SETTINGS</button>
-  </div>
-  <div class="topnav-spacer"></div>
-  <div class="xp-box">
-    <div class="xp-stat"><div class="xp-sl">EARNED</div><div class="xp-sv" id="xp-earned" style="color:var(--c1)">0 XP</div></div>
-    <div class="xp-stat"><div class="xp-sl">SPENT</div><div class="xp-sv" id="xp-spent" style="color:var(--spent)">0 XP</div></div>
-    <div class="xp-stat"><div class="xp-sl">BALANCE</div><div class="xp-sv" id="xp-balance" style="color:var(--c6)">0 XP</div><span class="sync-dot sync-ing" id="sync-dot"></span></div>
   </div>
 </div>
 
@@ -251,7 +261,7 @@ var RCOL=["#3B82F6","#8B5CF6","#F97316","#EAB308","#F43F5E","#10B981"];
 
 /* STATE */
 var S={pr:{name:"Kiddo",av:""},totalXp:0,spendableXp:0,tm:[],logs:[],rw:[],loot:[],cp:[],pm:[]};
-var pendCI=null,sM=0,sE=0,actx=null,pFilter="ALL",crColor="#3B82F6",statsView="WEEKLY";
+var pendCI=null,sM=0,sE=0,actx=null,pFilter="ALL",crColor="#3B82F6",statsView="TODAY";
 
 /* LOAD FROM SUPABASE */
 async function loadAll(){setSync('ing');try{
@@ -272,7 +282,7 @@ function drawCurrent(){var g=document.querySelector('.page-group.active');if(!g)
 /* SAVE TO SUPABASE */
 async function saveProfile(){setSync('ing');try{await sb.from('profiles').upsert({id:'default',name:S.pr.name,avatar:S.pr.av,total_xp:S.totalXp,spendable_xp:S.spendableXp,streak:S.pr.streak||0,max_streak:S.pr.maxSt||0,level:S.pr.lvl});setSync('ok')}catch(e){setSync('err')}}
 async function saveLog(log){try{await sb.from('check_logs').insert(log)}catch(e){}}
-async function saveLoot(l){try{await sb.from('loot').insert(l)}catch(e){}}
+async function saveLoot(l){try{var r=await sb.from('loot').insert(l).select();return r}catch(e){return null}}
 async function updateLoot(id,data){try{await sb.from('loot').update(data).eq('id',id)}catch(e){}}
 async function savePlanningMission(m){try{await sb.from('planning_missions').upsert(m)}catch(e){}}
 async function deletePlanningMission(id){try{await sb.from('planning_missions').delete().eq('id',id)}catch(e){}}
@@ -349,7 +359,7 @@ if(!avail.length)html+='<div style="text-align:center;color:var(--text3);font-si
 html+='<div class="rsec" style="background:var(--bg);border:1px solid var(--border)"><div style="font-size:13px;font-weight:700;color:var(--text3)">Used</div><div style="font-size:12px;color:var(--text3)">'+used.length+' items · '+uPts+' XP</div></div>';
 for(var i=0;i<used.length;i++){var r=used[i];html+='<div class="rinv" style="background:var(--bg);opacity:.5"><div><div style="color:var(--text3);font-size:13px;font-weight:700;text-decoration:line-through">'+r.nm+'</div><div style="color:var(--text3);font-size:10px">Used '+new Date(r.ua).toLocaleDateString()+'</div></div><div style="color:var(--text3)">✓</div></div>'}
 list.innerHTML=html}
-async function redeem(id){if(!S.rw)return;var r=null;for(var i=0;i<S.rw.length;i++)if(S.rw[i].id===id){r=S.rw[i];break}if(!r||S.spendableXp<r.cost){hud("Not enough XP!");return}hud("Spend "+r.cost+" XP on "+r.name+"?",[{l:"REDEEM",s:"bp",f:async function(){if(!spendXP(r.cost)){hud("Not enough XP!");return}var nr={nm:r.name,cn:r.cn,cost:r.cost,status:"UNSPENT",ts:Date.now(),ua:null};var saved=await saveLoot(nr);if(saved&&saved[0])nr.id="h"+saved[0].id;S.loot.unshift(nr);snd([988,1319],"triangle",0.2);drawRewards();drawWelcome();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
+async function redeem(id){if(!S.rw)return;var r=null;for(var i=0;i<S.rw.length;i++)if(S.rw[i].id===id){r=S.rw[i];break}if(!r||S.spendableXp<r.cost){hud("Not enough XP!");return}hud("Spend "+r.cost+" XP on "+r.name+"?",[{l:"REDEEM",s:"bp",f:async function(){if(!spendXP(r.cost)){hud("Not enough XP!");return}var nr={nm:r.name,cn:r.cn,cost:r.cost,status:"UNSPENT",ts:Date.now(),ua:null};var saved=await saveLoot(nr);if(saved&&saved[0])nr.id=saved[0].id;S.loot.unshift(nr);snd([988,1319],"triangle",0.2);drawRewards();drawWelcome();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
 function useRw(id){if(!S.loot)return;var r=null;for(var i=0;i<S.loot.length;i++)if(S.loot[i].id===id){r=S.loot[i];break}if(!r)return;hud("Use \""+r.nm+"\"?",[{l:"YES",s:"bp",f:async function(){r.status="SPENT";r.ua=Date.now();updateLoot(r.id,{status:"SPENT",ua:r.ua});drawInv();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
 function refundRw(id){if(!S.loot)return;var r=null;for(var i=0;i<S.loot.length;i++)if(S.loot[i].id===id){r=S.loot[i];break}if(!r||r.status!=="UNSPENT")return;hud("Refund "+r.nm+"? +"+r.cost+" XP back.",[{l:"REFUND",s:"bp",f:async function(){r.status="REFUNDED";r.ua=Date.now();updateLoot(r.id,{status:"REFUNDED",ua:r.ua});refundXP(r.cost);drawInv();drawWelcome();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
 function delRw(id){if(!confirm("Delete?"))return;S.rw=(S.rw||[]).filter(function(r){return r.id!==id});deleteRewardRow(id);drawRewards()}
@@ -450,8 +460,9 @@ function spinWheel(){
 
 /* STATS */
 function calcFreeSpins(){var totalDone=0,todayMin=0;var today=new Date().toISOString().split("T")[0];if(S.logs)for(var i=0;i<S.logs.length;i++){totalDone++;if(S.logs[i].date===today)todayMin+=S.logs[i].dur}var taskSpins=Math.floor(totalDone/20);var timeSpins=Math.floor(todayMin/240);var free=taskSpins+timeSpins;var el=document.getElementById("free-spins-label");if(el)el.textContent=free>0?free+" FREE SPINS available!":"";var costEl=document.getElementById("wheel-cost-label");if(costEl)costEl.textContent=free>0?"FREE ("+free+" left)":"10 XP / SPIN";S._freeSpins=free}
-function drawStats(){var el=document.getElementById("ac-stats");if(!el)return;var now=new Date();var isWeek=statsView==="WEEKLY";var totalDur=0,totalTasks=0,totalEarned=0,totalSpent=0;if(S.logs){var cutoff=isWeek?getMonday(now):new Date(now.getFullYear(),now.getMonth(),1);for(var i=0;i<S.logs.length;i++){var ld=new Date(S.logs[i].ts);if(ld>=cutoff){totalDur+=S.logs[i].dur;totalTasks++;totalEarned+=S.logs[i].pts}}}if(S.loot){for(var i=0;i<S.loot.length;i++){var l=S.loot[i];if(l.status==="SPENT"&&l.ua){var ld=new Date(l.ua);if(ld>=cutoff)totalSpent+=l.cost}}}var chartData=[];if(isWeek){var mon=getMonday(now);for(var i=0;i<7;i++){var d=new Date(mon);d.setDate(mon.getDate()+i);var ds=d.toISOString().split("T")[0];var dayEarned=0,daySpent=0;if(S.logs)for(var j=0;j<S.logs.length;j++)if(S.logs[j].date===ds)dayEarned+=S.logs[j].pts;if(S.loot)for(var j=0;j<S.loot.length;j++)if(S.loot[j].status==="SPENT"&&S.loot[j].ua&&new Date(S.loot[j].ua).toISOString().split("T")[0]===ds)daySpent+=S.loot[j].cost;chartData.push({label:dayName(d),earned:dayEarned,spent:daySpent})}}else{var first=new Date(now.getFullYear(),now.getMonth(),1);var days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();for(var i=0;i<days;i++){var d=new Date(first);d.setDate(first.getDate()+i);var ds=d.toISOString().split("T")[0];var dayEarned=0,daySpent=0;if(S.logs)for(var j=0;j<S.logs.length;j++)if(S.logs[j].date===ds)dayEarned+=S.logs[j].pts;if(S.loot)for(var j=0;j<S.loot.length;j++)if(S.loot[j].status==="SPENT"&&S.loot[j].ua&&new Date(S.loot[j].ua).toISOString().split("T")[0]===ds)daySpent+=S.loot[j].cost;chartData.push({label:d.getDate(),earned:dayEarned,spent:daySpent})}}var combined=[];var cutoff2=isWeek?getMonday(now):new Date(now.getFullYear(),now.getMonth(),1);if(S.logs)for(var i=0;i<S.logs.length;i++){var ld=new Date(S.logs[i].ts);if(ld>=cutoff2)combined.push({id:S.logs[i].id,name:S.logs[i].en,amt:S.logs[i].pts,type:"EARNED",time:fmtTime(S.logs[i].ts),color:S.logs[i].color})}if(S.loot)for(var i=0;i<S.loot.length;i++){var l=S.loot[i];if(l.status==="SPENT"&&l.ua&&new Date(l.ua)>=cutoff2)combined.push({id:l.id+"_s",name:l.nm,amt:l.cost,type:"SPENT",time:fmtTime(l.ua),color:l.color})}combined.sort(function(a,b){return new Date(b.time).getTime()-new Date(a.time).getTime()});combined=combined.slice(0,50);var maxEarned=1,maxSpent=1;for(var i=0;i<chartData.length;i++){if(chartData[i].earned>maxEarned)maxEarned=chartData[i].earned;if(chartData[i].spent>maxSpent)maxSpent=chartData[i].spent}var accumData=[];var running=0;for(var i=0;i<chartData.length;i++){running+=chartData[i].earned;accumData.push(running)}var maxAccum=running||1;var html='<div class="stats-header"><div class="stats-metrics"><div><div class="stats-metric-label">Focus Time ('+(isWeek?"Weekly":"Monthly")+')</div><div class="stats-metric-val"> '+Math.floor(totalDur/60)+'h '+totalDur%60+'m</div></div><div style="border-left:1px solid var(--border);padding-left:24px"><div class="stats-metric-label">Missions Completed</div><div class="stats-metric-val"> '+totalTasks+'</div></div></div><div class="view-toggle"><button class="view-btn'+(isWeek?" active":"")+'" onclick="setStatsView("WEEKLY")">Weekly</button><button class="view-btn'+(!isWeek?" active":"")+'" onclick="setStatsView("MONTHLY")">Monthly</button></div></div>';html+='<div class="stats-grid">';html+='<div class="stats-panel"><div class="stats-panel-header"><div class="stats-panel-title">XP_LEDGER</div><div style="text-align:right"><div style="font-size:8px;color:var(--text3);font-weight:700">NET FLOW</div><div style="font-size:14px;font-weight:800;color:'+(totalEarned-totalSpent>=0?"var(--c1)":"var(--spent)")+'">'+(totalEarned-totalSpent>=0?"+":"")+((totalEarned-totalSpent))+' XP</div></div></div><div class="ledger-list">';if(!combined.length)html+='<div class="emp">No Activity Yet</div>';for(var i=0;i<combined.length;i++){var c=combined[i];var isE=c.type==="EARNED";html+='<div class="ledger-item"><div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:'+(isE?"rgba(59,130,246,0.1)":"rgba(244,63,94,0.1)")+';color:'+(isE?"var(--c1)":"var(--spent)")+'">'+(isE?"&#x2197;":"&#x2198;")+'</div><div><div style="font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase">'+c.name+'</div><div style="font-size:9px;color:var(--text3);font-weight:700">'+c.time+'</div></div></div><div style="font-size:14px;font-weight:800;color:'+(isE?"var(--c1)":"var(--spent)")+'">'+(isE?"+":"-")+c.amt+'</div></div>'}html+='</div></div>';html+='<div style="display:flex;flex-direction:column;gap:12px">';html+='<div class="stats-panel" style="min-height:220px"><div class="stats-panel-header"><div class="stats-panel-title">Earned XP</div></div><div class="bar-chart"><div class="bar-chart-yaxis"><span>'+maxEarned+'</span><span>'+Math.ceil(maxEarned/2)+'</span><span>0</span></div>';for(var i=0;i<chartData.length;i++){var d=chartData[i];var eh=Math.max(2,(d.earned/maxEarned)*150);html+='<div class="bar-group"><div class="bar-pair"><div class="bar" style="height:'+eh+'px;background:var(--c1);width:100%"></div></div><div class="bar-label">'+d.label+'</div></div>'}html+='</div></div></div>';html+='<div class="stats-panel" style="min-height:220px"><div class="stats-panel-header"><div class="stats-panel-title">Spent XP</div></div><div class="bar-chart"><div class="bar-chart-yaxis"><span>'+maxSpent+'</span><span>'+Math.ceil(maxSpent/2)+'</span><span>0</span></div>';for(var i=0;i<chartData.length;i++){var d=chartData[i];var sh=Math.max(2,(d.spent/maxSpent)*150);html+='<div class="bar-group"><div class="bar-pair"><div class="bar" style="height:'+sh+'px;background:var(--c5);width:100%"></div></div><div class="bar-label">'+d.label+'</div></div>'}html+='</div></div></div>';html+='<div class="stats-panel" style="min-height:200px"><div class="stats-panel-header"><div class="stats-panel-title">XP Accumulation Trend</div></div><div style="padding:10px 16px"><canvas id="area-canvas" class="area-canvas" height="140"></canvas></div></div>';html+='</div></div>';el.innerHTML=html;setTimeout(function(){drawAreaChart(accumData,chartData,maxAccum)},100)}function setStatsView(v){statsView=v;drawStats()}function getMonday(d){var day=d.getDay();var diff=d.getDate()-day+(day===0?-6:1);var mon=new Date(d);mon.setDate(diff);mon.setHours(0,0,0,0);return mon}function setStatsView(v){statsView=v;drawStats()}
-function setStatsView(v){statsView=v;drawStats()}
+function drawStats(){var el=document.getElementById('ac-stats');if(!el)return;var now=new Date();var todayStr=now.toISOString().split('T')[0];var mode=statsView;var startDate,totalDays,periodLabel;if(mode==='TODAY'){startDate=new Date(now);startDate.setHours(0,0,0,0);totalDays=1;periodLabel='Today'}else if(mode==='WEEKLY'){startDate=getMonday(now);totalDays=7;periodLabel='This Week (Mon-Sun)'}else{startDate=new Date(now.getFullYear(),now.getMonth(),1);totalDays=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();periodLabel='This Month'}var rows=[];var cum=0;var tEarned=0,tSpent=0;for(var i=0;i<totalDays;i++){var d=new Date(startDate);d.setDate(startDate.getDate()+i);var ds=d.toISOString().split('T')[0];var earned=0,spent=0;if(S.logs)for(var j=0;j<S.logs.length;j++)if(S.logs[j].date===ds)earned+=S.logs[j].pts;if(S.loot)for(var j=0;j<S.loot.length;j++)if(S.loot[j].status==='SPENT'&&S.loot[j].ua&&new Date(S.loot[j].ua).toISOString().split('T')[0]===ds)spent+=S.loot[j].cost;var net=earned-spent;cum+=net;tEarned+=earned;tSpent+=spent;var isToday=ds===todayStr;var isFuture=d>now&&mode!=='TODAY';var label;if(mode==='TODAY')label='Today';else if(mode==='WEEKLY')label=dayName(d)+' '+d.getDate();else label=months_short[d.getMonth()]+' '+d.getDate();rows.push({label:label,earned:earned,spent:spent,net:net,cum:cum,isToday:isToday,isFuture:isFuture})}var html='<div style="padding:4px 0">';var modes=['TODAY','WEEKLY','MONTHLY'];var labels=['Today','This Week','This Month'];for(var b=0;b<3;b++){var act=statsView===modes[b]?'background:var(--text);color:#FFF;border-color:var(--text)':'';html+='<button class="fbtn" style="'+act+'" onclick="setStatsView('+b+')">'+labels[b]+'</button>'}html+='</div>';html+='<div style="overflow-x:auto"><table class="stbl"><thead><tr><th style="min-width:80px">'+periodLabel+'</th><th>+</th><th>-</th><th>Net</th><th>Total</th></tr></thead><tbody>';for(var r=0;r<rows.length;r++){var rw=rows[r];var cls='';if(rw.isToday)cls=' class="row-today"';else if(rw.isFuture)cls=' class="row-future"';html+='<tr'+cls+'><td>'+rw.label+'</td><td style="color:var(--c1)">'+(rw.earned>0?'+'+rw.earned:'0')+'</td><td style="color:var(--spent)">'+(rw.spent>0?'-'+rw.spent:'0')+'</td><td style="color:'+(rw.net>=0?'var(--c1)':'var(--spent)')+'">'+(rw.net>=0?'+':'')+rw.net+'</td><td style="font-weight:800">'+rw.cum+'</td></tr>'}html+='</tbody></table></div>';html+='<div style="display:flex;gap:8px;margin-top:14px">';html+='<div class="scard" style="flex:1;text-align:center;padding:10px"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.08em">PERIOD EARNED</div><div style="font-size:18px;font-weight:800;color:var(--c1)">+'+tEarned+'</div></div>';html+='<div class="scard" style="flex:1;text-align:center;padding:10px"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.08em">PERIOD SPENT</div><div style="font-size:18px;font-weight:800;color:var(--spent)">-'+tSpent+'</div></div>';html+='<div class="scard" style="flex:1;text-align:center;padding:10px"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.08em">NET</div><div style="font-size:18px;font-weight:800;color:'+(tEarned-tSpent>=0?'var(--c1)':'var(--spent)')+'">'+(tEarned-tSpent>=0?'+':'')+(tEarned-tSpent)+'</div></div>';html+='</div></div>';el.innerHTML=html}
+function setStatsView(v){var modes=['TODAY','WEEKLY','MONTHLY'];statsView=typeof v==='number'?modes[v]:v;drawStats()}function getMonday(d){var day=d.getDay();var diff=d.getDate()-day+(day===0?-6:1);var mon=new Date(d);mon.setDate(diff);mon.setHours(0,0,0,0);return mon}function setStatsView(v){var modes=['TODAY','WEEKLY','MONTHLY'];statsView=typeof v==='number'?modes[v]:v;drawStats()}
+function setStatsView(v){var modes=['TODAY','WEEKLY','MONTHLY'];statsView=typeof v==='number'?modes[v]:v;drawStats()}
 function getMonday(d){var day=d.getDay();var diff=d.getDate()-day+(day===0?-6:1);var mon=new Date(d);mon.setDate(diff);mon.setHours(0,0,0,0);return mon}
 function subDays(d,n){var r=new Date(d);r.setDate(r.getDate()-n);return r}
 function dayName(d){return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}
