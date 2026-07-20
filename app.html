@@ -154,9 +154,9 @@ textarea.if{resize:vertical;min-height:70px}
   </div>
   <div class="topnav-spacer"></div>
   <div class="xp-box">
-    <div class="xp-stat"><div class="xp-sl">EARNED</div><div class="xp-sv" id="xp-earned" style="color:var(--c1)">0</div></div>
-    <div class="xp-stat"><div class="xp-sl">SPENT</div><div class="xp-sv" id="xp-spent" style="color:var(--spent)">0</div></div>
-    <div class="xp-stat"><div class="xp-sl">BALANCE</div><div class="xp-sv" id="xp-balance" style="color:var(--c6)">0</div><span class="sync-dot sync-ing" id="sync-dot"></span></div>
+    <div class="xp-stat"><div class="xp-sl">EARNED</div><div class="xp-sv" id="xp-earned" style="color:var(--c1)">0 XP</div></div>
+    <div class="xp-stat"><div class="xp-sl">SPENT</div><div class="xp-sv" id="xp-spent" style="color:var(--spent)">0 XP</div></div>
+    <div class="xp-stat"><div class="xp-sl">BALANCE</div><div class="xp-sv" id="xp-balance" style="color:var(--c6)">0 XP</div><span class="sync-dot sync-ing" id="sync-dot"></span></div>
   </div>
 </div>
 
@@ -279,7 +279,7 @@ function cxp(t){return Math.max(1,Math.round(t.dur*(t.bx/t.bt)))}
 function addXP(n){S.totalXp+=n;S.spendableXp+=n;saveProfile();updXP()}
 function spendXP(n){if(S.spendableXp<n)return false;S.spendableXp-=n;saveProfile();return true}
 function refundXP(n){S.spendableXp+=n;saveProfile()}
-function updXP(){var spent=0;if(S.loot)for(var i=0;i<S.loot.length;i++)if(S.loot[i].status==="SPENT")spent+=S.loot[i].cost;var e1=document.getElementById("xp-earned");if(e1)e1.textContent=S.totalXp;var e2=document.getElementById("xp-spent");if(e2)e2.textContent=spent;var e3=document.getElementById("xp-balance");if(e3)e3.textContent=S.spendableXp}
+function updXP(){var spent=0;if(S.loot)for(var i=0;i<S.loot.length;i++)if(S.loot[i].status==="SPENT")spent+=S.loot[i].cost;var e1=document.getElementById("xp-earned");if(e1)e1.textContent=S.totalXp+" XP";var e2=document.getElementById("xp-spent");if(e2)e2.textContent=spent+" XP";var e3=document.getElementById("xp-balance");if(e3)e3.textContent=S.spendableXp+" XP"}
 
 /* AUDIO */
 function snd(freqs,type,dur){try{if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();if(actx.state==="suspended")actx.resume();var now=actx.currentTime;for(var i=0;i<freqs.length;i++){var o=actx.createOscillator(),g=actx.createGain();o.type=type||"sine";o.frequency.setValueAtTime(freqs[i],now+i*0.08);g.gain.setValueAtTime(0.12,now+i*0.08);g.gain.exponentialRampToValueAtTime(0.01,now+i*0.08+(dur||0.3));o.connect(g);g.connect(actx.destination);o.start(now+i*0.08);o.stop(now+i*0.08+(dur||0.35))}}catch(e){}}
