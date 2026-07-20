@@ -200,6 +200,15 @@ textarea.if{resize:vertical;min-height:70px}
 </div></div>
 
 <!-- WHEEL OVERLAY -->
+<div class="hudov" id="add-rw-modal"><div class="hudbx" style="text-align:left">
+  <div class="hudt" style="text-align:center">New Reward</div>
+  <div class="ig"><label class="il">Name</label><input class="if" id="rw-name" placeholder="e.g. Ice Cream"></div>
+  <div class="ig"><label class="il">中文名</label><input class="if" id="rw-cn" placeholder="e.g. 冰淇淋"></div>
+  <div class="ig"><label class="il">Cost (XP)</label><input type="number" class="if" id="rw-cost" placeholder="50"></div>
+  <div class="ig"><label class="il">Color</label><div class="cpick" id="rw-colors"></div></div>
+  <button class="btn bp" onclick="confirmAddRw()">Add</button>
+  <button class="btn bs" onclick="closeHUD('add-rw-modal')">Cancel</button>
+</div></div>
 <div class="wheel-overlay" id="wheel-overlay">
   <div class="wheel-box">
     <div class="wheel-title"> LUCKY WHEEL · 10 XP</div>
@@ -310,7 +319,10 @@ function closeCI(){pendCI=null;closeHUD("ci-modal")}
 function selM(v,el){sM=v;el.parentElement.querySelectorAll(".tbtn").forEach(function(m){m.classList.remove("sel")});el.classList.add("sel")}
 function selE(v,el){sE=v;el.parentElement.querySelectorAll(".tbtn").forEach(function(m){m.classList.remove("sel")});el.classList.add("sel")}
 
-function drawWelcome(){updXP();var el=document.getElementById("p-welcome");if(!el)return;var p=S.pr;var h=new Date().getHours();var gr=h<12?"Good Morning":h<18?"Good Afternoon":"Good Evening";var av=p.av?'<img src="'+p.av+'">':p.name.charAt(0).toUpperCase();var html='<div class="pbar" onclick="openProf()"><div class="pav">'+av+'</div><div style="flex:1"><div style="font-size:16px;font-weight:800">'+gr+'!</div><div style="font-size:12px;color:var(--text2)">'+p.name+'</div></div><div style="display:flex;gap:16px"><div style="text-align:right"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.06em">TOTAL</div><div style="font-size:20px;font-weight:800;color:var(--c1)">'+S.totalXp+'</div></div><div style="text-align:right"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.06em">BALANCE</div><div style="font-size:20px;font-weight:800;color:var(--c6)">'+S.spendableXp+'</div></div></div></div>';el.innerHTML=html;var pel=document.getElementById("p-prog");if(!pel)return;var total=S.tm?S.tm.length:0;var dn=0;if(S.tm)for(var i=0;i<S.tm.length;i++)if(S.tm[i].done)dn++;var pct=total>0?Math.round(dn/total*100):0;pel.innerHTML='<div class="pbh"><span class="pbt">Progress</span><span class="pbv">'+dn+'/'+total+'</span></div><div class="pbtrk"><div class="pbfill" style="width:'+pct+'%"></div></div>'}
+function drawWelcome(){updXP();var el=document.getElementById("p-welcome");if(!el)return;var p=S.pr;var h=new Date().getHours();var gr=h<12?"Good Morning":h<18?"Good Afternoon":"Good Evening";var av=p.av?'<img src="'+p.av+'">':p.name.charAt(0).toUpperCase();var html='<div class="pbar" onclick="openProf()"><div class="pav">'+av+'</div><div style="flex:1"><div style="font-size:16px;font-weight:800">'+gr+'!</div><div style="font-size:12px;color:var(--text2)">'+p.name+'</div></div><div style="display:flex;gap:16px"><div style="text-align:right"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.06em">TOTAL</div><div style="font-size:20px;font-weight:800;color:var(--c1)">'+S.totalXp+'</div></div><div style="text-align:right"><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.06em">BALANCE</div><div style="font-size:20px;font-weight:800;color:var(--c6)">'+S.spendableXp+'</div></div></div></div>';el.innerHTML=html;var pel=document.getElementById("p-prog");if(!pel)return;
+var total=S.tm?S.tm.length:0;var dn=0;var totalMin=0,doneMin=0;if(S.tm)for(var i=0;i<S.tm.length;i++){if(S.tm[i].done){dn++;doneMin+=S.tm[i].dur}totalMin+=S.tm[i].dur}
+var taskPct=total>0?Math.round(dn/total*100):0;var timePct=totalMin>0?Math.round(doneMin/totalMin*100):0;
+pel.innerHTML='<div class="pbh"><span class="pbt">Tasks</span><span class="pbv">'+dn+'/'+total+' ('+taskPct+'%)</span></div><div class="pbtrk"><div class="pbfill" style="width:'+taskPct+'%;background:linear-gradient(90deg,var(--c6),var(--accent2))"></div></div><div class="pbh" style="margin-top:10px"><span class="pbt">Time</span><span class="pbv">'+doneMin+'/'+totalMin+' min ('+timePct+'%)</span></div><div class="pbtrk"><div class="pbfill" style="width:'+timePct+'%;background:linear-gradient(90deg,var(--c1),var(--c2))"></div></div>'}
 
 /* ===== REWARDS ===== */
 function drawRewards(){var e1=document.getElementById("ac-r1");if(e1)e1.innerHTML='<div class="ght"><div class="gdot" style="background:var(--c1)"></div>01_VAULT</div><button class="btn bsm bp" style="margin-bottom:12px;font-size:9px;padding:6px 12px" onclick="addRw()">+ ADD REWARD</button><div id="rv-list"></div>';var e2=document.getElementById("ac-r2");if(e2)e2.innerHTML='<div class="ght"><div class="gdot" style="background:var(--c4)"></div>02_SHOP</div><div style="display:flex;gap:8px;margin-bottom:12px"><div class="rsec" style="background:var(--bg);border:1px solid var(--border);flex:1"><div><div style="font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.08em">BALANCE</div><div style="font-size:22px;font-weight:800;color:var(--accent2)">'+S.spendableXp+'</div></div></div><div class="rsec" style="background:linear-gradient(135deg,#FDE68A,#F59E0B);flex:1;cursor:pointer;border:none" onclick="openWheel()"><div><div style="font-size:8px;color:rgba(0,0,0,0.5);font-weight:700;letter-spacing:.08em">🎰 LUCKY WHEEL</div><div style="font-size:14px;font-weight:800;color:#000">10 XP / SPIN</div></div></div></div><div id="sh-list"></div>';var e3=document.getElementById("ac-r3");if(e3)e3.innerHTML='<div class="ght"><div class="gdot" style="background:var(--c5)"></div>03_INVENTORY</div><div id="inv-list"></div>';drawVault();drawShop();drawInv()}
@@ -327,7 +339,11 @@ async function redeem(id){if(!S.rw)return;var r=null;for(var i=0;i<S.rw.length;i
 function useRw(id){if(!S.loot)return;var r=null;for(var i=0;i<S.loot.length;i++)if(S.loot[i].id===id){r=S.loot[i];break}if(!r)return;hud("Use \""+r.nm+"\"?",[{l:"YES",s:"bp",f:async function(){r.status="SPENT";r.ua=Date.now();updateLoot(r.id,{status:"SPENT",ua:r.ua});drawInv();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
 function refundRw(id){if(!S.loot)return;var r=null;for(var i=0;i<S.loot.length;i++)if(S.loot[i].id===id){r=S.loot[i];break}if(!r||r.status!=="UNSPENT")return;hud("Refund "+r.nm+"? +"+r.cost+" XP back.",[{l:"REFUND",s:"bp",f:async function(){r.status="REFUNDED";r.ua=Date.now();updateLoot(r.id,{status:"REFUNDED",ua:r.ua});refundXP(r.cost);drawInv();drawWelcome();updXP()}},{l:"CANCEL",s:"bs",f:function(){}}])}
 function delRw(id){if(!confirm("Delete?"))return;S.rw=(S.rw||[]).filter(function(r){return r.id!==id});deleteRewardRow(id);drawRewards()}
-async function addRw(){var name=prompt("Reward name:");if(!name)return;var cost=parseInt(prompt("XP cost:","50"))||50;var saved=await saveReward({name:name,cn:"",cost:cost,color:RCOL[S.rw.length%RCOL.length]});if(saved&&saved[0])S.rw.push({id:"r"+saved[0].id,name:name,cost:cost,color:RCOL[S.rw.length%RCOL.length],cn:""});drawRewards()}
+var rwColor="#10B981";
+async function addRw(){rwColor="#10B981";document.getElementById("rw-name").value="";document.getElementById("rw-cn").value="";document.getElementById("rw-cost").value="";
+var cp=document.getElementById("rw-colors");if(cp){var ch="";var cols=["#3B82F6","#8B5CF6","#F97316","#EAB308","#F43F5E","#10B981"];for(var i=0;i<cols.length;i++)ch+='<div class="cswatch'+(i===0?" sel":"")+'" style="background:'+cols[i]+'" onclick="rwColor=\''+cols[i]+'\';this.parentElement.querySelectorAll(\'.cswatch\').forEach(function(s){s.classList.remove(\'sel\')});this.classList.add(\'sel\')"></div>';cp.innerHTML=ch}
+document.getElementById("add-rw-modal").classList.add("on")}
+async function confirmAddRw(){var name=document.getElementById("rw-name").value.trim();var cn=document.getElementById("rw-cn").value.trim();var cost=parseInt(document.getElementById("rw-cost").value)||50;if(!name){hud("Enter a name");return}var saved=await saveReward({name:name,cn:cn,cost:cost,color:rwColor});if(saved&&saved[0])S.rw.push({id:"r"+saved[0].id,name:name,cn:cn,cost:cost,color:rwColor});closeHUD("add-rw-modal");drawRewards()}
 
 /* ===== LUCKY WHEEL ===== */
 var WHEEL_ITEMS=[
@@ -454,6 +470,7 @@ loadAll();
 var hudEl=document.getElementById("hud");if(hudEl)hudEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
 var ciEl=document.getElementById("ci-modal");if(ciEl)ciEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
 var pmEl=document.getElementById("prof-modal");if(pmEl)pmEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
+var rwEl=document.getElementById("add-rw-modal");if(rwEl)rwEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
 </script>
 </body>
 </html>
