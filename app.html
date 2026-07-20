@@ -162,16 +162,16 @@ textarea.if{resize:vertical;min-height:70px}
 
 <div class="main">
 <div class="page-group active" id="pg-planner">
-  <div class="mob-tabs"><div class="mob-tab active" onclick="mobSwitch('planner',1,this)">01 PRESETS</div><div class="mob-tab" onclick="mobSwitch('planner',2,this)">02 PLANNING</div><div class="mob-tab" onclick="mobSwitch('planner',3,this)">03 MISSIONS</div></div>
-  <div class="ap expanded" id="ap-p1" onclick="expandAp('planner',1)"><div class="ap-tab"><div class="ap-tab-num">01</div><div class="ap-tab-title">PRESETS</div><div class="ap-tab-dot" style="background:var(--c1)"></div></div><div class="ap-content active" id="ac-p1"></div></div>
-  <div class="ap collapsed" id="ap-p2" onclick="expandAp('planner',2)"><div class="ap-tab"><div class="ap-tab-num">02</div><div class="ap-tab-title">PLANNING</div><div class="ap-tab-dot" style="background:var(--c4)"></div></div><div class="ap-content" id="ac-p2"></div></div>
-  <div class="ap collapsed" id="ap-p3" onclick="expandAp('planner',3)"><div class="ap-tab"><div class="ap-tab-num">03</div><div class="ap-tab-title">MISSIONS</div><div class="ap-tab-dot" style="background:var(--c5)"></div></div><div class="ap-content" id="ac-p3"></div></div>
+  <div class="top-tabs"><div class="top-tab active" onclick="topSwitch('planner',1,this)">01 PRESETS</div><div class="top-tab" onclick="topSwitch('planner',2,this)">02 PLANNING</div><div class="top-tab" onclick="topSwitch('planner',3,this)">03 MISSIONS</div></div>
+  <div class="tab-content active" id="ac-p1"></div>
+  <div class="tab-content" id="ac-p2"></div>
+  <div class="tab-content" id="ac-p3"></div>
 </div>
 <div class="page-group" id="pg-rewards">
-  <div class="mob-tabs"><div class="mob-tab active" onclick="mobSwitch('rewards',1,this)">01 VAULT</div><div class="mob-tab" onclick="mobSwitch('rewards',2,this)">02 SHOP</div><div class="mob-tab" onclick="mobSwitch('rewards',3,this)">03 INVENTORY</div></div>
-  <div class="ap expanded" id="ap-r1" onclick="expandAp('rewards',1)"><div class="ap-tab"><div class="ap-tab-num">01</div><div class="ap-tab-title">VAULT</div><div class="ap-tab-dot" style="background:var(--c1)"></div></div><div class="ap-content active" id="ac-r1"></div></div>
-  <div class="ap collapsed" id="ap-r2" onclick="expandAp('rewards',2)"><div class="ap-tab"><div class="ap-tab-num">02</div><div class="ap-tab-title">SHOP</div><div class="ap-tab-dot" style="background:var(--c4)"></div></div><div class="ap-content" id="ac-r2"></div></div>
-  <div class="ap collapsed" id="ap-r3" onclick="expandAp('rewards',3)"><div class="ap-tab"><div class="ap-tab-num">03</div><div class="ap-tab-title">INVENTORY</div><div class="ap-tab-dot" style="background:var(--c5)"></div></div><div class="ap-content" id="ac-r3"></div></div>
+  <div class="top-tabs"><div class="top-tab active" onclick="topSwitch('rewards',1,this)">01 VAULT</div><div class="top-tab" onclick="topSwitch('rewards',2,this)">02 SHOP</div><div class="top-tab" onclick="topSwitch('rewards',3,this)">03 INVENTORY</div></div>
+  <div class="tab-content active" id="ac-r1"></div>
+  <div class="tab-content" id="ac-r2"></div>
+  <div class="tab-content" id="ac-r3"></div>
 </div>
 <div class="page-group" id="pg-stats"><div class="ap expanded" style="width:100%"><div class="ap-content active" id="ac-stats" style="padding:20px"></div></div></div>
 <div class="page-group" id="pg-settings"><div class="ap expanded" style="width:100%"><div class="ap-content active" id="ac-settings" style="padding:20px"></div></div></div>
@@ -291,9 +291,16 @@ function closeHUD(id){document.getElementById(id).classList.remove("on")}
 /* NAV */
 function goPage(page,el){var groups=document.querySelectorAll(".page-group");for(var i=0;i<groups.length;i++)groups[i].classList.remove("active");var g=document.getElementById("pg-"+page);if(g)g.classList.add("active");var btns=document.querySelectorAll(".deck-btn");for(var i=0;i<btns.length;i++){btns[i].classList.remove("active");if(btns[i].textContent.trim().toLowerCase()===page)btns[i].classList.add("active")}var bns=document.querySelectorAll(".bni");for(var i=0;i<bns.length;i++)bns[i].classList.remove("active");if(el&&el.classList)el.classList.add("active");else{for(var i=0;i<bns.length;i++){var lbl=bns[i].querySelector(".bnl");if(lbl&&lbl.textContent.toLowerCase()===page)bns[i].classList.add("active")}}if(page==="planner")drawPlanner();if(page==="rewards")drawRewards();if(page==="stats")drawStats();if(page==="settings")drawSettings()}
 
-/* ACCORDION */
-function expandAp(deck,num){var prefix=deck==="planner"?"p":"r";for(var i=1;i<=3;i++){var ap=document.getElementById("ap-"+prefix+i);var ac=document.getElementById("ac-"+prefix+i);if(i===num){ap.className="ap expanded";if(ac)ac.classList.add("active")}else{ap.className="ap collapsed";if(ac)ac.classList.remove("active")}}if(deck==="planner"){if(num===1)drawPresets();if(num===2)drawPlan();if(num===3){drawActive();drawWelcome()}}if(deck==="rewards"){if(num===1)drawVault();if(num===2)drawShop();if(num===3)drawInv()}}
-function mobSwitch(deck,num,el){el.parentElement.querySelectorAll(".mob-tab").forEach(function(t){t.classList.remove("active")});el.classList.add("active");expandAp(deck,num)}
+/* TOP TABS */
+.top-tabs{display:flex;gap:4px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0}
+.top-tab{flex:1;padding:10px 8px;text-align:center;font-size:11px;font-weight:800;border-radius:8px;cursor:pointer;color:var(--text3);background:var(--bg);transition:all .2s;letter-spacing:.03em}
+.top-tab.active{background:var(--text);color:#FFF}
+.tab-content{display:none;flex:1;overflow-y:auto;padding:16px;min-width:0}
+.tab-content.active{display:block}
+
+/* OLD ACCORDION - kept for desktop fallback */
+function expandAp(deck,num){var prefix=deck==="planner"?"p":"r";var pg=document.getElementById("pg-"+deck);var tabs=pg.querySelectorAll(".top-tab");var contents=pg.querySelectorAll(".tab-content");for(var i=0;i<tabs.length;i++){tabs[i].classList.remove("active");contents[i].classList.remove("active")}tabs[num-1].classList.add("active");contents[num-1].classList.add("active");if(deck==="planner"){if(num===1)drawPresets();if(num===2)drawPlan();if(num===3){drawActive();drawWelcome()}}if(deck==="rewards"){if(num===1)drawVault();if(num===2)drawShop();if(num===3)drawInv()}}
+function topSwitch(deck,num,el){expandAp(deck,num)}
 
 /* ===== PLANNER ===== */
 function drawPlanner(){var e1=document.getElementById("ac-p1");if(e1)e1.innerHTML=getPresetsHTML();var e2=document.getElementById("ac-p2");if(e2)e2.innerHTML=getPlanHTML();var e3=document.getElementById("ac-p3");if(e3)e3.innerHTML=getMissionsHTML();drawPresets();drawPlan();drawActive();drawWelcome()}
