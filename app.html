@@ -319,7 +319,7 @@ function drawCurrent(){var g=document.querySelector('.page-group.active');if(!g)
 
 /* SAVE TO SUPABASE */
 async function saveProfile(){setSync('ing');try{await sb.from('profiles').upsert({id:'default',name:S.pr.name,avatar:S.pr.av,total_xp:S.totalXp,spendable_xp:S.spendableXp,streak:S.pr.streak||0,max_streak:S.pr.maxSt||0,level:S.pr.lvl});setSync('ok')}catch(e){setSync('err')}}
-async function saveLog(log){try{await sb.from('check_logs').insert({en:log.en,cn:log.cn,color:log.color,date:log.date,dur:log.dur,pts:log.pts,note:log.note||'',mood:log.mood||0,eff:log.eff||0,ts:log.ts})}catch(e){console.error('saveLog error',e)}}
+async function saveLog(log){try{await sb.from('check_logs').insert({en:log.en,cn:log.cn,color:log.color,cat:log.cat||'',date:log.date,dur:log.dur,pts:log.pts,note:log.note||'',mood:log.mood||0,eff:log.eff||0,ts:log.ts})}catch(e){console.error('saveLog error',e)}}
 async function saveLoot(l){try{var r=await sb.from('loot').insert(l).select();return r}catch(e){return null}}
 async function updateLoot(id,data){try{await sb.from('loot').update(data).eq('id',id)}catch(e){}}
 async function savePlanningMission(m){try{await sb.from('planning_missions').upsert(m)}catch(e){}}
