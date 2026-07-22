@@ -423,7 +423,7 @@ var MILESTONES=[
   {id:"m_xp100",check:function(){return S.totalXp>=100},desc:"100 XP EARNED",sub:"XP Century"},
   {id:"m_xp500",check:function(){return S.totalXp>=500},desc:"500 XP EARNED",sub:"XP Legend"}
 ];
-async function checkMilestones(){if(!S._earnedMs)S._earnedMs=[];for(var i=0;i<MILESTONES.length;i++){var m=MILESTONES[i];if(S._earnedMs.indexOf(m.id)>=0)continue;if(m.check()){S._earnedMs.push(m.id);saveProfile();var nr={nm:"MYSTERIOUS BOX",cn:"神秘宝箱",cost:0,status:"UNSPENT",ts:Date.now(),ua:null,_milestone:m.id,_msDesc:m.sub+": "+m.desc};var saved=await saveLoot(nr);if(saved&&saved[0]&&saved[0].id)nr.id=saved[0].id;else nr.id="loc"+Date.now();S.loot.unshift(nr);snd([523,659,784,1047],"sine",0.3);hud("MILESTONE UNLOCKED!",[{l:"AWESOME!",s:"bp",f:function(){}}]);drawInv()}}}
+async function checkMilestones(){if(!S._earnedMs)S._earnedMs=[];for(var i=0;i<MILESTONES.length;i++){var m=MILESTONES[i];if(S._earnedMs.indexOf(m.id)>=0)continue;if(m.check()){S._earnedMs.push(m.id);await saveProfile();var nr={nm:"MYSTERIOUS BOX",cn:"神秘宝箱",cost:0,status:"UNSPENT",ts:Date.now(),ua:null,_milestone:m.id,_msDesc:m.sub+": "+m.desc};var saved=await saveLoot(nr);if(saved&&saved[0]&&saved[0].id)nr.id=saved[0].id;else nr.id="loc"+Date.now();S.loot.unshift(nr);snd([523,659,784,1047],"sine",0.3);hud("MILESTONE UNLOCKED!",[{l:"AWESOME!",s:"bp",f:function(){}}]);drawInv()}}}
 var BB_ITEMS=[
   {label:"+10",value:10,color:"#3B82F6",type:"xp"},
   {label:"+10",value:10,color:"#3B82F6",type:"xp"},
