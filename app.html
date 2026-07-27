@@ -1875,10 +1875,10 @@ function answerQuiz(idx){
 };
 
 async function addMysteriousBox(elementName){
-  // Check if already has a box from this element
+  // Check if already has a box from this element (any status)
   if(S.loot){
     for(var i=0;i<S.loot.length;i++){
-      if(S.loot[i]._fromElement === elementName && S.loot[i].status === "UNSPENT"){
+      if(S.loot[i]._fromElement === elementName){
         console.log("Already has Mysterious Box from "+elementName);
         return;
       }
