@@ -2745,11 +2745,11 @@ function answerQuiz(idx){
     _quizState.score += 1;
     options[idx].style.background = '#ECFDF5';
 
-    // Check if already has box
+    // Check if already has box (any status)
     var alreadyHasBox = false;
     if(S.loot){
       for(var i=0;i<S.loot.length;i++){
-        if(S.loot[i]._fromElement === elem.name_zh && S.loot[i].status === "UNSPENT"){
+        if(S.loot[i]._fromElement === elem.name_zh){
           alreadyHasBox = true;
           break;
         }
