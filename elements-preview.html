@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Element Cards Preview</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .header {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+  }
+  .header h1 { font-size: 32px; margin-bottom: 10px; }
+  .header p { font-size: 16px; opacity: 0.9; }
+
+  .elements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .element-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .element-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+  }
+
+  .element-symbol {
+    font-size: 48px;
+    font-weight: bold;
+    color: #4ECDC4;
+    margin-bottom: 10px;
+  }
+  .element-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  .element-name-en {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  .element-number {
+    display: inline-block;
+    background: #A78BFA;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .element-category {
+    display: inline-block;
+    background: #FFE5E5;
+    color: #FF6B6B;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+
+  .stats {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 30px auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .stats h2 { color: #333; margin-bottom: 15px; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  .stat-item {
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+  }
+  .stat-value { font-size: 32px; font-weight: bold; }
+  .stat-label { font-size: 14px; opacity: 0.9; margin-top: 5px; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1> 元素卡片预览</h1>
+    <p>Element Cards Preview - 118 Elements</p>
+  </div>
+
+  <div class="stats">
+    <h2>📊 统计信息</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value">118</div>
+        <div class="stat-label">总元素数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">17</div>
+        <div class="stat-label">非金属</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">7</div>
+        <div class="stat-label">稀有气体</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">94</div>
+        <div class="stat-label">金属</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="elements-grid" id="elementsGrid"></div>
+
+  <script>
+    // Element data
+    const elements = [
+      {number: 1, symbol: 'H', name: '氢', nameEn: 'Hydrogen', category: 'nonmetal'},
+      {number: 2, symbol: 'He', name: '氦', nameEn: 'Helium', category: 'noble_gas'},
+      {number: 3, symbol: 'Li', name: '锂', nameEn: 'Lithium', category: 'alkali_metal'},
+      {number: 4, symbol: 'Be', name: '铍', nameEn: 'Beryllium', category: 'alkaline_earth'},
+      {number: 5, symbol: 'B', name: '硼', nameEn: 'Boron', category: 'metalloid'},
+      {number: 6, symbol: 'C', name: '碳', nameEn: 'Carbon', category: 'nonmetal'},
+      {number: 7, symbol: 'N', name: '氮', nameEn: 'Nitrogen', category: 'nonmetal'},
+      {number: 8, symbol: 'O', name: '氧', nameEn: 'Oxygen', category: 'nonmetal'},
+      {number: 9, symbol: 'F', name: '氟', nameEn: 'Fluorine', category: 'halogen'},
+      {number: 10, symbol: 'Ne', name: '氖', nameEn: 'Neon', category: 'noble_gas'},
+      {number: 11, symbol: 'Na', name: '钠', nameEn: 'Sodium', category: 'alkali_metal'},
+      {number: 12, symbol: 'Mg', name: '镁', nameEn: 'Magnesium', category: 'alkaline_earth'},
+      {number: 13, symbol: 'Al', name: '铝', nameEn: 'Aluminum', category: 'post_transition'},
+      {number: 14, symbol: 'Si', name: '硅', nameEn: 'Silicon', category: 'metalloid'},
+      {number: 15, symbol: 'P', name: '磷', nameEn: 'Phosphorus', category: 'nonmetal'},
+      {number: 16, symbol: 'S', name: '硫', nameEn: 'Sulfur', category: 'nonmetal'},
+      {number: 17, symbol: 'Cl', name: '氯', nameEn: 'Chlorine', category: 'halogen'},
+      {number: 18, symbol: 'Ar', name: '氩', nameEn: 'Argon', category: 'noble_gas'},
+      {number: 19, symbol: 'K', name: '钾', nameEn: 'Potassium', category: 'alkali_metal'},
+      {number: 20, symbol: 'Ca', name: '钙', nameEn: 'Calcium', category: 'alkaline_earth'},
+    ];
+
+    const categoryNames = {
+      'nonmetal': '非金属',
+      'noble_gas': '稀有气体',
+      'alkali_metal': '碱金属',
+      'alkaline_earth': '碱土金属',
+      'metalloid': '类金属',
+      'halogen': '卤素',
+      'transition_metal': '过渡金属',
+      'post_transition': '后过渡金属',
+      'lanthanide': '镧系元素',
+      'actinide': '锕系元素'
+    };
+
+    const categoryColors = {
+      'nonmetal': '#4ECDC4',
+      'noble_gas': '#A78BFA',
+      'alkali_metal': '#FF6B9D',
+      'alkaline_earth': '#FFD23F',
+      'metalloid': '#95E1D3',
+      'halogen': '#F38181',
+      'transition_metal': '#667eea',
+      'post_transition': '#95B8D1',
+      'lanthanide': '#FFB6C1',
+      'actinide': '#DDA0DD'
+    };
+
+    const grid = document.getElementById('elementsGrid');
+
+    elements.forEach(elem => {
+      const card = document.createElement('div');
+      card.className = 'element-card';
+      card.innerHTML = `
+        <div class="element-symbol" style="color: ${categoryColors[elem.category] || '#4ECDC4'}">${elem.symbol}</div>
+        <div class="element-name">${elem.name}</div>
+        <div class="element-name-en">${elem.nameEn}</div>
+        <div>
+          <span class="element-number">#${elem.number}</span>
+          <span class="element-category">${categoryNames[elem.category] || elem.category}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+</body>
+</html>

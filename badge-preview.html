@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>化学元素徽章 · 样板对比 v3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: linear-gradient(135deg, #FFF9E6 0%, #E0F7F5 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  h1 { text-align: center; color: #2C3E50; font-size: 28px; margin-bottom: 8px; }
+  .subtitle { text-align: center; color: #7F8C8D; font-size: 14px; margin-bottom: 40px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+  .badge-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .badge-card img { width: 100%; height: auto; }
+  .badge-info {
+    margin-top: 16px;
+    padding: 16px;
+    background: #F8F9FA;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .badge-info h3 { font-size: 16px; color: #2C3E50; margin-bottom: 8px; }
+  .badge-info .label {
+    color: #95A5A6; font-size: 11px; font-weight: bold;
+    letter-spacing: 1px; margin-top: 12px; margin-bottom: 6px;
+  }
+  .badge-info .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .prop-tag {
+    background: #FFF0F0; color: #C0392B;
+    padding: 4px 12px; border-radius: 13px;
+    font-size: 12px; font-weight: 600;
+  }
+  .use-tag {
+    padding: 4px 12px; border-radius: 13px;
+    font-size: 12px; font-weight: 600;
+  }
+  .use-tag.cyan { background: #E0F7F5; color: #2A9D8F; }
+  .use-tag.gold { background: #FFF9E6; color: #F57F17; }
+  .state-label {
+    display: inline-block; padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: bold; color: white; margin-left: 8px;
+  }
+  .amazing {
+    background: linear-gradient(135deg, #FFF9E6, #FFE5A0);
+    padding: 10px 12px; border-radius: 10px; margin-top: 10px;
+    font-size: 12px; color: #6D4C00; border-left: 3px solid #FFD23F;
+  }
+  .amazing::before {
+    content: "✨ Amazing Knowledge";
+    display: block; font-weight: bold; font-size: 11px;
+    color: #F57F17; margin-bottom: 4px; letter-spacing: 1px;
+  }
+  .footer {
+    text-align: center; margin-top: 40px; color: #95A5A6; font-size: 12px;
+  }
+  .refresh-hint {
+    text-align: center; color: #E74C3C; font-size: 12px; margin-bottom: 20px;
+    background: #FFF0F0; padding: 8px 16px; border-radius: 8px;
+    display: inline-block; margin-left: auto; margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧪 化学元素徽章 · 样板对比 v3</h1>
+<p class="subtitle">特性 PROPERTIES 🔴 → 衍生 → 日常用途 DAILY USE 🟢</p>
+
+<div class="grid">
+
+  <!-- 氢 (Common) -->
+  <div class="badge-card">
+    <img src="badge-H-氢.svg?v=3" alt="氢">
+    <div class="badge-info">
+      <h3>氢 · H · 非金属 <span class="state-label" style="background:#4ECDC4">☁ GAS</span></h3>
+
+      <div class="label">🔴 PROPERTIES 特性</div>
+      <div class="row">
+        <span class="prop-tag">🪶 最轻的元素</span>
+        <span class="prop-tag">🔥 易燃</span>
+        <span class="prop-tag">🌌 宇宙最丰富</span>
+      </div>
+
+      <div class="label">🟢 DAILY USE 日常用途（由特性衍生）</div>
+      <div class="row">
+        <span class="use-tag cyan">🚀 火箭燃料</span>
+        <span class="use-tag cyan">⚡ 未来能源</span>
+      </div>
+
+      <div class="amazing">
+        木星和土星这样的大型气态行星，主要成分就是氢。太阳的能量来源也是氢的核聚变反应！
+      </div>
+    </div>
+  </div>
+
+  <!-- 氧 (Epic) -->
+  <div class="badge-card">
+    <img src="badge-O-氧.svg?v=3" alt="氧">
+    <div class="badge-info">
+      <h3>氧 · O · 非金属 <span class="state-label" style="background:#4ECDC4">☁ GAS</span></h3>
+
+      <div class="label">🔴 PROPERTIES 特性</div>
+      <div class="row">
+        <span class="prop-tag">🔥 助燃</span>
+        <span class="prop-tag">💧 可溶于水</span>
+        <span class="prop-tag">🌬 生命必需</span>
+      </div>
+
+      <div class="label">🟢 DAILY USE 日常用途（由特性衍生）</div>
+      <div class="row">
+        <span class="use-tag cyan">🔥 冶炼钢铁</span>
+        <span class="use-tag cyan">🐟 水产养殖</span>
+        <span class="use-tag cyan">🏥 医疗急救</span>
+      </div>
+
+      <div class="amazing">
+        地球大气中 21% 是氧气，但 25 亿年前几乎没有！是蓝藻通过光合作用把氧气"制造"出来的，这场"大氧化事件"改变了整个地球。
+      </div>
+    </div>
+  </div>
+
+  <!-- 金 (Legendary) -->
+  <div class="badge-card">
+    <img src="badge-Au-金.svg?v=3" alt="金">
+    <div class="badge-info">
+      <h3>金 · Au · 过渡金属 <span class="state-label" style="background:#7F8C8D">▪ SOLID</span></h3>
+
+      <div class="label">🔴 PROPERTIES 特性</div>
+      <div class="row">
+        <span class="prop-tag">🛡 不活泼</span>
+        <span class="prop-tag">📏 延展性强</span>
+        <span class="prop-tag">⚡ 导电性好</span>
+      </div>
+
+      <div class="label">🟢 DAILY USE 日常用途（由特性衍生）</div>
+      <div class="row">
+        <span class="use-tag gold">💍 珠宝首饰</span>
+        <span class="use-tag gold">💻 电子元件</span>
+        <span class="use-tag gold">💰 黄金储备</span>
+      </div>
+
+      <div class="amazing">
+        地球上所有的黄金都来自中子星的碰撞！一克金可以拉成 3 公里长的金丝，或被锤成 1 平方米的超薄金箔。
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="footer">
+  🎨 视觉风格 A · 元素周期表方块 &nbsp;|&nbsp; 📐 SVG 矢量 &nbsp;|&nbsp; ☁ GAS / 💧 LIQUID / ▪ SOLID &nbsp;|&nbsp; 🎯 框架可复用
+</p>
+
+</body>
+</html>

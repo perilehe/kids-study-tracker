@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 580" width="400" height="580">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+    <linearGradient id="topBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#5FD6CD"/>
+    </linearGradient>
+    <radialGradient id="imgBg" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#E0F7F5"/>
+      <stop offset="100%" stop-color="#B2EBF2"/>
+    </radialGradient>
+    <radialGradient id="atomO" cx="0.35" cy="0.35" r="0.65">
+      <stop offset="0%" stop-color="#FF8A80"/>
+      <stop offset="100%" stop-color="#D32F2F"/>
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- 卡片 -->
+  <rect x="10" y="10" width="380" height="560" rx="28" fill="white" filter="url(#shadow)"/>
+  <rect x="10" y="10" width="380" height="560" rx="28" fill="none" stroke="url(#bgGrad)" stroke-width="4"/>
+
+  <!-- 顶部色条 -->
+  <path d="M 10 38 Q 10 10 38 10 L 362 10 Q 390 10 390 38 L 390 90 L 10 90 Z" fill="url(#topBar)"/>
+  <text x="40" y="55" font-family="Arial" font-size="28" font-weight="bold" fill="white">8</text>
+  <text x="40" y="78" font-family="Arial" font-size="12" fill="rgba(255,255,255,0.8)">VI A · PERIOD 2</text>
+
+  <!-- 元素符号印章 -->
+  <rect x="310" y="18" width="65" height="55" rx="12" fill="white" opacity="0.95"/>
+  <text x="342" y="56" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#4ECDC4" text-anchor="middle">O</text>
+
+  <!-- 插图圆底 -->
+  <circle cx="200" cy="205" r="95" fill="url(#imgBg)" stroke="#4ECDC4" stroke-width="3"/>
+
+  <!-- O2 分子插图 -->
+  <circle cx="155" cy="205" r="38" fill="url(#atomO)"/>
+  <circle cx="145" cy="195" r="10" fill="white" opacity="0.25"/>
+  <text x="155" y="212" font-family="Arial" font-size="22" font-weight="bold" fill="white" text-anchor="middle">O</text>
+  <circle cx="245" cy="205" r="38" fill="url(#atomO)"/>
+  <circle cx="235" cy="195" r="10" fill="white" opacity="0.25"/>
+  <text x="245" y="212" font-family="Arial" font-size="22" font-weight="bold" fill="white" text-anchor="middle">O</text>
+  <line x1="193" y1="197" x2="207" y2="197" stroke="#4ECDC4" stroke-width="3"/>
+  <line x1="193" y1="213" x2="207" y2="213" stroke="#4ECDC4" stroke-width="3"/>
+
+  <!-- Epic 光晕 -->
+  <circle cx="200" cy="205" r="88" fill="none" stroke="#A78BFA" stroke-width="1" stroke-dasharray="2,4" opacity="0.5"/>
+
+  <!-- 状态大标签 -->
+  <rect x="265" y="320" width="110" height="32" rx="16" fill="#4ECDC4"/>
+  <text x="320" y="342" font-family="Arial" font-size="16" font-weight="bold" fill="white" text-anchor="middle">☁ GAS</text>
+
+  <!-- 英文全称 -->
+  <text x="40" y="350" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#2C3E50">Oxygen</text>
+
+  <!-- 分类标签 -->
+  <text x="40" y="373" font-family="Microsoft YaHei, sans-serif" font-size="11" font-weight="600" fill="#4ECDC4" letter-spacing="1">非金属 · NONMETAL</text>
+
+  <!-- 中文名 -->
+  <text x="40" y="403" font-family="Microsoft YaHei, sans-serif" font-size="24" fill="#5D6D7E">氧</text>
+
+  <!-- 特性标签 (暖色调) -->
+  <text x="40" y="425" font-family="Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#95A5A6" letter-spacing="1">PROPERTIES</text>
+  <g transform="translate(40, 445)">
+    <rect x="0" y="-15" width="75" height="26" rx="13" fill="#FFF0F0"/>
+    <text x="37" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#C0392B" text-anchor="middle">🔥 助燃</text>
+
+    <rect x="85" y="-15" width="100" height="26" rx="13" fill="#FFF0F0"/>
+    <text x="135" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#C0392B" text-anchor="middle">💧 可溶于水</text>
+
+    <rect x="195" y="-15" width="100" height="26" rx="13" fill="#FFF0F0"/>
+    <text x="245" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#C0392B" text-anchor="middle">🌬 生命必需</text>
+  </g>
+
+  <!-- 日常用途标签 (从特性衍生) -->
+  <text x="40" y="485" font-family="Microsoft YaHei, sans-serif" font-size="10" font-weight="600" fill="#95A5A6" letter-spacing="1">DAILY USE</text>
+  <g transform="translate(40, 505)">
+    <rect x="0" y="-15" width="110" height="26" rx="13" fill="#E0F7F5"/>
+    <text x="55" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#2A9D8F" text-anchor="middle">🔥 冶炼钢铁</text>
+
+    <rect x="120" y="-15" width="110" height="26" rx="13" fill="#E0F7F5"/>
+    <text x="175" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#2A9D8F" text-anchor="middle">🐟 水产养殖</text>
+
+    <rect x="240" y="-15" width="110" height="26" rx="13" fill="#E0F7F5"/>
+    <text x="295" y="3" font-family="Microsoft YaHei, sans-serif" font-size="12" font-weight="600" fill="#2A9D8F" text-anchor="middle">🏥 医疗急救</text>
+  </g>
+
+  <!-- 原子量 -->
+  <text x="40" y="545" font-family="Arial" font-size="13" fill="#95A5A6">15.999</text>
+
+  <!-- 稀有度 -->
+  <rect x="40" y="558" width="320" height="6" rx="3" fill="#F0F0F0"/>
+  <rect x="40" y="558" width="250" height="6" rx="3" fill="#A78BFA"/>
+</svg>
