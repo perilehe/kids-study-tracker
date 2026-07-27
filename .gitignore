@@ -1,19 +1,25 @@
-﻿# Android
-*.iml
-*.apk
-*.ap_
-*.dex
-*.class
-.gradle/
-build/
-local.properties
-.idea/
-*.hprof
-captures/
-.externalNativeBuild/
-.cxx/
-google-services.json
+# Backup files
+*.bak
+*.bak-*
+*.backup
+*.backup-*
 
-# OS
+# Temporary files
+*.tmp
+*.temp
+temp_*.txt
+new_*.txt
+
+# Python scripts
+*.py
+
+# Test files
+test-*.html
+test.html
+
+# Backup directories
+backup_*/
+
+# OS files
 .DS_Store
 Thumbs.db
