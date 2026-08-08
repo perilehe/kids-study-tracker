@@ -442,7 +442,7 @@ textarea.if{resize:vertical;min-height:70px}
 .praise-month-tab{padding:5px 12px;border-radius:14px;border:2px solid var(--border);background:var(--bg);font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit}
 .praise-month-tab.active{background:var(--accent);color:#FFF;border-color:var(--accent)}
 .praise-grid{padding:10px 12px 140px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-content:flex-start;overflow-y:auto;flex:1}
-.praise-card{width:180px;border-radius:14px;padding:14px;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.08);cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;animation:praiseIn .4s ease-out backwards;overflow:visible}
+.praise-card{width:180px;border-radius:14px;padding:14px 14px 10px;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.08);cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;animation:praiseIn .4s ease-out backwards;overflow:visible;display:flex;flex-direction:column}
 .praise-card::before{content:'';position:absolute;top:-15px;right:-15px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.3)}
 .praise-card:active{transform:scale(.96)!important}
 .praise-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.12)}
@@ -453,9 +453,9 @@ textarea.if{resize:vertical;min-height:70px}
 .praise-card.p-size-lg .praise-content{font-size:14px;line-height:1.8}
 .praise-card.p-size-lg .praise-sticker{font-size:44px}
 @keyframes praiseIn{from{opacity:0;transform:translateY(12px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
-.praise-sticker{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;opacity:.18;z-index:0}
-.praise-content{font-size:12px;line-height:1.6;color:var(--text);word-break:break-word;position:relative;z-index:1}
-.praise-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.praise-sticker{font-size:22px;position:absolute;top:8px;right:10px;opacity:.5;filter:drop-shadow(0 1px 2px rgba(0,0,0,.1))}
+.praise-content{font-size:12px;line-height:1.6;color:var(--text);word-break:break-word;flex:1;padding-right:24px}
+.praise-footer{display:flex;justify-content:flex-end;align-items:center;margin-top:10px;gap:6px}
 .praise-sender{display:flex;align-items:center;gap:5px}
 .praise-sender-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#FFF}
 .praise-sender-nm{font-size:9px;font-weight:700;color:var(--text2)}
@@ -2383,7 +2383,7 @@ async function submitPraise(){
   var content=document.getElementById('praiseContent').value.trim();
   if(!content){var ta=document.getElementById('praiseContent');ta.style.borderColor='#F43F5E';setTimeout(function(){ta.style.borderColor=''},1500);return}
   var btn=document.getElementById('praiseSubmitBtn');btn.disabled=true;btn.textContent='发送中...';
-  var bg=P_BG[Math.floor(Math.random()*P_BG.length)];var rot=Math.round((Math.random()*16-8)*10)/10;
+  var bg=P_BG[Math.floor(Math.random()*P_BG.length)];var rot=Math.round(Math.random()*16-8);
   var pos=P_POS[Math.floor(Math.random()*P_POS.length)];var sz=P_SIZE[Math.floor(Math.random()*P_SIZE.length)];
   var data={type:'praise',content:content,sticker:pSticker,sender:pSender.n,sender_color:pSender.c,bg_color:bg,rotation:rot,sticker_pos:pos,size_class:sz,is_read:false};
   try{var r=await sb.from('praise').insert(data).select();
