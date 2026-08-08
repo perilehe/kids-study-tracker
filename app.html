@@ -2319,7 +2319,7 @@ function renderPGrid(){
     var sz=p.size_class||P_SIZE[Math.floor(Math.random()*P_SIZE.length)];
     var pos=p.sticker_pos||P_POS[Math.floor(Math.random()*P_POS.length)];
     var ts=p.created_at?new Date(p.created_at):new Date();
-    var timeStr=ts.getFullYear()+'/'+String(ts.getMonth()+1).padStart(2,'0')+'/'+String(ts.getDate()).padStart(2,'0')+' '+String(ts.getHours()).padStart(2,'0')+':'+String(ts.getMinutes()).padStart(2,'0');
+    var timeStr=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(ts);
     var ini=p.sender?p.sender.charAt(0):'?';var sc=p.sender_color||'#FF6B35';
     var ec=praiseEdit?' p-editing':'';
     h+='<div class="praise-card '+sz+ec+'" style="background:'+bg+';transform:rotate('+rot.toFixed(1)+'deg);animation-delay:'+(i*.04)+'s" onclick="pCardClick('+p.id+',event)">';
