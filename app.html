@@ -432,6 +432,79 @@ textarea.if{resize:vertical;min-height:70px}
 .wheel-spin-btn:disabled{opacity:.4;cursor:not-allowed}
 .wheel-spin-btn:active{transform:scale(.97)}
 .wheel-close{margin-top:8px;padding:8px 20px;border-radius:8px;background:var(--bg);color:var(--text2);border:1px solid var(--border);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer}
+
+/* ===== PRAISE WALL ===== */
+.praise-header{text-align:center;padding:16px 16px 8px;background:linear-gradient(135deg,#FFE4E8,#FFF0F3,#FFF9E6)}
+.praise-header-title{font-size:22px;font-weight:800;color:var(--accent)}
+.praise-header-sub{font-size:10px;color:var(--text3);margin-top:2px}
+.praise-month-bar{display:flex;gap:6px;padding:8px 16px;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.praise-month-bar::-webkit-scrollbar{display:none}
+.praise-month-tab{padding:5px 12px;border-radius:14px;border:2px solid var(--border);background:var(--bg);font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .2s;font-family:inherit}
+.praise-month-tab.active{background:var(--accent);color:#FFF;border-color:var(--accent)}
+.praise-grid{padding:10px 12px 140px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-content:flex-start;overflow-y:auto;flex:1}
+.praise-card{width:180px;border-radius:14px;padding:14px;position:relative;box-shadow:0 3px 12px rgba(0,0,0,.08);cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;animation:praiseIn .4s ease-out backwards;overflow:visible}
+.praise-card::before{content:'';position:absolute;top:-15px;right:-15px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.3)}
+.praise-card:active{transform:scale(.96)!important}
+.praise-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.praise-card.p-size-sm{padding:10px}
+.praise-card.p-size-sm .praise-content{font-size:11px}
+.praise-card.p-size-sm .praise-sticker{font-size:26px}
+.praise-card.p-size-lg{padding:16px}
+.praise-card.p-size-lg .praise-content{font-size:14px;line-height:1.8}
+.praise-card.p-size-lg .praise-sticker{font-size:44px}
+@keyframes praiseIn{from{opacity:0;transform:translateY(12px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+.praise-sticker{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:36px;opacity:.18;z-index:0}
+.praise-content{font-size:12px;line-height:1.6;color:var(--text);word-break:break-word;position:relative;z-index:1}
+.praise-footer{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.praise-sender{display:flex;align-items:center;gap:5px}
+.praise-sender-av{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#FFF}
+.praise-sender-nm{font-size:9px;font-weight:700;color:var(--text2)}
+.praise-time{font-size:8px;color:var(--text3)}
+.praise-unread{position:absolute;top:-3px;right:-3px;width:8px;height:8px;border-radius:50%;background:#F43F5E;border:2px solid var(--card);animation:praisePulse 1.5s infinite}
+@keyframes praisePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.praise-del-btn{position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:50%;background:#F43F5E;color:#FFF;font-size:13px;font-weight:800;border:2px solid var(--card);cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10;font-family:inherit;line-height:1}
+.praise-card.p-editing .praise-del-btn{display:flex}
+.praise-card.p-editing{outline:2px dashed #F43F5E;outline-offset:3px}
+.praise-empty{text-align:center;padding:40px 20px;color:var(--text3);width:100%}
+.praise-empty-emoji{font-size:48px;margin-bottom:10px;animation:praiseFloat 3s ease-in-out infinite}
+@keyframes praiseFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.praise-empty-title{font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text2)}
+.praise-empty-sub{font-size:10px}
+.praise-fab{position:absolute;bottom:60px;right:16px;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#FF6B35,#FFD23F);color:#FFF;font-size:24px;font-weight:800;border:none;box-shadow:0 4px 16px rgba(255,107,53,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:50;font-family:inherit}
+.praise-fab:active{transform:scale(.9)}
+.praise-edit-btn{position:absolute;bottom:60px;left:16px;padding:8px 14px;border-radius:18px;background:var(--card);border:2px solid var(--border);font-size:10px;font-weight:700;color:var(--text2);cursor:pointer;z-index:50;font-family:inherit;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.praise-edit-btn.active{background:#F43F5E;color:#FFF;border-color:#F43F5E}
+.praise-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:1000;align-items:flex-end;justify-content:center}
+.praise-modal.active{display:flex}
+.praise-modal-content{background:#FFF;border-radius:20px 20px 0 0;padding:20px 18px 28px;width:100%;max-width:500px;max-height:85vh;overflow-y:auto;animation:slideUp .3s ease-out}
+.praise-modal-title{text-align:center;font-size:18px;font-weight:800;color:var(--accent);margin-bottom:16px}
+.praise-modal-close{position:absolute;top:14px;right:18px;font-size:22px;color:var(--text3);cursor:pointer;background:none;border:none;font-family:inherit}
+.praise-fg{margin-bottom:12px}
+.praise-fl{font-size:10px;font-weight:700;color:var(--text2);letter-spacing:.06em;margin-bottom:6px;display:block}
+.praise-ta{width:100%;padding:10px;border:2px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;resize:none;min-height:70px;transition:border-color .2s;line-height:1.5}
+.praise-ta:focus{outline:none;border-color:var(--accent)}
+.praise-sg{display:flex;flex-wrap:wrap;gap:6px}
+.praise-si{width:34px;height:34px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.praise-si.active{background:#FFF5F0;border-color:var(--accent);transform:scale(1.1)}
+.praise-snd{display:flex;flex-wrap:wrap;gap:6px}
+.praise-sb{padding:6px 12px;border-radius:14px;border:2px solid var(--border);background:var(--card);font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;font-family:inherit}
+.praise-sb.active{border-color:var(--accent);background:var(--accent);color:#FFF}
+.praise-submit{width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,#FF6B35,#FFD23F);color:#FFF;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:6px}
+.praise-submit:active{transform:scale(.98)}
+.praise-submit:disabled{opacity:.5;cursor:not-allowed}
+.praise-confirm-ov{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.praise-confirm-ov.active{display:flex}
+.praise-confirm-bx{background:#FFF;border-radius:14px;padding:20px;text-align:center;max-width:260px;width:90%}
+.praise-confirm-txt{font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.praise-confirm-btns{display:flex;gap:8px}
+.praise-confirm-btn{flex:1;padding:8px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.praise-confirm-btn.cancel{background:var(--bg);color:var(--text2)}
+.praise-confirm-btn.danger{background:#F43F5E;color:#FFF}
+.praise-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#FF6B35,#FFD23F);color:#FFF;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:800;box-shadow:0 8px 28px rgba(255,107,53,.4);z-index:10000;transition:transform .3s cubic-bezier(.34,1.56,.64,1);text-align:center}
+.praise-toast.show{transform:translate(-50%,-50%) scale(1)}
+.praise-petal-container{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:9999;overflow:hidden}
+.praise-petal{position:absolute;animation:praisePetalFall linear forwards}
+@keyframes praisePetalFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 </style>
 </head>
 <body>
@@ -450,6 +523,7 @@ textarea.if{resize:vertical;min-height:70px}
     <button class="deck-btn" onclick="goPage('rewards',this)">REWARDS</button>
     <button class="deck-btn" onclick="goPage('stats',this)">STATS</button>
     <button class="deck-btn" onclick="goPage('elements',this)">ELEMENTS</button>
+    <button class="deck-btn" onclick="goPage('praise',this)">PRAISE</button>
     <button class="deck-btn" onclick="goPage('settings',this)">SETTINGS</button>
   </div>
 </div>
@@ -470,13 +544,49 @@ textarea.if{resize:vertical;min-height:70px}
 <div class="page-group" id="pg-elements"><div class="ap expanded" style="width:100%"><div class="ap-content active" id="ac-elements" style="padding:20px"></div></div></div>
 <div class="page-group" id="pg-stats"><div class="ap expanded" style="width:100%"><div class="ap-content active" id="ac-stats" style="padding:20px"></div></div></div>
 <div class="page-group" id="pg-settings"><div class="ap expanded" style="width:100%"><div class="ap-content active" id="ac-settings" style="padding:20px"></div></div></div>
+<div class="page-group" id="pg-praise" style="position:relative;overflow:hidden">
+  <div class="praise-header">
+    <div class="praise-header-title">🌸 夸夸墙 🌸</div>
+    <div class="praise-header-sub">每一条夸奖都是爱的印记 ❤️</div>
+  </div>
+  <div class="praise-month-bar" id="praiseMonthBar"></div>
+  <div class="praise-grid" id="praiseGrid"></div>
+  <button class="praise-fab" onclick="showPraiseModal()">+</button>
+  <button class="praise-edit-btn" id="praiseEditBtn" onclick="togglePraiseEdit()">📌 管理</button>
 </div>
+</div>
+
+<!-- Praise Modal -->
+<div class="praise-modal" id="praiseModal">
+  <div class="praise-modal-content" style="position:relative">
+    <button class="praise-modal-close" onclick="hidePraiseModal()">&times;</button>
+    <div class="praise-modal-title">✨ 写一条夸夸</div>
+    <div class="praise-fg"><label class="praise-fl">想说的话</label><textarea class="praise-ta" id="praiseContent" placeholder="写下你想对孩子说的话..." maxlength="500"></textarea></div>
+    <div class="praise-fg"><label class="praise-fl">选择贴纸</label><div class="praise-sg" id="praiseStickerGrid"></div></div>
+    <div class="praise-fg"><label class="praise-fl">发送者</label><div class="praise-snd" id="praiseSenderGrid"></div></div>
+    <button class="praise-submit" id="praiseSubmitBtn" onclick="submitPraise()">发送夸夸 🎉</button>
+  </div>
+</div>
+<!-- Praise Confirm -->
+<div class="praise-confirm-ov" id="praiseConfirm">
+  <div class="praise-confirm-bx">
+    <div style="font-size:36px;margin-bottom:10px">🗑️</div>
+    <div class="praise-confirm-txt">确定删除这条夸夸吗？</div>
+    <div class="praise-confirm-btns">
+      <button class="praise-confirm-btn cancel" onclick="cancelPraiseDelete()">取消</button>
+      <button class="praise-confirm-btn danger" onclick="confirmPraiseDelete()">删除</button>
+    </div>
+  </div>
+</div>
+<div class="praise-toast" id="praiseToast"><div style="font-size:28px;margin-bottom:4px">🎉</div>夸夸已送达！</div>
+<div class="praise-petal-container" id="praisePetals"></div>
 
 <div class="botnav">
   <div class="bni active" onclick="goPage('planner',this)"><div class="bnl">Planner</div></div>
   <div class="bni" onclick="goPage('rewards',this)"><div class="bnl">Rewards</div></div>
   <div class="bni" onclick="goPage('stats',this)"><div class="bnl">Stats</div></div>
   <div class="bni" onclick="goPage('elements',this)"><div class="bnl">Elements</div></div>
+  <div class="bni" onclick="goPage('praise',this)"><div class="bnl">Praise</div></div>
   <div class="bni" onclick="goPage('settings',this)"><div class="bnl">Settings</div></div>
 </div>
 </div>
@@ -1995,7 +2105,7 @@ async function loadAll(){setSync('ing');try{
 
 function deriveDoneDates(){if(!S.tm)return;for(var i=0;i<S.tm.length;i++){var t=S.tm[i];if(t.done&&!t._doneDate){for(var j=0;j<S.logs.length;j++){if(S.logs[j].en===t.en){t._doneDate=S.logs[j].date;break}}if(!t._doneDate)t._doneDate=todayStr()}if(!t._note&&t.done){for(var j=0;j<S.logs.length;j++){if(S.logs[j].en===t.en){t._note=S.logs[j].note||'';t._mood=S.logs[j].mood||0;t._eff=S.logs[j].eff||0;break}}}}}
 
-function drawCurrent(){var g=document.querySelector('.page-group.active');if(!g)return;var id=g.id;if(id==='pg-planner')drawPlanner();if(id==='pg-rewards')drawRewards();if(id==='pg-elements')drawElements();if(id==='pg-stats')drawStats();if(id==='pg-elements')drawElements();if(id==='pg-settings')drawSettings()}
+function drawCurrent(){var g=document.querySelector('.page-group.active');if(!g)return;var id=g.id;if(id==='pg-planner')drawPlanner();if(id==='pg-rewards')drawRewards();if(id==='pg-elements')drawElements();if(id==='pg-stats')drawStats();if(id==='pg-elements')drawElements();if(id==='pg-settings')drawSettings();if(id==='pg-praise')drawPraise()}
 
 /* SAVE TO SUPABASE */
 async function saveProfile(){setSync('ing');try{await sb.from('profiles').upsert({id:'default',name:S.pr.name,avatar:S.pr.av,total_xp:S.totalXp,spendable_xp:S.spendableXp,streak:S.pr.streak||0,max_streak:S.pr.maxSt||0,level:S.pr.lvl,earned_ms:S._earnedMs||[]});setSync('ok')}catch(e){setSync('err')}}
@@ -2028,7 +2138,7 @@ function hud(msg,acts,warn){document.getElementById("hud-t").textContent=warn?"[
 function closeHUD(id){document.getElementById(id).classList.remove("on")}
 
 /* NAV */
-function goPage(page,el){var groups=document.querySelectorAll(".page-group");for(var i=0;i<groups.length;i++)groups[i].classList.remove("active");var g=document.getElementById("pg-"+page);if(g)g.classList.add("active");var btns=document.querySelectorAll(".deck-btn");for(var i=0;i<btns.length;i++){btns[i].classList.remove("active");if(btns[i].textContent.trim().toLowerCase()===page)btns[i].classList.add("active")}var bns=document.querySelectorAll(".bni");for(var i=0;i<bns.length;i++)bns[i].classList.remove("active");if(el&&el.classList)el.classList.add("active");else{for(var i=0;i<bns.length;i++){var lbl=bns[i].querySelector(".bnl");if(lbl&&lbl.textContent.toLowerCase()===page)bns[i].classList.add("active")}}if(page==="planner")drawPlanner();if(page==="rewards")drawRewards();if(page==="elements")drawElements();if(page==="stats")drawStats();if(page==="elements")drawElements();if(page==="settings")drawSettings()}
+function goPage(page,el){var groups=document.querySelectorAll(".page-group");for(var i=0;i<groups.length;i++)groups[i].classList.remove("active");var g=document.getElementById("pg-"+page);if(g)g.classList.add("active");var btns=document.querySelectorAll(".deck-btn");for(var i=0;i<btns.length;i++){btns[i].classList.remove("active");if(btns[i].textContent.trim().toLowerCase()===page)btns[i].classList.add("active")}var bns=document.querySelectorAll(".bni");for(var i=0;i<bns.length;i++)bns[i].classList.remove("active");if(el&&el.classList)el.classList.add("active");else{for(var i=0;i<bns.length;i++){var lbl=bns[i].querySelector(".bnl");if(lbl&&lbl.textContent.toLowerCase()===page)bns[i].classList.add("active")}}if(page==="planner")drawPlanner();if(page==="rewards")drawRewards();if(page==="elements")drawElements();if(page==="stats")drawStats();if(page==="elements")drawElements();if(page==="settings")drawSettings();if(page==="praise")drawPraise()}
 
 /* TOP TABS */
 function expandAp(deck,num){var prefix=deck==="planner"?"p":"r";var pg=document.getElementById("pg-"+deck);var tabs=pg.querySelectorAll(".folder-tab");var contents=pg.querySelectorAll(".tab-content");for(var i=0;i<tabs.length;i++){tabs[i].classList.remove("ft-active");contents[i].classList.remove("active")}tabs[num-1].classList.add("ft-active");contents[num-1].classList.add("active");if(deck==="planner"){if(num===1)drawPresets();if(num===2)drawPlan();if(num===3){drawActive();drawWelcome()}}if(deck==="rewards"){if(num===1)drawVault();if(num===2)drawShop();if(num===3)drawInv()}}
@@ -2167,6 +2277,134 @@ var ciEl=document.getElementById("ci-modal");if(ciEl)ciEl.addEventListener("clic
 var pmEl=document.getElementById("prof-modal");if(pmEl)pmEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
 var rwEl=document.getElementById("add-rw-modal");if(rwEl)rwEl.addEventListener("click",function(e){if(e.target===this)this.classList.remove("on")});
 var rdEl=document.getElementById("redeem-modal");if(rdEl)rdEl.addEventListener("click",function(e){if(e.target===this&&!bbPicking)this.classList.remove("on")});
+
+/* ===== PRAISE WALL ===== */
+var praiseList=[],praiseMonth='',praiseEdit=false,praiseDelId=null;
+var P_STICKERS=['🌸','⭐','🌟','💖','🎀','🌈','🦋','🌺','💐','🎈','🍀','🌻','🏆','💎','👑','🥇','🔥','💪','🤗','❤️','🎉','✨','🌹','🧸','🎁','🍭','🌙','☀️'];
+var P_BG=['#FFE4E8','#FFE0F0','#FFF0F3','#FFE8EC','#FFF3CD','#FFEDBA','#FFF8DC','#E8F5E9','#E0F2E9','#F0FFF4','#E5F5E8','#E8EAF6','#F3E5F5','#FCE4EC','#FFFDE7','#F1F8E9'];
+var P_POS=['pos-tr','pos-tl','pos-br','pos-bl'];
+var P_SIZE=['','p-size-sm','p-size-lg'];
+var P_SENDERS=[{n:'爸爸',c:'#3B82F6'},{n:'妈妈',c:'#F472B6'},{n:'爷爷',c:'#10B981'},{n:'奶奶',c:'#F97316'},{n:'老师',c:'#8B5CF6'},{n:'其他',c:'#6B7280'}];
+var pSticker='🌸',pSender=P_SENDERS[0];
+
+function drawPraise(){renderPMonths();renderPGrid()}
+
+function renderPMonths(){
+  var bar=document.getElementById('praiseMonthBar');if(!bar)return;
+  var months={};
+  for(var i=0;i<praiseList.length;i++){var d=new Date(praiseList[i].created_at);months[d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')]=true}
+  var now=new Date();months[now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')]=true;
+  var arr=Object.keys(months);arr.sort().reverse();
+  if(!praiseMonth||arr.indexOf(praiseMonth)<0)praiseMonth=arr[0];
+  var h='';for(var i=0;i<arr.length;i++){var p=arr[i].split('-');var active=arr[i]===praiseMonth?' active':'';h+='<button class="praise-month-tab'+active+'" onclick="pSwitchMonth(\''+arr[i]+'\')">'+p[0]+'年'+parseInt(p[1])+'月</button>'}
+  bar.innerHTML=h;
+}
+
+function pSwitchMonth(m){praiseMonth=m;renderPMonths();renderPGrid()}
+
+async function loadPraise(){
+  try{var r=await sb.from('praise').select().order('created_at',{ascending:false});
+  if(r.data){praiseList=r.data;drawPraise()}}catch(e){console.error(e)}
+}
+
+function renderPGrid(){
+  var grid=document.getElementById('praiseGrid');if(!grid)return;
+  var filtered=praiseList.filter(function(p){if(!praiseMonth)return true;var d=new Date(p.created_at);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')===praiseMonth});
+  if(!filtered.length){
+    var msg=praiseList.length===0?{e:'🌸',t:'还没有夸夸',s:'点击 + 添加第一条吧！'}:{e:'📅',t:'这个月还没有夸夸',s:'切换到其他月份看看'};
+    grid.innerHTML='<div class="praise-empty"><div class="praise-empty-emoji">'+msg.e+'</div><div class="praise-empty-title">'+msg.t+'</div><div class="praise-empty-sub">'+msg.s+'</div></div>';return}
+  var h='';for(var i=0;i<filtered.length;i++){
+    var p=filtered[i];var rot=p.rotation!==undefined?p.rotation:(Math.random()*16-8);
+    var bg=p.bg_color||P_BG[Math.floor(Math.random()*P_BG.length)];
+    var sz=p.size_class||P_SIZE[Math.floor(Math.random()*P_SIZE.length)];
+    var pos=p.sticker_pos||P_POS[Math.floor(Math.random()*P_POS.length)];
+    var ts=p.created_at?new Date(p.created_at):new Date();
+    var timeStr=ts.getFullYear()+'/'+String(ts.getMonth()+1).padStart(2,'0')+'/'+String(ts.getDate()).padStart(2,'0')+' '+String(ts.getHours()).padStart(2,'0')+':'+String(ts.getMinutes()).padStart(2,'0');
+    var ini=p.sender?p.sender.charAt(0):'?';var sc=p.sender_color||'#FF6B35';
+    var ec=praiseEdit?' p-editing':'';
+    h+='<div class="praise-card '+sz+ec+'" style="background:'+bg+';transform:rotate('+rot.toFixed(1)+'deg);animation-delay:'+(i*.04)+'s" onclick="pCardClick('+p.id+',event)">';
+    h+='<button class="praise-del-btn" onclick="startPraiseDelete('+p.id+',event)">&times;</button>';
+    if(!p.is_read)h+='<div class="praise-unread"></div>';
+    h+='<div class="praise-sticker '+pos+'">'+(p.sticker||'🌸')+'</div>';
+    h+='<div class="praise-content praise-has-'+pos+'">'+pEscH(p.content)+'</div>';
+    h+='<div class="praise-footer"><div class="praise-sender"><div class="praise-sender-av" style="background:'+sc+'">'+ini+'</div><span class="praise-sender-nm">'+pEscH(p.sender)+'</span></div><span class="praise-time">'+timeStr+'</span></div></div>'}
+  grid.innerHTML=h;
+}
+
+function pEscH(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+
+function togglePraiseEdit(){
+  praiseEdit=!praiseEdit;var btn=document.getElementById('praiseEditBtn');
+  if(btn){btn.classList.toggle('active',praiseEdit);btn.textContent=praiseEdit?'✓ 完成':'📌 管理'}
+  renderPGrid();
+}
+
+function pCardClick(id,e){
+  if(praiseEdit)return;
+  for(var i=0;i<praiseList.length;i++){if(praiseList[i].id===id){
+    if(!praiseList[i].is_read){praiseList[i].is_read=true;sb.from('praise').update({is_read:true}).eq('id',id).catch(function(){});
+    var dot=e.currentTarget.querySelector('.praise-unread');if(dot)dot.remove()}break}}
+}
+
+function startPraiseDelete(id,e){e.stopPropagation();praiseDelId=id;document.getElementById('praiseConfirm').classList.add('active')}
+function cancelPraiseDelete(){praiseDelId=null;document.getElementById('praiseConfirm').classList.remove('active')}
+async function confirmPraiseDelete(){
+  if(!praiseDelId)return;var id=praiseDelId;cancelPraiseDelete();
+  try{await sb.from('praise').delete().eq('id',id);praiseList=praiseList.filter(function(p){return p.id!==id});renderPMonths();renderPGrid()}catch(e){alert('删除失败')}
+}
+
+function showPraiseModal(){
+  document.getElementById('praiseModal').classList.add('active');
+  document.getElementById('praiseContent').value='';
+  pSticker=P_STICKERS[0];pSender=P_SENDERS[0];renderPStickers();renderPSenders();
+}
+function hidePraiseModal(){document.getElementById('praiseModal').classList.remove('active')}
+
+function renderPStickers(){
+  var g=document.getElementById('praiseStickerGrid');var h='';
+  for(var i=0;i<P_STICKERS.length;i++){var a=i===0?' active':'';h+='<div class="praise-si'+a+'" onclick="pSelSticker(\''+P_STICKERS[i]+'\',this)">'+P_STICKERS[i]+'</div>'}
+  g.innerHTML=h;
+}
+function pSelSticker(s,el){pSticker=s;var items=document.querySelectorAll('.praise-si');for(var i=0;i<items.length;i++)items[i].classList.remove('active');el.classList.add('active')}
+
+function renderPSenders(){
+  var g=document.getElementById('praiseSenderGrid');var h='';
+  for(var i=0;i<P_SENDERS.length;i++){var s=P_SENDERS[i];var a=i===0?' active':'';var st=i===0?'background:'+s.c+';border-color:'+s.c+';color:#FFF':'';
+  h+='<button class="praise-sb'+a+'" style="'+st+'" onclick="pSelSender('+i+',this)">'+s.n+'</button>'}
+  g.innerHTML=h;
+}
+function pSelSender(idx,el){
+  pSender=P_SENDERS[idx];var btns=document.querySelectorAll('.praise-sb');
+  for(var i=0;i<btns.length;i++){btns[i].classList.remove('active');btns[i].style.background='';btns[i].style.borderColor='';btns[i].style.color=''}
+  el.classList.add('active');el.style.background=pSender.c;el.style.borderColor=pSender.c;el.style.color='#FFF';
+}
+
+async function submitPraise(){
+  var content=document.getElementById('praiseContent').value.trim();
+  if(!content){var ta=document.getElementById('praiseContent');ta.style.borderColor='#F43F5E';setTimeout(function(){ta.style.borderColor=''},1500);return}
+  var btn=document.getElementById('praiseSubmitBtn');btn.disabled=true;btn.textContent='发送中...';
+  var bg=P_BG[Math.floor(Math.random()*P_BG.length)];var rot=Math.round((Math.random()*16-8)*10)/10;
+  var pos=P_POS[Math.floor(Math.random()*P_POS.length)];var sz=P_SIZE[Math.floor(Math.random()*P_SIZE.length)];
+  var data={type:'praise',content:content,sticker:pSticker,sender:pSender.n,sender_color:pSender.c,bg_color:bg,rotation:rot,sticker_pos:pos,size_class:sz,is_read:false};
+  try{var r=await sb.from('praise').insert(data).select();
+  btn.disabled=false;btn.textContent='发送夸夸 🎉';
+  if(r&&r.data){hidePraiseModal();pShowToast();pTriggerPetals();
+  var now=new Date();praiseMonth=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  praiseList.unshift(r.data[0]);renderPMonths();renderPGrid()}}catch(e){btn.disabled=false;btn.textContent='发送夸夸 🎉';alert('发送失败')}
+}
+
+function pShowToast(){var t=document.getElementById('praiseToast');t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)}
+function pTriggerPetals(){
+  var c=document.getElementById('praisePetals');var petals=['🌸','⭐','🌟','💖','🎀','✨','🌺'];
+  for(var i=0;i<18;i++){(function(idx){setTimeout(function(){var p=document.createElement('div');p.className='praise-petal';p.textContent=petals[Math.floor(Math.random()*petals.length)];
+  p.style.left=Math.random()*100+'%';p.style.animationDuration=(2+Math.random()*3)+'s';p.style.fontSize=(14+Math.random()*14)+'px';c.appendChild(p);
+  setTimeout(function(){p.remove()},5000)},idx*80)})(i)}
+}
+
+loadPraise();
+document.getElementById('praiseModal').addEventListener('click',function(e){if(e.target===this)hidePraiseModal()});
+document.getElementById('praiseConfirm').addEventListener('click',function(e){if(e.target===this)cancelPraiseDelete()});
+
 </script>
 </body>
 </html>

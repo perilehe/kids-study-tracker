@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>夸夸墙 ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #FFF9E6;
+  --card: #FFF;
+  --border: #E2E4EA;
+  --text: #333;
+  --text2: #666;
+  --text3: #999;
+  --accent: #FF6B35;
+  --danger: #F43F5E;
+  --shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+html, body {
+  height: 100%;
+  font-family: 'JetBrains Mono', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* === HEADER === */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #FFE4E8, #FFF0F3, #FFF9E6);
+  padding: 12px 20px 8px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(255,107,53,0.1);
+}
+.header-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.header-sub {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+/* === MONTH TABS === */
+.month-bar {
+  display: flex;
+  gap: 6px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  background: var(--bg);
+  position: sticky;
+  top: 56px;
+  z-index: 99;
+  -webkit-overflow-scrolling: touch;
+}
+.month-bar::-webkit-scrollbar { display: none; }
+.month-tab {
+  padding: 6px 14px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.month-tab.active {
+  background: var(--accent);
+  color: #FFF;
+  border-color: var(--accent);
+}
+
+/* === PRAISE GRID - MASONRY === */
+.praise-grid {
+  padding: 12px 12px 100px;
+  column-count: 2;
+  column-gap: 10px;
+}
+.praise-card {
+  break-inside: avoid;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  padding: 14px;
+  position: relative;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+  animation: cardIn 0.4s ease-out backwards;
+  overflow: visible;
+}
+.praise-card:active {
+  transform: scale(0.96) !important;
+}
+.praise-card:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+/* Random size variations */
+.praise-card.size-sm { padding: 10px; min-height: 80px; }
+.praise-card.size-sm .card-content { font-size: 12px; }
+.praise-card.size-sm .card-sticker { font-size: 28px; }
+
+.praise-card.size-lg { padding: 18px; min-height: 160px; }
+.praise-card.size-lg .card-content { font-size: 15px; line-height: 1.8; }
+.praise-card.size-lg .card-sticker { font-size: 48px; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Sticker with random position */
+.card-sticker {
+  position: absolute;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+/* Sticker positions */
+.sticker-tr { top: 6px; right: 8px; }
+.sticker-tl { top: 6px; left: 8px; }
+.sticker-br { bottom: 6px; right: 8px; }
+.sticker-bl { bottom: 6px; left: 8px; }
+.sticker-center { top: 50%; right: 8px; transform: translateY(-50%); }
+
+.card-content {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text);
+  word-break: break-word;
+}
+/* Add padding based on sticker position to avoid overlap */
+.has-sticker-tr .card-content { padding-right: 32px; }
+.has-sticker-tl .card-content { padding-left: 32px; }
+.has-sticker-br .card-content { padding-bottom: 28px; }
+.has-sticker-bl .card-content { padding-bottom: 28px; padding-left: 32px; }
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+.card-sender {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.sender-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: #FFF;
+}
+.sender-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text2);
+}
+.card-time {
+  font-size: 8px;
+  color: var(--text3);
+}
+.card-unread {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 2px solid var(--bg);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* === DELETE BUTTON === */
+.delete-btn {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 800;
+  border: 2px solid var(--bg);
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  font-family: inherit;
+  line-height: 1;
+}
+.praise-card.editing .delete-btn {
+  display: flex;
+}
+.praise-card.editing {
+  outline: 2px dashed var(--danger);
+  outline-offset: 4px;
+}
+
+/* === EMPTY STATE === */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text3);
+}
+.empty-emoji {
+  font-size: 56px;
+  margin-bottom: 12px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.empty-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text2);
+}
+.empty-sub {
+  font-size: 11px;
+}
+
+/* === FAB BUTTON === */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B35, #FFD23F);
+  color: #FFF;
+  font-size: 26px;
+  font-weight: 800;
+  border: none;
+  box-shadow: 0 4px 20px rgba(255,107,53,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  z-index: 200;
+  font-family: inherit;
+}
+.fab:active { transform: scale(0.9); }
+
+/* === EDIT MODE TOGGLE === */
+.edit-toggle {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  z-index: 200;
+  font-family: inherit;
+  box-shadow: var(--shadow);
+}
+.edit-toggle.active {
+  background: var(--danger);
+  color: #FFF;
+  border-color: var(--danger);
+}
+
+/* === MODAL === */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal.active { display: flex; }
+.modal-content {
+  background: #FFF;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 18px 28px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.modal-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 22px;
+  color: var(--text3);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+
+/* === FORM === */
+.form-group { margin-bottom: 14px; }
+.form-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text2);
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  display: block;
+}
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: none;
+  min-height: 70px;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+.textarea:focus { outline: none; border-color: var(--accent); }
+
+.sticker-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sticker-item {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.sticker-item.active {
+  background: #FFF5F0;
+  border-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.sender-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sender-btn {
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+  background: var(--card);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.sender-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #FFF;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B35, #FFD23F);
+  color: #FFF;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 6px;
+}
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* === CONFIRM DIALOG === */
+.confirm-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-overlay.active { display: flex; }
+.confirm-box {
+  background: #FFF;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  max-width: 280px;
+  width: 90%;
+}
+.confirm-emoji { font-size: 40px; margin-bottom: 12px; }
+.confirm-text { font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.confirm-btns { display: flex; gap: 10px; }
+.confirm-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.confirm-btn.cancel { background: var(--bg); color: var(--text2); }
+.confirm-btn.danger { background: var(--danger); color: #FFF; }
+
+/* === FALLING PETALS === */
+.petal-container {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.petal {
+  position: absolute;
+  animation: petalFall linear forwards;
+}
+@keyframes petalFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* === TOAST === */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: linear-gradient(135deg, #FF6B35, #FFD23F);
+  color: #FFF;
+  padding: 16px 28px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 8px 32px rgba(255,107,53,0.4);
+  z-index: 10000;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+}
+.toast.show { transform: translate(-50%, -50%) scale(1); }
+.toast-emoji { font-size: 32px; display: block; margin-bottom: 6px; }
+
+/* === LOADING === */
+.loading { text-align: center; padding: 40px; color: var(--text3); column-span: all; }
+.loading-spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 500px) {
+  .praise-grid { max-width: 500px; margin: 0 auto; }
+  .header { max-width: 500px; margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">🌸 夸夸墙 🌸</div>
+  <div class="header-sub">每一条夸奖都是爱的印记 ❤️</div>
+</div>
+
+<!-- MONTH TABS -->
+<div class="month-bar" id="monthBar"></div>
+
+<!-- PRAISE GRID -->
+<div class="praise-grid" id="praiseGrid">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <div style="margin-top:10px;font-size:11px">加载中...</div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="showAddModal()">+</button>
+
+<!-- EDIT TOGGLE -->
+<button class="edit-toggle" id="editToggle" onclick="toggleEditMode()">📌 管理</button>
+
+<!-- ADD MODAL -->
+<div class="modal" id="addModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="hideAddModal()">&times;</button>
+    <div class="modal-header">
+      <div class="modal-title">✨ 写一条夸夸</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">想说的话</label>
+      <textarea class="textarea" id="praiseContent" placeholder="写下你想对孩子说的话..." maxlength="500"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">选择贴纸</label>
+      <div class="sticker-grid" id="stickerGrid"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">发送者</label>
+      <div class="sender-grid" id="senderGrid"></div>
+    </div>
+    <button class="submit-btn" id="submitBtn" onclick="submitPraise()">发送夸夸 🎉</button>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmDialog">
+  <div class="confirm-box">
+    <div class="confirm-emoji">🗑️</div>
+    <div class="confirm-text">确定要删除这条夸夸吗？</div>
+    <div class="confirm-btns">
+      <button class="confirm-btn cancel" onclick="cancelDelete()">取消</button>
+      <button class="confirm-btn danger" onclick="confirmDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-emoji">🎉</span>
+  夸夸已送达！
+</div>
+
+<!-- PETALS -->
+<div class="petal-container" id="petalContainer"></div>
+
+<script>
+// ===== SUPABASE =====
+var SB_URL = 'https://xzuxfvyktcqfecgljahr.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6dXhmdnlrdGNxZmVjZ2xqYWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzUyNzIsImV4cCI6MjEwMDExMTI3Mn0.TDwfqTbI5Dof5ZAuiVsttyVVXNubIox8HcrRgkOcnf0';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+// ===== DATA =====
+var praiseList = [];
+var currentMonth = ''; // format: '2026-08'
+var editMode = false;
+var deleteTargetId = null;
+
+// Stickers
+var STICKERS = ['🌸', '⭐', '🌟', '💖', '🎀', '🌈', '🦋', '🌺', '💐', '🎈', '🍀', '🌻', '🏆', '💎', '👑', '🥇', '🔥', '💪', '🤗', '❤️', '🎉', '✨', '🌹', '🧸', '🎁', '🍭', '🌙', '☀️'];
+
+// BG colors
+var BG_COLORS = ['#FFE4E8', '#FFE0F0', '#FFF0F3', '#FFE8EC', '#FFF3CD', '#FFEDBA', '#FFF8DC', '#E8F5E9', '#E0F2E9', '#F0FFF4', '#E5F5E8', '#E8EAF6', '#F3E5F5', '#FCE4EC', '#FFFDE7', '#F1F8E9'];
+
+// Sticker position classes
+var STICKER_POS = ['sticker-tr', 'sticker-tl', 'sticker-br', 'sticker-bl', 'sticker-center'];
+
+// Size classes
+var SIZE_CLASSES = ['', 'size-sm', 'size-lg'];
+
+// Senders
+var SENDERS = [
+  { name: '爸爸', color: '#3B82F6' },
+  { name: '妈妈', color: '#F472B6' },
+  { name: '爷爷', color: '#10B981' },
+  { name: '奶奶', color: '#F97316' },
+  { name: '老师', color: '#8B5CF6' },
+  { name: '其他', color: '#6B7280' }
+];
+
+// Form state
+var selectedSticker = '🌸';
+var selectedSender = SENDERS[0];
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+  renderStickerGrid();
+  renderSenderGrid();
+  loadPraise();
+});
+
+// ===== MONTH TABS =====
+function getMonthsFromData() {
+  var months = {};
+  for (var i = 0; i < praiseList.length; i++) {
+    var d = new Date(praiseList[i].created_at);
+    var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    months[key] = true;
+  }
+  // Always include current month
+  var now = new Date();
+  var currentKey = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+  months[currentKey] = true;
+
+  var arr = Object.keys(months);
+  arr.sort().reverse();
+  return arr;
+}
+
+function renderMonthTabs() {
+  var bar = document.getElementById('monthBar');
+  var months = getMonthsFromData();
+
+  if (!currentMonth) currentMonth = months[0];
+
+  var html = '';
+  for (var i = 0; i < months.length; i++) {
+    var m = months[i];
+    var parts = m.split('-');
+    var label = parts[0] + '年' + parseInt(parts[1]) + '月';
+    var active = m === currentMonth ? ' active' : '';
+    html += '<button class="month-tab' + active + '" onclick="switchMonth(\'' + m + '\')">' + label + '</button>';
+  }
+  bar.innerHTML = html;
+}
+
+function switchMonth(month) {
+  currentMonth = month;
+  renderMonthTabs();
+  renderGrid();
+}
+
+// ===== SUPABASE =====
+async function loadPraise() {
+  try {
+    var result = await sb.from('praise').select().order('created_at', { ascending: false });
+    if (result.data) {
+      praiseList = result.data;
+      renderMonthTabs();
+      renderGrid();
+    } else {
+      showEmpty();
+    }
+  } catch (e) {
+    console.error('Load error:', e);
+    document.getElementById('praiseGrid').innerHTML =
+      '<div class="empty-state"><div class="empty-emoji">😅</div><div class="empty-title">加载失败</div><div class="empty-sub">请检查网络连接</div></div>';
+  }
+}
+
+async function addPraise(data) {
+  try {
+    var result = await sb.from('praise').insert(data).select();
+    return result.data;
+  } catch (e) {
+    console.error('Add error:', e);
+    return null;
+  }
+}
+
+async function deletePraise(id) {
+  try {
+    await sb.from('praise').delete().eq('id', id);
+    return true;
+  } catch (e) {
+    console.error('Delete error:', e);
+    return false;
+  }
+}
+
+async function markAsRead(id) {
+  try {
+    await sb.from('praise').update({ is_read: true }).eq('id', id);
+  } catch (e) {}
+}
+
+// ===== RENDER =====
+function getFilteredPraise() {
+  if (!currentMonth) return praiseList;
+  return praiseList.filter(function(p) {
+    var d = new Date(p.created_at);
+    var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    return key === currentMonth;
+  });
+}
+
+function renderGrid() {
+  var grid = document.getElementById('praiseGrid');
+  var filtered = getFilteredPraise();
+
+  if (!filtered.length) {
+    showEmpty();
+    return;
+  }
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var p = filtered[i];
+    var rotation = p.rotation !== undefined ? p.rotation : (Math.random() * 16 - 8);
+    var bgColor = p.bg_color || BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+    var timeStr = formatTime(p.created_at);
+    var initial = p.sender ? p.sender.charAt(0) : '?';
+    var senderColor = p.sender_color || '#FF6B35';
+    var delay = i * 0.04;
+
+    // Random size
+    var sizeClass = p.size_class || SIZE_CLASSES[Math.floor(Math.random() * SIZE_CLASSES.length)];
+
+    // Random sticker position
+    var stickerPos = p.sticker_pos || STICKER_POS[Math.floor(Math.random() * STICKER_POS.length)];
+
+    var editClass = editMode ? ' editing' : '';
+
+    html += '<div class="praise-card ' + sizeClass + editClass + '" style="background:' + bgColor + ';transform:rotate(' + rotation.toFixed(1) + 'deg);animation-delay:' + delay + 's" data-id="' + p.id + '" onclick="cardClick(' + p.id + ', event)">';
+    html += '<button class="delete-btn" onclick="startDelete(' + p.id + ', event)">&times;</button>';
+    if (!p.is_read) html += '<div class="card-unread"></div>';
+    html += '<div class="card-sticker ' + stickerPos + '">' + (p.sticker || '🌸') + '</div>';
+    html += '<div class="card-content has-' + stickerPos + '">' + escapeHtml(p.content) + '</div>';
+    html += '<div class="card-footer">';
+    html += '<div class="card-sender">';
+    html += '<div class="sender-avatar" style="background:' + senderColor + '">' + initial + '</div>';
+    html += '<span class="sender-name">' + escapeHtml(p.sender) + '</span>';
+    html += '</div>';
+    html += '<span class="card-time">' + timeStr + '</span>';
+    html += '</div>';
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function showEmpty() {
+  var msg = praiseList.length === 0
+    ? { emoji: '🌸', title: '还没有夸夸', sub: '点击 + 添加第一条吧！' }
+    : { emoji: '📅', title: '这个月还没有夸夸', sub: '切换到其他月份看看' };
+
+  document.getElementById('praiseGrid').innerHTML =
+    '<div class="empty-state"><div class="empty-emoji">' + msg.emoji + '</div><div class="empty-title">' + msg.title + '</div><div class="empty-sub">' + msg.sub + '</div></div>';
+}
+
+// ===== EDIT MODE =====
+function toggleEditMode() {
+  editMode = !editMode;
+  var btn = document.getElementById('editToggle');
+  btn.classList.toggle('active', editMode);
+  btn.textContent = editMode ? '✓ 完成' : '📌 管理';
+  renderGrid();
+}
+
+// ===== DELETE =====
+function startDelete(id, e) {
+  e.stopPropagation();
+  deleteTargetId = id;
+  document.getElementById('confirmDialog').classList.add('active');
+}
+
+function cancelDelete() {
+  deleteTargetId = null;
+  document.getElementById('confirmDialog').classList.remove('active');
+}
+
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  var id = deleteTargetId;
+  cancelDelete();
+
+  var ok = await deletePraise(id);
+  if (ok) {
+    praiseList = praiseList.filter(function(p) { return p.id !== id; });
+    renderMonthTabs();
+    renderGrid();
+  } else {
+    alert('删除失败，请重试');
+  }
+}
+
+// ===== FORM =====
+function renderStickerGrid() {
+  var grid = document.getElementById('stickerGrid');
+  selectedSticker = STICKERS[0];
+  var html = '';
+  for (var i = 0; i < STICKERS.length; i++) {
+    var active = i === 0 ? ' active' : '';
+    html += '<div class="sticker-item' + active + '" onclick="selectSticker(\'' + STICKERS[i] + '\', this)">' + STICKERS[i] + '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function renderSenderGrid() {
+  var grid = document.getElementById('senderGrid');
+  selectedSender = SENDERS[0];
+  var html = '';
+  for (var i = 0; i < SENDERS.length; i++) {
+    var s = SENDERS[i];
+    var active = i === 0 ? ' active' : '';
+    var style = i === 0 ? 'background:' + s.color + ';border-color:' + s.color + ';color:#FFF' : '';
+    html += '<button class="sender-btn' + active + '" style="' + style + '" onclick="selectSender(' + i + ', this)">' + s.name + '</button>';
+  }
+  grid.innerHTML = html;
+}
+
+function selectSticker(sticker, el) {
+  selectedSticker = sticker;
+  var items = document.querySelectorAll('.sticker-item');
+  for (var i = 0; i < items.length; i++) items[i].classList.remove('active');
+  el.classList.add('active');
+}
+
+function selectSender(index, el) {
+  selectedSender = SENDERS[index];
+  var btns = document.querySelectorAll('.sender-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.remove('active');
+    btns[i].style.background = '';
+    btns[i].style.borderColor = '';
+    btns[i].style.color = '';
+  }
+  el.classList.add('active');
+  el.style.background = selectedSender.color;
+  el.style.borderColor = selectedSender.color;
+  el.style.color = '#FFF';
+}
+
+// ===== MODAL =====
+function showAddModal() {
+  document.getElementById('addModal').classList.add('active');
+  document.getElementById('praiseContent').value = '';
+  renderStickerGrid();
+  renderSenderGrid();
+}
+
+function hideAddModal() {
+  document.getElementById('addModal').classList.remove('active');
+}
+
+// ===== SUBMIT =====
+async function submitPraise() {
+  var content = document.getElementById('praiseContent').value.trim();
+  if (!content) {
+    shakeElement(document.getElementById('praiseContent'));
+    return;
+  }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '发送中...';
+
+  var bgColor = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+  var rotation = Math.random() * 16 - 8;
+  var stickerPos = STICKER_POS[Math.floor(Math.random() * STICKER_POS.length)];
+  var sizeClass = SIZE_CLASSES[Math.floor(Math.random() * SIZE_CLASSES.length)];
+
+  var data = {
+    type: 'praise',
+    content: content,
+    sticker: selectedSticker,
+    sender: selectedSender.name,
+    sender_color: selectedSender.color,
+    bg_color: bgColor,
+    rotation: Math.round(rotation * 10) / 10,
+    sticker_pos: stickerPos,
+    size_class: sizeClass,
+    is_read: false
+  };
+
+  var result = await addPraise(data);
+
+  btn.disabled = false;
+  btn.textContent = '发送夸夸 🎉';
+
+  if (result) {
+    hideAddModal();
+    showToast();
+    triggerPetals();
+
+    // Switch to the month of the new praise
+    var d = new Date();
+    currentMonth = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+
+    praiseList.unshift(result[0]);
+    renderMonthTabs();
+    renderGrid();
+  } else {
+    alert('发送失败，请重试');
+  }
+}
+
+// ===== CARD CLICK =====
+function cardClick(id, e) {
+  if (editMode) return; // Don't toggle read in edit mode
+
+  var card = e.currentTarget;
+  card.style.transform = 'scale(1.05)';
+  setTimeout(function() { card.style.transform = ''; }, 200);
+
+  for (var i = 0; i < praiseList.length; i++) {
+    if (praiseList[i].id === id) {
+      if (!praiseList[i].is_read) {
+        praiseList[i].is_read = true;
+        markAsRead(id);
+        var dot = card.querySelector('.card-unread');
+        if (dot) dot.remove();
+      }
+      break;
+    }
+  }
+}
+
+// ===== EFFECTS =====
+function triggerPetals() {
+  var container = document.getElementById('petalContainer');
+  var petals = ['🌸', '⭐', '🌟', '💖', '🎀', '✨', '🌺'];
+  for (var i = 0; i < 20; i++) {
+    (function(index) {
+      setTimeout(function() {
+        var petal = document.createElement('div');
+        petal.className = 'petal';
+        petal.textContent = petals[Math.floor(Math.random() * petals.length)];
+        petal.style.left = Math.random() * 100 + '%';
+        petal.style.animationDuration = (2 + Math.random() * 3) + 's';
+        petal.style.fontSize = (14 + Math.random() * 16) + 'px';
+        container.appendChild(petal);
+        setTimeout(function() { petal.remove(); }, 5000);
+      }, index * 80);
+    })(i);
+  }
+}
+
+function showToast() {
+  var toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2000);
+}
+
+function shakeElement(el) {
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'shake 0.5s';
+  el.style.borderColor = '#F43F5E';
+  setTimeout(function() { el.style.borderColor = ''; }, 1500);
+}
+
+// ===== HELPERS =====
+function formatTime(dateStr) {
+  var date = new Date(dateStr);
+  var now = new Date();
+  var diff = (now - date) / 1000;
+
+  if (diff < 60) return '刚刚';
+  if (diff < 3600) return Math.floor(diff / 60) + '分钟前';
+  if (diff < 86400) return Math.floor(diff / 3600) + '小时前';
+
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  return m + '月' + d + '日';
+}
+
+function escapeHtml(text) {
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Animations
+var style = document.createElement('style');
+style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}';
+document.head.appendChild(style);
+
+// Close modal on backdrop
+document.getElementById('addModal').addEventListener('click', function(e) {
+  if (e.target === this) hideAddModal();
+});
+</script>
+</body>
+</html>
