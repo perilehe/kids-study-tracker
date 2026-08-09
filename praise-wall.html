@@ -398,12 +398,13 @@ function renderGrid() {
     var bg = p.bg_color || BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
     var sz = p.size_class || SIZE_CLASSES[Math.floor(Math.random() * SIZE_CLASSES.length)];
 
-    // Full date/time in HK timezone
-    var ts = new Date(p.created_at);
+    // Parse as UTC, display in HK time
+    var raw = p.created_at || '';
+    var ts = new Date(raw + (raw.indexOf('Z') === -1 && raw.indexOf('+') === -1 ? 'Z' : ''));
     var timeStr = new Intl.DateTimeFormat('zh-CN', {
       timeZone: 'Asia/Hong_Kong', year: 'numeric', month: '2-digit', day: '2-digit',
       hour: '2-digit', minute: '2-digit', hour12: false
-    }).format(ts).replace(/\//g, '/');
+    }).format(ts);
 
     var ini = p.sender ? p.sender.charAt(0) : '?';
     var sc = p.sender_color || '#FF6B35';

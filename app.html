@@ -2318,7 +2318,7 @@ function renderPGrid(){
     var bg=p.bg_color||P_BG[Math.floor(Math.random()*P_BG.length)];
     var sz=p.size_class||P_SIZE[Math.floor(Math.random()*P_SIZE.length)];
     var pos=p.sticker_pos||P_POS[Math.floor(Math.random()*P_POS.length)];
-    var ts=p.created_at?new Date(p.created_at):new Date();
+    var ts=p.created_at?new Date(p.created_at+(p.created_at.indexOf('Z')===-1&&p.created_at.indexOf('+')===-1?'Z':'')):new Date();
     var timeStr=new Intl.DateTimeFormat('zh-CN',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(ts);
     var ini=p.sender?p.sender.charAt(0):'?';var sc=p.sender_color||'#FF6B35';
     var ec=praiseEdit?' p-editing':'';
