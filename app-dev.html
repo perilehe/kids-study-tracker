@@ -2148,7 +2148,7 @@ async function saveReward(r){try{var res=await sb.from('rewards').insert({name:r
 async function deleteRewardRow(id){try{await sb.from('rewards').delete().eq('id',id)}catch(e){}}
 async function updateRewardRow(id,data){try{await sb.from('rewards').update(data).eq('id',id)}catch(e){}}
 async function loadCustomMs(){try{var{data:cm}=await sb.from('custom_milestones').select().order('created_at',{ascending:false});S.customMs=cm||[];for(var i=0;i<S.customMs.length;i++){if(S.customMs[i].status==='active'&&new Date(S.customMs[i].deadline)<new Date()){S.customMs[i].status='expired';try{await sb.from('custom_milestones').update({status:'expired'}).eq('id',S.customMs[i].id)}catch(e){}}}}catch(e){S.customMs=[]}}
-async function saveCustomMs(m){try{var r=await sb.from('custom_milestones').insert({title:m.title,description:m.description||'',xp_reward:m.xp_reward||0,box_reward:m.box_reward||0,deadline:m.deadline}).select();return r}catch(e){return null}}
+async function saveCustomMs(m){try{console.log('[CustomMS] saveCustomMs inserting:',m);var r=await sb.from('custom_milestones').insert({title:m.title,description:m.description||'',xp_reward:m.xp_reward||0,box_reward:m.box_reward||0,deadline:m.deadline}).select();console.log('[CustomMS] insert result:',r);return r}catch(e){console.error('[CustomMS] saveCustomMs error:',e);return null}}
 async function updateCustomMs(id,data){try{await sb.from('custom_milestones').update(data).eq('id',id)}catch(e){}}
 async function deleteCustomMs(id){try{await sb.from('custom_milestones').delete().eq('id',id)}catch(e){}}
 
@@ -2418,8 +2418,18 @@ async function confirmCreateChallenge(){
   if(days===0){days=parseInt(document.getElementById('cms-days').value)||0;if(days<=0){hud('Enter a valid number of days');return}}
   var deadline=new Date();deadline.setDate(deadline.getDate()+days);
   var m={title:title,description:desc,xp_reward:xp,box_reward:box,deadline:deadline.toISOString()};
+  console.log('[CustomMS] Creating:',m);
   var saved=await saveCustomMs(m);
-  if(saved&&saved[0]){S.customMs.unshift(saved[0]);saved[0].status='active'}
+  console.log('[CustomMS] Saved result:',saved);
+  if(saved&&saved[0]){
+    saved[0].status='active';
+    S.customMs.unshift(saved[0]);
+    console.log('[CustomMS] Added to S.customMs, count:',S.customMs.length);
+  }else{
+    console.warn('[CustomMS] Save returned empty, adding locally with fallback id');
+    m.id='loc'+Date.now();m.status='active';m.created_at=new Date().toISOString();
+    S.customMs.unshift(m);
+  }
   closeHUD('create-ms-modal');
   snd([523,659,784],"sine",0.2);
   drawSettings();
